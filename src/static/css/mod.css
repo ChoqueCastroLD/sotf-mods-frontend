@@ -1,0 +1,14 @@
+.mod-logo {
+    border-radius: 30px;
+}
+.mod-favorite {
+    width: 30px;
+    color: #d926a9;
+    margin-left: 10px;
+}
+#modalEdit .modal-box {
+    max-width: 64rem;
+}
+#mod-description {
+    min-height: 420px;
+}

@@ -1,0 +1,112 @@
+extends __layout
+
+block head
+  link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css")
+  link(rel='stylesheet' href='/static/css/description.css')
+  link(rel='stylesheet' href='/static/css/mods.css')
+  link(rel='stylesheet' href='/static/css/upload.css')
+
+block body
+  .hero.min-h-screen
+    .hero-content.flex-col(class='lg:flex-row-reverse')
+      .text-center(class='lg:text-left')
+        h1.text-5xl.font-bold Upload a mod
+        p.py-6
+          | Fill out the fields to see how your mod is going to look
+        <label class="swap swap-rotate ml-2">
+          <input id="mods-discover-orientation" type="checkbox" />
+          <svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28 28"><g fill="none"><path d="M10.75 15A2.25 2.25 0 0 1 13 17.25v5.5A2.25 2.25 0 0 1 10.75 25h-5.5A2.25 2.25 0 0 1 3 22.75v-5.5A2.25 2.25 0 0 1 5.25 15h5.5zm12 0A2.25 2.25 0 0 1 25 17.25v5.5A2.25 2.25 0 0 1 22.75 25h-5.5A2.25 2.25 0 0 1 15 22.75v-5.5A2.25 2.25 0 0 1 17.25 15h5.5zm-12-12A2.25 2.25 0 0 1 13 5.25v5.5A2.25 2.25 0 0 1 10.75 13h-5.5A2.25 2.25 0 0 1 3 10.75v-5.5A2.25 2.25 0 0 1 5.25 3h5.5zm12 0A2.25 2.25 0 0 1 25 5.25v5.5A2.25 2.25 0 0 1 22.75 13h-5.5A2.25 2.25 0 0 1 15 10.75v-5.5A2.25 2.25 0 0 1 17.25 3h5.5z" fill="currentColor"></path></g></svg>
+          <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z" fill="currentColor"></path></svg>
+        </label>
+        #mod-list-demo(min-width="472px")
+        div(class="md:m-4")
+          label.label
+            span.label-text Mod description preview
+          #mod-description-preview.mod-description-template
+      .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100(action='/upload' method='post')
+        .card-body
+          p(class="collapse-title text-xl font-medium") Mod upload
+          <div class="join join-vertical w-full">
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" checked="checked" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Basic information
+              </div>
+              <div class="collapse-content"> 
+                .form-control
+                  label.label
+                    span.label-text Name
+                  input#mod-name.input.input-bordered(type="text", name="name", placeholder="Enter the name of the mod" minlength="4" maxlength="24")
+                .form-control
+                  label.label
+                    span.label-text Short description
+                    span.label-text-alt (max: 100 characters)
+                  input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder="Enter the short description of the mod" minlength="10" maxlength="100")
+                .form-control
+                  label.label
+                    span.label-text Description
+                    span.label-text-alt
+                      | (
+                      span#mod-description-character-count 0
+                      | / 2000 characters)
+                  textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder='Enter the description of the mod...' minlength="10" maxlength="2000")
+              </div>
+            </div>
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Category
+              </div>
+              <div class="collapse-content"> 
+                <label class="cursor-pointer label ml-2">
+                  <span class="label-text">Has NSFW content</span> 
+                  <input id="mod-isNSFW" name="isNSFW" type="checkbox" class="toggle toggle-secondary ml-2" />
+                </label>
+                .form-control.w-full.max-w-xs
+                  label.label
+                    span.label-text Category
+                  select#mod-category.select.select-bordered
+                    option(disabled='' selected='') Pick one category
+                    option(value="1") Scripts
+              </div>
+            </div>
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Images
+              </div>
+              <div class="collapse-content">
+                p Images must be in .png, .jpeg or .gif format
+                .form-control
+                  label.label
+                    span.label-text Thumbnail
+                  input#mod-thumbnail(type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.gif" required)
+                p Mod thumbnail resolution must be 2560x1440 or 1080x608
+                a(href="/static/images/thumbnail.png", target="_blank" style="color: #36d399; cursor: pointer;")
+                  p Download thumbnail template
+                a(href="/static/images/hd_thumbnail.png", target="_blank" style="color: #d926a9; cursor: pointer;")
+                  p Download hd thumbnail template
+              </div>
+            </div>
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Download
+              </div>
+              <div class="collapse-content">
+                .form-control
+                  label.label
+                    span.label-text Version
+                  input#mod-version.input.input-bordered(type="text", name="name", placeholder="Enter the mod version (Ex. 1.0.0)" minlength="5" maxlength="10")
+                .form-control
+                  label.label
+                    span.label-text Mod file (.dll or .zip)
+                  input#mod-file(type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".zip,.dll")
+              </div>
+            </div>
+          </div>
+          <button id="btn-submit-mod" class="btn btn-primary">Submit</button>
+  #mod-page-demo
+block scripts
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js")
+  script(src='/static/scripts/upload.js' type="module")

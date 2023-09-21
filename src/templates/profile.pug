@@ -1,0 +1,16 @@
+extends __layout
+
+block head
+  link(rel='stylesheet' href='/static/css/mods.css')
+  link(rel='stylesheet' href='/static/css/profile.css')
+
+block body
+  #sotf-mods-p(data-p=btoa(JSON.stringify(userProfile)))
+  .flex.flex-col.justify-center.items-center.m-6
+    .text-center(class='lg:text-left')
+      h1.text-5xl.font-bold #{userProfile.name}'s mods
+  #mods-discover-container.flex.flex-wrap.justify-center
+    span(class="loading loading-infinity loading-lg text-success center")
+
+block scripts
+  script(src='/static/scripts/profile.js' type="module")

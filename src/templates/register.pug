@@ -1,0 +1,39 @@
+extends __layout
+
+block head
+  link(rel='stylesheet' href='/static/css/main.css')
+
+block body
+  form#register-form.hero.min-h-screen(action='/register' method='post')
+    .hero-content.flex-col(class='lg:flex-row-reverse')
+      .text-center(class='lg:text-left')
+        h1.text-5xl.font-bold Register now!
+        p.py-6
+          | If you already have an account, please log in with your credentials.
+          br
+          | You can do so by&nbsp;
+          a(href='/login' class='link link-primary') clicking here
+          | &nbsp;to log in.
+      .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100
+        .card-body
+          .form-control
+            label.label
+              span.label-text Email
+            input.input.input-bordered(type="email", name="email", placeholder="Enter your email")
+          .form-control
+            label.label
+              span.label-text Username
+            input.input.input-bordered(type="username", name="username", placeholder="Enter your username")
+          .form-control
+            label.label
+              span.label-text Password
+            input.input.input-bordered(type="password", name="password", placeholder="Enter your password")
+          .form-control
+            label.label
+              span.label-text Confirm Password
+            input.input.input-bordered(type="password", name="confirm_password", placeholder="Repeat your password")
+          .form-control.mt-6
+            button.btn.btn-primary Register
+
+block scripts
+  script(src='/static/scripts/register.js' type="module")

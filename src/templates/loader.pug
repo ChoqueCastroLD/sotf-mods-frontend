@@ -1,0 +1,29 @@
+extends __layout
+
+block head
+  link(rel='stylesheet' href='/static/css/loader.css')
+
+block body
+  .hero.min-h-screen
+    .hero-content.text-center
+      .max-w-md
+        h1.text-5xl.font-bold.mb-4
+          img.m-auto(src='/static/images/redlogo.png' alt='logo')
+        p.font-bold The World's First Mod Loader for Sons of The Forest
+        p.py-6
+          | The Red Loader enhances the original MelonLoader. It offers smoother integration with the game and facilitates seamless migration from older systems by supporting the loading of BepInEx plugins.
+        button.btn.btn-secondary(onclick="openModal('#modalOneClickInstall')") Get Started
+
+  //- Modals
+  dialog#modalOneClickInstall.modal
+    form.modal-box(method='dialog')
+      h3.font-bold.text-lg Red Loader
+      p.py-4 This installer will automatically download and install the latest version of the Red Loader for Sons of the Forest.
+      p.py-4.text-error This mod loader is in Early Access and may contain bugs.
+      p.text-error Please report any issues you encounter on our Discord server.
+      .modal-action
+        button.btn(onclick="closeModal('#modalOneClickInstall')") Close
+        a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedManager/releases" target="_blank") Download
+
+block scripts
+  //- script(src='/static/scripts/main.js' type="module")
