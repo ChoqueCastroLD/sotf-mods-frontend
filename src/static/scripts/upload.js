@@ -83,10 +83,10 @@ function validateMod(mod) {
     if (!isVersionValid(mod.version)) throw "Mod version is not valid! (must follow format x.x.x)";
     if (!modFile.files[0]) throw "Mod file is required!";
     if (!modFile.files[0].name.endsWith('.zip') && !modFile.files[0].name.endsWith('.dll')) throw "Mod file must be a .zip or .dll file!";
-    if (modFile.files[0].size > 10000000) throw "Mod file must be less than 100MB!";
+    if (modFile.files[0].size > (80 * 1024 * 1024)) throw "Mod file must be less than 80MB!";
     if (!modThumbnail.files[0]) throw "Mod thumbnail is required!";
     if (!['.zip', '.png', '.jpg', '.gif'].includes(modThumbnail.files[0].name.substring(modThumbnail.files[0].name.lastIndexOf('.')))) throw "Mod thumbnail must be a .png, .jpg, or .gif file!";
-    if (modThumbnail.files[0].size > 8000000) throw "Mod thumbnail must be less than 8MB!";
+    if (modThumbnail.files[0].size > (8 * 1024 * 1024)) throw "Mod thumbnail must be less than 8MB!";
     return true;
 }
 
