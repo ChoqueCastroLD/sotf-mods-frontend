@@ -13,7 +13,7 @@ const modThumbnail = document.querySelector('#mod-thumbnail');
 
 
 function getModTemplate(mod) {
-    if (!mod.shortDescription) mod.shortDescription = "This is a description of the mod.";
+    if (!mod.short_description) mod.short_description = "This is a description of the mod.";
     return `<figure><img data-lazy-src="${mod.thumbnail_url || "https://cdn.discordapp.com/attachments/1078656518133661737/1140334396172402748/example_image.png"}" alt="${mod.name || "Mod Name"}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
@@ -24,7 +24,7 @@ function getModTemplate(mod) {
         </div>
         <h2 class="card-title w-full">${mod.name || "Mod Name"}<span class="card-title-version">${(mod.latest_version && mod.latest_version.version) || "1.0.0"}</span></h2>
         <p class="text-left">by <a class="hover-underline-animation" href="#!">${user.name}</a></p>
-        <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
+        <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline btn-success btn-sm" href="#!">See More</a>
         </div>
@@ -53,7 +53,7 @@ async function renderModItem() {
 function getMod() {
     return {
         "name": modName.value.trim(),
-        "shortDescription": modShortDescription.value.trim(),
+        "short_description": modShortDescription.value.trim(),
         "description": modDescription.value.trim(),
         "thumbnail_url": modThumbnail.files[0] ? URL.createObjectURL(modThumbnail.files[0]) : null,
         "isNSFW": modIsNSFW.checked,
@@ -71,9 +71,9 @@ function validateMod(mod) {
     if (!mod.name) throw "Mod name is required!";
     if (mod.name.length < 4) throw "Mod name must be at least 4 characters long!";
     if (mod.name.length > 24) throw "Mod name must be less than 24 characters!";
-    if (!mod.shortDescription) throw "Mod short description is required!";
-    if (mod.shortDescription.length < 10) throw "Mod short description must be at least 10 characters long!";
-    if (mod.shortDescription.length > 100) throw "Mod short description must be less than 100 characters!";
+    if (!mod.short_description) throw "Mod short description is required!";
+    if (mod.short_description.length < 10) throw "Mod short description must be at least 10 characters long!";
+    if (mod.short_description.length > 100) throw "Mod short description must be less than 100 characters!";
     if (!mod.description) throw "Mod description is required!";
     if (mod.description.length < 10) throw "Mod description must be at least 10 characters long!";
     if (mod.description.length > 2000) throw "Mod description must be less than 2000 characters!";
@@ -102,7 +102,7 @@ async function uploadMod() {
         const formData = new FormData();
 
         formData.append('name', sanitizeText(mod.name));
-        formData.append('shortDescription', sanitizeText(mod.shortDescription));
+        formData.append('shortDescription', sanitizeText(mod.short_description));
         formData.append('description', mod.description);
         formData.append('isNSFW', mod.isNSFW);
         formData.append('category_id', mod.category_id);

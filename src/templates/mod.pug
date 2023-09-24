@@ -2,7 +2,7 @@ extends __layout
 
 block meta
   meta(content=mod.name, property="og:title")
-  meta(content=(mod.shortDescription), property="og:description")
+  meta(content=(mod.short_description), property="og:description")
   meta(content=(mod.primary_image_url || "https://sotf-mods.com/static/images/sotfmods.png"), property="og:image")
   link(type="application/json+oembed", href=`https://sotf-mods.com/mods/${mod.user_slug}/${mod.slug}.json`)
   link(rel='stylesheet' href='/static/css/mod.css')
@@ -22,7 +22,7 @@ block body
       div.mod-info.m-4
         img.mod-logo(data-lazy-src=mod.primary_image_url, alt=mod.name)
         .flex.justify-center.flex-wrap
-          p.text-base.m-4(style="overflow-wrap: anywhere;") #{mod.shortDescription}
+          p.text-base.m-4(style="overflow-wrap: anywhere;") #{mod.short_description}
         - if (!mod.isApproved)
           .flex.justify-center
             p.text-error.text-xs.mt-4 Pending approval.
@@ -95,7 +95,7 @@ block body
         .form-control
           label.label
             span.label-text Short description
-          input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder="Enter the short description of the mod" minlength="10" maxlength="100" value=mod.shortDescription)
+          input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder="Enter the short description of the mod" minlength="10" maxlength="100" value=mod.short_description)
         .form-control.mb-4
           div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
             div(class="md:m-4")

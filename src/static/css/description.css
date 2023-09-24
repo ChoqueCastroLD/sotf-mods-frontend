@@ -76,14 +76,6 @@
       border-left: 2px solid #ccc;
     }
     
-    /* Code and Preformatted Text */
-    & code {
-      font-family: Monaco, monospace;
-      background-color: #f7f7f7;
-      padding: 0.1rem 0.25rem;
-      border-radius: 3px;
-    }
-    
     & pre {
       background-color: #f7f7f7;
       padding: 1rem;
@@ -152,6 +144,15 @@
 
     & small {
       font-size: 0.875rem;
+    }
+
+    & code {
+      font-family: Monaco, monospace;
+      background-color: #1e1e1e;
+      border-radius: 3px;
+      padding: 0.2rem 0.5rem;
+      line-height: 2.8;
+      color: #4bc9b0;
     }
 
 }
