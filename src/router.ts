@@ -36,8 +36,10 @@ export const router = new Elysia()
         const mod = await fetch(`${Bun.env.API_URL}/api/mods/${user_slug}/${mod_slug}`).then(res => res.json());
         return render('mod', { mod })(context);
     })
-    .get('/mods/:user_slug/:mod_slug/download/:version', async ({ params: { user_slug, mod_slug, version }, set }) => {
-        const f = await fetch(`${Bun.env.API_URL}/api/mods/${user_slug}/${mod_slug}/download/${version}`)
+    .get('/mods/:user_slug/:mod_slug/download/:version', async ({ params: { user_slug, mod_slug, version }, request, set }) => {
+        const ip = "" + request.headers.get("x-forwarded-for")
+        const agent = "" + request.headers.get("user-agent")
+        const f = await fetch(`${Bun.env.API_URL}/api/mods/${user_slug}/${mod_slug}/download/${version}?ip=${ip}&agent=${agent}`)
         const blob = await f.blob()
         set.headers['Content-Type'] = "" + f.headers.get('Content-Type')
         set.headers['Content-Length'] = "" + f.headers.get('Content-Length')
