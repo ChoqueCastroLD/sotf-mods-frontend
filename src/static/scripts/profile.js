@@ -7,15 +7,7 @@ let forceVerticalMod = false;
 async function getMods() {
     let url = `${API_URL}/api/mods?user_slug=${userProfile.slug}&approved=false`;
     const response = await fetch(url);
-    const mods = await response.json();
-    const meta = {
-        total: response.headers.get('X-Total-Count'),
-        page: response.headers.get('X-Page'),
-        limit: response.headers.get('X-Limit'),
-        pages: response.headers.get('X-Pages'),
-        next_page: response.headers.get('X-Next-Page'),
-        prev_page: response.headers.get('X-Prev-Page'),
-    }
+    const { mods, meta } = await response.json();
     return { mods, meta };
 }
 
