@@ -33,15 +33,7 @@ async function getMods(page) {
         url += `&page=${page}`;
     }
     const response = await fetch(url);
-    const mods = await response.json();
-    const meta = {
-        total: response.headers.get('X-Total-Count'),
-        page: response.headers.get('X-Page'),
-        limit: response.headers.get('X-Limit'),
-        pages: response.headers.get('X-Pages'),
-        next_page: response.headers.get('X-Next-Page'),
-        prev_page: response.headers.get('X-Prev-Page'),
-    }
+    const { mods, meta } = await response.json();
     lastResponse = { mods, meta };
     return { mods, meta };
 }
@@ -72,6 +64,7 @@ function getModTemplate(mod) {
 
 function buildModsPaginationPages(parentElement, {total, page, limit, next_page, prev_page, pages}) {
     parentElement.innerHTML = '';
+    if(pages == 1) return;
     const pagination = document.createElement('div');
     pagination.classList.add('join');
     for (let i = 1; i <= pages; i++) {
