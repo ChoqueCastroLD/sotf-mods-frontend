@@ -57,6 +57,10 @@ block body
           .flex.justify-center.mt-4.flex-wrap
             a.btn.btn-outline.m-2(onclick="openModal('#modalEdit')") Update details
             a.btn.btn-outline.m-2(onclick="openModal('#modalReleaseVersion')") Release version
+        - if (user && user.canApprove === true)
+          - if (!mod.isApproved)
+            .flex.justify-center.mt-4.flex-wrap
+              button.btn.btn-outline.m-2(onclick="approve(this)") Approve Mod
 
       div.mod-downloads.m-4
         pre#modDescriptionTemplate.mod-description-template

@@ -38,6 +38,23 @@ window.toggleFavorite = async function (elem, author, slug) {
     elem.disabled = false;
 }
 
+window.approve = async function (elem) {
+    elem.disabled = true;
+    const response = await fetch(`${API_URL}/api/mods/${mod.user_slug}/${mod.slug}/approve`, {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    });
+    const data = await response.json();
+    if (response.ok) {
+        location.href = `/mods/${mod.user_slug}/${mod.slug}`;
+    } else {
+        console.error('There has been a problem with your fetch operation:', data);
+        showError("There has been a problem approving the mod");
+    }
+    elem.disabled = false;
+}
+
 function renderDescriptionPreview(description) {
     const descriptionPreview = document.getElementById('mod-description-preview');
     descriptionPreview.innerHTML = markdownToHTML(description);
