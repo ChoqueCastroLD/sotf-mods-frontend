@@ -23,14 +23,6 @@ block body
     #mods-discover-search-container
       .flex.justify-between.flex-wrap
         input#mods-discover-search.input.input-bordered.input-success.w-full.mb-2(type='text' placeholder='Type here')
-        //- Show NSFW
-        label.cursor-pointer.label.m-auto
-          span.label-text NSFW
-          input#mods-discover-nsfw.toggle.toggle-secondary.ml-2(type='checkbox')
-        //- Show Unapproved
-        label.cursor-pointer.label.m-auto
-          span.label-text.ml-4 Unapproved
-          input#mods-discover-show-unapproved.toggle.toggle-secondary.ml-2(type='checkbox')
         //- Categories
         select#mods-discover-categories.m-auto.select.select-sm.w-38
           option(value='') All categories
@@ -43,6 +35,14 @@ block body
           option(value='popular') Popular
           option(value='unpopular') Unpopular
           option(value='random' disabled='') Random
+        //- Show Unapproved
+        label.cursor-pointer.label.m-auto
+          span.label-text Unapproved
+          input#mods-discover-show-unapproved.toggle.toggle-secondary.ml-2(type='checkbox')
+        //- Show NSFW
+        label.cursor-pointer.label.m-auto
+          span.label-text NSFW
+          input#mods-discover-nsfw.toggle.toggle-secondary.ml-2(type='checkbox')
         //- Orientation cards
         label.swap.swap-rotate.m-auto.hidden(class='sm:inline-grid')
           input#mods-discover-orientation(type='checkbox')

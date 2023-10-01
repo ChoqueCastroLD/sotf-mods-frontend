@@ -37,7 +37,13 @@ export const router = new Elysia()
         const userProfile = await fetch(`${Bun.env.API_URL}/api/users/${user_slug}`).then(res => res.json());
         return render('profile', { userProfile })(context);
     })
-    .get('/upload', render('upload'), { beforeHandle: loggedOnly })
+    .get('/upload', async (context) => {
+        if (Date.now() - last_categories_update > 1000 * 60 * 5) {
+            categories = await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
+            last_categories_update = Date.now();
+        }
+        return render('upload', { categories })(context);
+    }, { beforeHandle: loggedOnly })
     // public
     .get('/', ({ set }) => {
         set.redirect = '/mods'
