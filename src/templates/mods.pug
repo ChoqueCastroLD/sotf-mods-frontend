@@ -4,7 +4,21 @@ block head
   link(rel='stylesheet' href='/static/css/mods.css')
 
 block body
-  #mods-discover-section.mt-2
+  .stats-container.flex.justify-center.flex-wrap
+    .stats.shadow(class="stats-vertical md:stats-horizontal")
+      .stat.place-items-center(style="min-width: 280px;")
+        .stat-title Downloads
+        .stat-value #{stats.downloads}
+        .stat-desc Since 2023
+      .stat.place-items-center
+        .stat-title Users
+        .stat-value.text-secondary #{stats.users}
+        .stat-desc.text-secondary Registered
+      .stat.place-items-center(style="min-width: 280px;")
+        .stat-title Mods Published
+        .stat-value #{stats.mods}
+        .stat-desc From #{stats.developers} developers
+  #mods-discover-section.mt-4
     #mods-discover-search-container
       <div class="flex justify-between flex-wrap">
         <input id="mods-discover-search" type="text" placeholder="Type here" class="input input-bordered input-success w-full mb-2" />

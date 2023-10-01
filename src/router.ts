@@ -3,6 +3,13 @@ import { Elysia } from 'elysia'
 import { render } from './middlewares/render.middleware'
 import { authMiddleware } from './middlewares/auth.middleware'
 
+let last_stats_update = 0;
+let stats = {
+    "users": 2,
+    "mods": 2,
+    "downloads": 2,
+    "developers": 2,
+}
 
 const loggedOnly = async ({ user, set }: any) => {
     if (!user) {
@@ -30,7 +37,15 @@ export const router = new Elysia()
     .get('/', ({ set }) => {
         set.redirect = '/mods'
     })
-    .get('/mods', render('mods'))
+    .get('/mods', async (context) => {
+        if (Date.now() - last_stats_update > 1000 * 60 * 5) {
+            console.log("obtain stats");
+            
+            stats = await fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json());
+            last_stats_update = Date.now();
+        }
+        return render('mods', { stats })(context);
+    })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;
         const mod = await fetch(`${Bun.env.API_URL}/api/mods/${user_slug}/${mod_slug}`).then(res => res.json());

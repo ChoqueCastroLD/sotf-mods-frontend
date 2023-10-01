@@ -32,7 +32,6 @@
     padding: 15px;
 }
 #mods-discover-search-container {
-    margin: 60px;
     margin-bottom: 30px;
 }
 #mods-discover-search-container div {
@@ -54,4 +53,15 @@
 .card-title-version {
     font-size: 0.75rem;
     color: hsl(var(--bc) / 0.6);
+}/* Default margin */
+
+.stats-container {
+    margin-top: 22rem;
+    margin-bottom: 4rem;
+}
+  /* Small screens (sm) */
+@media (min-width: 350px) {
+    .stats-container {
+        margin-top: 9rem;
+    }
 }
