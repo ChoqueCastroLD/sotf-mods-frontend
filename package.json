@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.0.9",
-    "@elysiajs/static": "^0.7.0",
+    "@elysiajs/static": "0.7.0",
     "@elysiajs/swagger": "^0.6.2",
     "@grotto/logysia": "^0.0.2",
     "@prisma/client": "5.3.1",
