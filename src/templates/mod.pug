@@ -12,6 +12,7 @@ block head
   span
 
 block body
+  .top-spacer
   .wrapper.m-4
     .flex.justify-center.mt-8
       p.text-5xl(style="overflow-wrap: anywhere;") #{mod.name}
@@ -135,16 +136,12 @@ block body
         p.py-4 Release a new version of the mod. This will be automatically set as the latest version of the mod. (Current version: #{mod.latest_version || "1.0.0"})
         .form-control
           label.label
-            span.label-text Version
-        input#mod-version.input.input-bordered.w-full(type="text", name="name", placeholder="Enter the mod version (Ex. 1.0.0)" minlength="5" maxlength="10" value=mod.next_version ? mod.next_version : "1.0.0")
-        .form-control
+            span.label-text Mod file (.zip)
+        input#mod-file.w-full(type="file" class="file-input file-input-bordered file-input-secondary" accept=".zip")
+        .form-control.mt-4
           label.label
             span.label-text Changelog
         textarea#mod-changelog.textarea.textarea-bordered.h-24.w-full(name="changelog" placeholder='Enter the changelog of the version...' minlength="10" maxlength="2000")
-        .form-control
-          label.label
-            span.label-text Mod file (.dll or .zip)
-        input#mod-file.w-full(type="file" class="file-input file-input-bordered file-input-secondary" accept=".zip,.dll")
         .modal-action
           button.btn(onclick="closeModal('#modalReleaseVersion')") Close
           button#releaseVersionBtn.btn.btn-secondary Release

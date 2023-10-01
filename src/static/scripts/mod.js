@@ -103,18 +103,16 @@ async function main() {
     releaseVersionBtn.addEventListener('click', async () => {
         showLoadingScreen();
         releaseVersionBtn.disabled = true;
-        const modVersion = document.getElementById('mod-version').value.trim();
         const modChangelog = sanitizeText(document.getElementById('mod-changelog').value.trim());
-        const modFile = document.getElementById('mod-file');
-        if (!modVersion || !modChangelog) {
-            showError('Please fill in all the fields');
+        if (!modChangelog) {
+            showError('Please fill the changelog');
             releaseVersionBtn.disabled = false;
             hideLoadingScreen();
             return;
         }
-
+        
+        const modFile = document.getElementById('mod-file');
         const formData = new FormData();
-        formData.append('version', modVersion);
         formData.append('changelog', modChangelog);
         formData.append('modFile', modFile.files[0]);
 

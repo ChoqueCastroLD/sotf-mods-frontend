@@ -7,6 +7,7 @@ block head
   link(rel='stylesheet' href='/static/css/upload.css')
 
 block body
+  .top-spacer
   .hero.min-h-screen
     .hero-content.flex-col(class='lg:flex-row-reverse')
       .text-center(class='lg:text-left')
@@ -25,8 +26,10 @@ block body
           #mod-description-preview.mod-description-template
       .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100(action='/upload' method='post')
         .card-body
-          p(class="collapse-title text-xl font-medium") Mod upload
-          <div class="join join-vertical w-full">
+          p(class="collapse-title text-xl font-medium") Mod upload (.zip)
+          input#mod-file(type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs mb-6" accept=".zip")
+          input#mod-version.hidden(type="hidden" name="version" value="1.0.0")
+          <div id="mod-basic-information" class="join join-vertical w-full hidden">
             <div class="collapse collapse-arrow join-item border border-base-300">
               <input type="radio" name="my-accordion-4" checked="checked" /> 
               <div class="collapse-title text-xl font-medium">
@@ -88,24 +91,8 @@ block body
                   p Download hd thumbnail template
               </div>
             </div>
-            <div class="collapse collapse-arrow join-item border border-base-300">
-              <input type="radio" name="my-accordion-4" /> 
-              <div class="collapse-title text-xl font-medium">
-                | Download
-              </div>
-              <div class="collapse-content">
-                .form-control
-                  label.label
-                    span.label-text Version
-                  input#mod-version.input.input-bordered(type="text", name="name", placeholder="Enter the mod version (Ex. 1.0.0)" minlength="5" maxlength="10")
-                .form-control
-                  label.label
-                    span.label-text Mod file (.dll or .zip)
-                  input#mod-file(type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".zip,.dll")
-              </div>
-            </div>
           </div>
-          <button id="btn-submit-mod" class="btn btn-primary">Submit</button>
+          <button id="btn-submit-mod" class="btn btn-outline btn-accent">Submit</button>
   #mod-page-demo
 block scripts
   script(src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js")

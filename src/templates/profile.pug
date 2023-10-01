@@ -5,6 +5,7 @@ block head
   link(rel='stylesheet' href='/static/css/profile.css')
 
 block body
+  .top-spacer
   #sotf-mods-p(data-p=btoa(JSON.stringify(userProfile)))
   .flex.flex-col.justify-center.items-center.m-6
     .text-center(class='lg:text-left')

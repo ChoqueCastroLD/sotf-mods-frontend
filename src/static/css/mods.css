@@ -56,12 +56,5 @@
 }/* Default margin */
 
 .stats-container {
-    margin-top: 22rem;
     margin-bottom: 4rem;
-}
-  /* Small screens (sm) */
-@media (min-width: 350px) {
-    .stats-container {
-        margin-top: 9rem;
-    }
 }

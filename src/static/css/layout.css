@@ -74,3 +74,12 @@ body {
 body {
     overflow-y: scroll;
 }
+.top-spacer {
+    margin-top: 22rem;
+}
+/* Small screens (sm) */
+@media (min-width: 350px) {
+    .top-spacer {
+        margin-top: 9rem;
+    }
+}

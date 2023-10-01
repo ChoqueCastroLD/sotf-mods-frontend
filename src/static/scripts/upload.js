@@ -1,6 +1,8 @@
 const modListDemo = document.querySelector('#mod-list-demo');
 const modsDiscoverOrientation = document.querySelector('#mods-discover-orientation');
 
+const modBasicInformation = document.querySelector('#mod-basic-information');
+
 const btnSubmitMod = document.querySelector('#btn-submit-mod');
 const modName = document.querySelector('#mod-name');
 const modShortDescription = document.querySelector('#mod-shortDescription');
@@ -68,6 +70,9 @@ function isVersionValid(version) {
 }
 
 function validateMod(mod) {
+    if (!modFile.files[0]) throw "Mod file is required!";
+    if (!modFile.files[0].name.endsWith('.zip')) throw "Mod file must be a .zip file!";
+    if (modFile.files[0].size > (80 * 1024 * 1024)) throw "Mod file must be less than 80MB!";
     if (!mod.name) throw "Mod name is required!";
     if (mod.name.length < 4) throw "Mod name must be at least 4 characters long!";
     if (mod.name.length > 24) throw "Mod name must be less than 24 characters!";
@@ -81,9 +86,6 @@ function validateMod(mod) {
     if (isNaN(mod.category_id)) throw "Mod category is not valid!";
     if (!mod.version) throw "Mod version is required!";
     if (!isVersionValid(mod.version)) throw "Mod version is not valid! (must follow format x.x.x)";
-    if (!modFile.files[0]) throw "Mod file is required!";
-    if (!modFile.files[0].name.endsWith('.zip') && !modFile.files[0].name.endsWith('.dll')) throw "Mod file must be a .zip or .dll file!";
-    if (modFile.files[0].size > (80 * 1024 * 1024)) throw "Mod file must be less than 80MB!";
     if (!modThumbnail.files[0]) throw "Mod thumbnail is required!";
     if (!['.zip', '.png', '.jpg', '.gif'].includes(modThumbnail.files[0].name.substring(modThumbnail.files[0].name.lastIndexOf('.')))) throw "Mod thumbnail must be a .png, .jpg, or .gif file!";
     if (modThumbnail.files[0].size > (8 * 1024 * 1024)) throw "Mod thumbnail must be less than 8MB!";
@@ -106,11 +108,10 @@ async function uploadMod() {
         formData.append('description', mod.description);
         formData.append('isNSFW', mod.isNSFW);
         formData.append('category_id', mod.category_id);
-        formData.append('version', mod.version);
         formData.append('modFile', modFile.files[0]);
         formData.append('modThumbnail', modThumbnail.files[0]);
 
-        const res = await fetch(`${API_URL}/api/mods/upload`, {
+        const res = await fetch(`${API_URL}/api/mods/publish`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -149,6 +150,29 @@ async function main() {
     modCategory.addEventListener('change', renderModItem);
     modIsNSFW.addEventListener('change', renderModItem);
     modThumbnail.addEventListener('change', renderModItem);
+    modFile.addEventListener('change', () => {
+        const formData = new FormData();
+        formData.append('modFile', modFile.files[0]);
+        fetch(API_URL + '/api/mods/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData,
+        })
+            .then(r => r.json())
+            .then(r => {
+                modName.value = r.name;
+                modVersion.value = r.version;
+                modShortDescription.value = r.description;
+                modBasicInformation.classList.remove('hidden');
+                renderModItem();
+            })
+            .catch((err) => {
+                console.error(err);
+                showError(err);
+            });
+    });
 
     btnSubmitMod.addEventListener('click', evt => {
         evt.preventDefault();
