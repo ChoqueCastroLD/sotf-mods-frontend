@@ -21,33 +21,37 @@ block body
         .stat-desc From #{stats.developers} developers
   #mods-discover-section.mt-4
     #mods-discover-search-container
-      <div class="flex justify-between flex-wrap">
-        <input id="mods-discover-search" type="text" placeholder="Type here" class="input input-bordered input-success w-full mb-2" />
+      .flex.justify-between.flex-wrap
+        input#mods-discover-search.input.input-bordered.input-success.w-full.mb-2(type='text' placeholder='Type here')
         //- Show NSFW
-        <label class="cursor-pointer label m-auto">
-          <span class="label-text">NSFW</span> 
-          <input id="mods-discover-nsfw" type="checkbox" class="toggle toggle-secondary ml-2" />
-        </label>
+        label.cursor-pointer.label.m-auto
+          span.label-text NSFW
+          input#mods-discover-nsfw.toggle.toggle-secondary.ml-2(type='checkbox')
         //- Show Unapproved
-        <label class="cursor-pointer label m-auto">
-          <span class="label-text ml-4">Show Unapproved</span> 
-          <input id="mods-discover-show-unapproved" type="checkbox" class="toggle toggle-secondary ml-2" />
-        </label>
+        label.cursor-pointer.label.m-auto
+          span.label-text.ml-4 Unapproved
+          input#mods-discover-show-unapproved.toggle.toggle-secondary.ml-2(type='checkbox')
+        //- Categories
+        select#mods-discover-categories.m-auto.select.select-sm.w-38
+          option(value='') All categories
+          - for(const category of categories)
+            option(value=category.slug) #{category.name}
         //- Order by
-        <select id="mods-discover-order-by" class="m-auto select select-sm w-48">
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="popular">Popular</option>
-          <option value="unpopular">Unpopular</option>
-          <option value="random" disabled>Random</option>
-        </select>
+        select#mods-discover-order-by.m-auto.select.select-sm.w-32
+          option(value='newest') Newest
+          option(value='oldest') Oldest
+          option(value='popular') Popular
+          option(value='unpopular') Unpopular
+          option(value='random' disabled='') Random
         //- Orientation cards
-        <label class="swap swap-rotate m-auto hidden sm:inline-grid">
-          <input id="mods-discover-orientation" type="checkbox" />
-          <svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28 28"><g fill="none"><path d="M10.75 15A2.25 2.25 0 0 1 13 17.25v5.5A2.25 2.25 0 0 1 10.75 25h-5.5A2.25 2.25 0 0 1 3 22.75v-5.5A2.25 2.25 0 0 1 5.25 15h5.5zm12 0A2.25 2.25 0 0 1 25 17.25v5.5A2.25 2.25 0 0 1 22.75 25h-5.5A2.25 2.25 0 0 1 15 22.75v-5.5A2.25 2.25 0 0 1 17.25 15h5.5zm-12-12A2.25 2.25 0 0 1 13 5.25v5.5A2.25 2.25 0 0 1 10.75 13h-5.5A2.25 2.25 0 0 1 3 10.75v-5.5A2.25 2.25 0 0 1 5.25 3h5.5zm12 0A2.25 2.25 0 0 1 25 5.25v5.5A2.25 2.25 0 0 1 22.75 13h-5.5A2.25 2.25 0 0 1 15 10.75v-5.5A2.25 2.25 0 0 1 17.25 3h5.5z" fill="currentColor"></path></g></svg>
-          <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z" fill="currentColor"></path></svg>
-        </label>
-      </div>
+        label.swap.swap-rotate.m-auto.hidden(class='sm:inline-grid')
+          input#mods-discover-orientation(type='checkbox')
+          svg.swap-on.fill-current.w-8.h-8(xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 28 28')
+            g(fill='none')
+              path(d='M10.75 15A2.25 2.25 0 0 1 13 17.25v5.5A2.25 2.25 0 0 1 10.75 25h-5.5A2.25 2.25 0 0 1 3 22.75v-5.5A2.25 2.25 0 0 1 5.25 15h5.5zm12 0A2.25 2.25 0 0 1 25 17.25v5.5A2.25 2.25 0 0 1 22.75 25h-5.5A2.25 2.25 0 0 1 15 22.75v-5.5A2.25 2.25 0 0 1 17.25 15h5.5zm-12-12A2.25 2.25 0 0 1 13 5.25v5.5A2.25 2.25 0 0 1 10.75 13h-5.5A2.25 2.25 0 0 1 3 10.75v-5.5A2.25 2.25 0 0 1 5.25 3h5.5zm12 0A2.25 2.25 0 0 1 25 5.25v5.5A2.25 2.25 0 0 1 22.75 13h-5.5A2.25 2.25 0 0 1 15 10.75v-5.5A2.25 2.25 0 0 1 17.25 3h5.5z' fill='currentColor')
+          svg.swap-off.fill-current.w-8.h-8(xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512')
+            path(d='M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z' fill='currentColor')
+
     #mods-discover-pagination-up.flex.flex-wrap.justify-center
     #mods-discover-container.flex.flex-wrap.justify-center
       span(class="loading loading-infinity loading-lg text-success center")

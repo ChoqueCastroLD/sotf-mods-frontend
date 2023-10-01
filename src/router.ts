@@ -11,6 +11,11 @@ let stats = {
     "developers": 2,
 }
 
+let last_categories_update = 0;
+let categories = [
+    { id: 1, name: "Script", slug: "script" },
+]
+
 const loggedOnly = async ({ user, set }: any) => {
     if (!user) {
         set.redirect = '/login'
@@ -39,12 +44,14 @@ export const router = new Elysia()
     })
     .get('/mods', async (context) => {
         if (Date.now() - last_stats_update > 1000 * 60 * 5) {
-            console.log("obtain stats");
-            
             stats = await fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json());
             last_stats_update = Date.now();
         }
-        return render('mods', { stats })(context);
+        if (Date.now() - last_categories_update > 1000 * 60 * 5) {
+            categories = await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
+            last_categories_update = Date.now();
+        }
+        return render('mods', { categories, stats })(context);
     })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;

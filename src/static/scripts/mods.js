@@ -4,6 +4,7 @@ const modsDiscoverSearch = document.querySelector('#mods-discover-search');
 const modsDiscoverNSFW = document.querySelector('#mods-discover-nsfw');
 const modsDiscoverShowUnapproved = document.querySelector('#mods-discover-show-unapproved');
 const modsDiscoverOrderBy = document.querySelector('#mods-discover-order-by');
+const modsDiscoverCategories = document.querySelector('#mods-discover-categories');
 const modsDiscoverPagination = document.querySelector('#mods-discover-pagination');
 const modsDiscoverPaginationUP = document.querySelector('#mods-discover-pagination-up');
 
@@ -28,6 +29,7 @@ async function getMods(page) {
     if (modsDiscoverNSFW.checked) url += '&nsfw=true';
     if (modsDiscoverShowUnapproved.checked) url += '&approved=false';
     if (modsDiscoverOrderBy.value) url += '&orderby='+modsDiscoverOrderBy.value;
+    if (modsDiscoverCategories.value) url += '&category='+modsDiscoverCategories.value;
     if (search.length > 0) url += `&search=${search}`;
     if (page) {
         url += `&page=${page}`;
@@ -129,6 +131,8 @@ async function main() {
         modsDiscoverShowUnapproved.checked = getQueryParam('showunapproved') === 'true';
     if (getQueryParam('orderby'))
         modsDiscoverOrderBy.value = getQueryParam('orderby');
+    if (getQueryParam('category'))
+        modsDiscoverCategories.value = getQueryParam('category');
     if (getQueryParam('orientation'))
         modsDiscoverOrientation.checked = getQueryParam('orientation') === 'horizontal';
     if (getQueryParam('search'))
@@ -149,6 +153,10 @@ async function main() {
     });
     addEventListenerDebounce('orderby', modsDiscoverOrderBy, 'change', () => {
         modifyQueryParam('orderby', modsDiscoverOrderBy.value);
+        loadMods();
+    });
+    addEventListenerDebounce('category', modsDiscoverCategories, 'change', () => {
+        modifyQueryParam('category', modsDiscoverCategories.value);
         loadMods();
     });
     addEventListenerDebounce('orientation', modsDiscoverOrientation, 'change', () => {
