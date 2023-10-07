@@ -28,6 +28,7 @@ async function getMods(page) {
     let url = `${API_URL}/api/mods?`;
     if (modsDiscoverNSFW.checked) url += '&nsfw=true';
     if (modsDiscoverShowUnapproved.checked) url += '&approved=false';
+    else url += '&approved=true';
     if (modsDiscoverOrderBy.value) url += '&orderby='+modsDiscoverOrderBy.value;
     if (modsDiscoverCategories.value) url += '&category='+modsDiscoverCategories.value;
     if (search.length > 0) url += `&search=${search}`;
