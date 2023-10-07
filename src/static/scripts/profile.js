@@ -4,8 +4,8 @@ const modsDiscoverContainer = document.querySelector('#mods-discover-container')
 
 let forceVerticalMod = false;
 
-async function getMods() {
-    let url = `${API_URL}/api/mods?user_slug=${userProfile.slug}&approved=false`;
+async function getMods(approved) {
+    let url = `${API_URL}/api/mods?user_slug=${userProfile.slug}&limit=100&approved=${approved}`;
     const response = await fetch(url);
     const { mods, meta } = await response.json();
     return { mods, meta };
@@ -57,7 +57,8 @@ async function renderMods(mods, meta) {
 async function loadMods() {
     modsDiscoverContainer.innerHTML = '<span class="loading loading-infinity loading-lg text-success center"></span>';
     try {
-        const { mods, meta } = await getMods();
+        const { mods, meta } = await getMods(false);
+        mods.push(...await getMods(true).then(({ mods }) => mods));
         renderMods(mods, meta);
     } catch (error) {
         console.error(error);
