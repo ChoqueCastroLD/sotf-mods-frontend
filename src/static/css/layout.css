@@ -53,7 +53,7 @@ body {
 .hover-underline-animation {
     display: inline-block;
     position: relative;
-    color: hsl(var(--su) / 1);
+    color: hsl(var(--a) / 1);
 }
 .hover-underline-animation:after {
     content: '';
@@ -63,7 +63,7 @@ body {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: hsl(var(--su) / 1);
+    background-color: hsl(var(--a) / 1);
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 }
