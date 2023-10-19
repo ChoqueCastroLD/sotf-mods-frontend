@@ -22,6 +22,11 @@ const loggedOnly = async ({ user, set }: any) => {
     }
 }
 
+async function getModIdFromSlugs(user_slug: string, mod_slug: string) {
+    const mod = await fetch(`${Bun.env.API_URL}/api/mods/find?user_slug=${user_slug}&mod_slug=${mod_slug}`).then(res => res.json());
+    return mod.mod_id
+}
+
 export const router = new Elysia()
     .use(authMiddleware)
     // auth
@@ -61,13 +66,15 @@ export const router = new Elysia()
     })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;
-        const mod = await fetch(`${Bun.env.API_URL}/api/mods/${user_slug}/${mod_slug}`).then(res => res.json());
-        return render('mod', { mod })(context);
+        const mod_id = await getModIdFromSlugs(user_slug, mod_slug)
+        const mod = await fetch(`${Bun.env.API_URL}/api/mods/${mod_id}`).then(res => res.json())
+        return render('mod', { mod })(context)
     })
     .get('/mods/:user_slug/:mod_slug/download/:version', async ({ params: { user_slug, mod_slug, version }, request, set }) => {
         const ip = "" + request.headers.get("x-forwarded-for")
         const agent = "" + request.headers.get("user-agent")
-        const f = await fetch(`${Bun.env.API_URL}/api/mods/${user_slug}/${mod_slug}/download/${version}?ip=${ip}&agent=${agent}`)
+        const mod_id = await getModIdFromSlugs(user_slug, mod_slug)
+        const f = await fetch(`${Bun.env.API_URL}/api/mods/${mod_id}/download/${version}?ip=${ip}&agent=${agent}`)
         const blob = await f.blob()
         set.headers['Content-Type'] = "" + f.headers.get('Content-Type')
         set.headers['Content-Length'] = "" + f.headers.get('Content-Length')

@@ -16,9 +16,9 @@ if (urlParams.has('released')) {
     showSuccess("Congratulations! You have successfully released your mod");
 }
 
-window.toggleFavorite = async function (elem, author, slug) {
+window.toggleFavorite = async function (elem, mod_id) {
     elem.disabled = true;
-    const response = await fetch(`${API_URL}/api/mods/${author}/${slug}/favorite`, {
+    const response = await fetch(`${API_URL}/api/mods/${mod_id}/favorite`, {
         headers: {
             'Authorization': 'Bearer ' + token
         }
@@ -40,14 +40,14 @@ window.toggleFavorite = async function (elem, author, slug) {
 
 window.approve = async function (elem) {
     elem.disabled = true;
-    const response = await fetch(`${API_URL}/api/mods/${mod.user_slug}/${mod.slug}/approve`, {
+    const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/approve`, {
         headers: {
             'Authorization': 'Bearer ' + token
         }
     });
     const data = await response.json();
     if (response.ok) {
-        location.href = `/mods/${mod.user_slug}/${mod.slug}`;
+        location.href = `/mods/${mod.mod_id}`;
     } else {
         console.error('There has been a problem with your fetch operation:', data);
         showError("There has been a problem approving the mod");
@@ -82,7 +82,7 @@ async function main() {
         if(modThumbnail && modThumbnail.files && modThumbnail.files[0]) {
             formData.append('modThumbnail', modThumbnail.files[0]);
         }
-        const response = await fetch(`${API_URL}/api/mods/${mod.user_slug}/${mod.slug}/details`, {
+        const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/details`, {
             method: 'PATCH',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -92,7 +92,7 @@ async function main() {
         const data = await response.json();
         if (response.ok) {
             updateModBtn.classList.add('hidden');
-            location.href = `/mods/${mod.user_slug}/${mod.slug}?updated=true`;
+            location.href = `/mods/${mod.mod_id}?updated=true`;
         } else {
             console.error('There has been a problem with your fetch operation:', data);
             showError(data.error);
@@ -116,7 +116,7 @@ async function main() {
         formData.append('changelog', modChangelog);
         formData.append('modFile', modFile.files[0]);
 
-        const response = await fetch(`${API_URL}/api/mods/${mod.user_slug}/${mod.slug}/release`, {
+        const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/release`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
