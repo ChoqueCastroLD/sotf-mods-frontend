@@ -25,7 +25,7 @@ function getModTemplate(mod) {
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
         </div>
         <h2 class="card-title w-full">${mod.name || "Mod Name"}<span class="card-title-version">${(mod.latest_version && mod.latest_version.version) || "1.0.0"}</span></h2>
-        <p class="text-left">by <a class="text-accent hover-underline-animation" href="#!">${user.name}</a></p>
+        <p class="text-left">by <a class="hover-underline-animation" href="#!">${user.name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline btn-accent btn-sm" href="#!">See More</a>
@@ -162,10 +162,12 @@ async function main() {
         })
             .then(r => r.json())
             .then(r => {
+                if (r.error) throw r.error;
                 modName.value = r.name;
                 modVersion.value = r.version;
                 modShortDescription.value = r.description;
                 modBasicInformation.classList.remove('hidden');
+                btnSubmitMod.disabled = false;
                 renderModItem();
             })
             .catch((err) => {

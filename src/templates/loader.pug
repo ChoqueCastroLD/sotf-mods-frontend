@@ -1,10 +1,14 @@
 extends __layout
 
+block title
+  title Red Loader - Sons of the forest Mods
+
 block head
+  link(rel='stylesheet' href='/static/css/mods.css')
   link(rel='stylesheet' href='/static/css/loader.css')
 
 block body
-  .hero.min-h-screen
+  .hero(class="min-h-[90%]")
     .hero-content.text-center
       .max-w-md
         h1.text-5xl.font-bold.mb-4
@@ -12,8 +16,14 @@ block body
         p.py-14
           | All mods on this site are made for Red Loader. It offers a rich featureset for modders and a smoother game integration for users. To get started either head over to the mod loader page for manual installation and documentation or visit the installer page for an easier almost automatic installation.
         .flex.justify-center.flex-wrap
-          a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedLoader" target="_blank" style="min-width: 150px; margin: 8px;") Mod Loader
-          a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedManager/releases" target="_blank" style="min-width: 150px; margin: 8px;") Installer
-
+          a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedLoader" target="_blank" style="min-width: 150px; margin: 8px;") Red Loader
+          a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedManager/releases" target="_blank" style="min-width: 150px; margin: 8px;") Red Manager
+  .hero
+    .hero-content.text-center
+      .max-w-full
+        h2.text-2xl.font-bold
+          | Featured mods
+        #mods-featured-container.flex.flex-wrap.justify-center
+          span(class="loading loading-infinity loading-lg text-success center")
 block scripts
-  //- script(src='/static/scripts/main.js' type="module")
+  script(src='/static/scripts/featured.js' type="module")

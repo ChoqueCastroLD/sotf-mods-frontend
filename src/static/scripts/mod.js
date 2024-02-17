@@ -18,6 +18,8 @@ if (urlParams.has('released')) {
 
 window.toggleFavorite = async function (elem, mod_id) {
     elem.disabled = true;
+    document.getElementById("modFavorite:" + mod_id + ":off").classList.toggle("hidden");
+    document.getElementById("modFavorite:" + mod_id + ":on").classList.toggle("hidden");
     const response = await fetch(`${API_URL}/api/mods/${mod_id}/favorite`, {
         headers: {
             'Authorization': 'Bearer ' + token
@@ -26,12 +28,13 @@ window.toggleFavorite = async function (elem, mod_id) {
     const data = await response.json();
     if (response.ok) {
         if (data.favorite) {
-            document.getElementById("modFavorite:" + slug + ":off").classList.add("hidden");
-            document.getElementById("modFavorite:" + slug + ":on").classList.remove("hidden");
+            document.getElementById("modFavorite:" + mod_id + ":off").classList.add("hidden");
+            document.getElementById("modFavorite:" + mod_id + ":on").classList.remove("hidden");
         } else {
-            document.getElementById("modFavorite:" + slug + ":off").classList.remove("hidden");
-            document.getElementById("modFavorite:" + slug + ":on").classList.add("hidden");
+            document.getElementById("modFavorite:" + mod_id + ":off").classList.remove("hidden");
+            document.getElementById("modFavorite:" + mod_id + ":on").classList.add("hidden");
         }
+        document.querySelector('.follows-count').innerHTML = `${data.count} follows`;
     } else {
         console.error('There has been a problem with your fetch operation:', data);
     }
@@ -47,10 +50,27 @@ window.approve = async function (elem) {
     });
     const data = await response.json();
     if (response.ok) {
-        location.href = `/mods/${mod.mod_id}`;
+        location.href = `/mods/${mod.user_slug}/${mod.slug}`;
     } else {
         console.error('There has been a problem with your fetch operation:', data);
         showError("There has been a problem approving the mod");
+    }
+    elem.disabled = false;
+}
+
+window.unapprove = async function (elem) {
+    elem.disabled = true;
+    const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/unapprove`, {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    });
+    const data = await response.json();
+    if (response.ok) {
+        location.href = `/mods/${mod.user_slug}/${mod.slug}`;
+    } else {
+        console.error('There has been a problem with your fetch operation:', data);
+        showError("There has been a problem unapproving the mod");
     }
     elem.disabled = false;
 }
@@ -65,7 +85,12 @@ async function main() {
     document.querySelector('#modDescriptionTemplate').innerHTML = markdownToHTML(mod.description);
     document.querySelector('#mod-description').value = mod.description;
     btnOneClickInstall.addEventListener('click', () => {
-        openModal('#modalOneClickInstall');
+        const showModal = localStorage.getItem('one-click-modal') !== 'false';
+        if (showModal) {
+            openModal('#modalOneClickInstall');
+        } else {
+            window.location.href = `sotf-mods-oneclick://?mod_id=${encodeURIComponent(mod.mod_id)}&user_slug=${encodeURIComponent(mod.user_slug)}&slug=${encodeURIComponent(mod.slug)}&version=${encodeURIComponent(mod.latest_version)}&type=${encodeURIComponent(mod.type)}&`;
+        }
     });
     document.querySelector('#mod-description')?.addEventListener('input', (event) => {
         renderDescriptionPreview(document.getElementById('mod-description').value);
@@ -92,7 +117,7 @@ async function main() {
         const data = await response.json();
         if (response.ok) {
             updateModBtn.classList.add('hidden');
-            location.href = `/mods/${mod.mod_id}?updated=true`;
+            location.href = `/mods/${mod.user_slug}/${mod.slug}?updated=true`;
         } else {
             console.error('There has been a problem with your fetch operation:', data);
             showError(data.error);

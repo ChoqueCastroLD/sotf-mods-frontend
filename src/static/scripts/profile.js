@@ -22,7 +22,7 @@ function getModTemplate(mod) {
             ${mod.isFeatured ? `<div class="badge badge-accent">Featured</div>` : ''}
         </div>
         <h2 class="card-title w-full">${mod.name}<span class="card-title-version">${mod.latest_version}</span></h2>
-        <p>by <a class="text-accent hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
+        <p>by <a class="hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline btn-accent btn-sm" href="/mods/${mod.user_slug}/${mod.slug}">See More</a>

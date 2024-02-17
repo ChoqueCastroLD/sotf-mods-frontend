@@ -52,10 +52,28 @@ block body
           svg.swap-off.fill-current.w-8.h-8(xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512')
             path(d='M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z' fill='currentColor')
 
+      .flex.justify-between.flex-wrap
     #mods-discover-pagination-up.flex.flex-wrap.justify-center
     #mods-discover-container.flex.flex-wrap.justify-center
       span(class="loading loading-infinity loading-lg text-success center")
     #mods-discover-pagination.flex.flex-wrap.justify-center
 
+    - if (!user)
+      div
+        script(
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2799839819522052"
+            crossorigin="anonymous"
+            async
+          )
+        ins(
+            class="adsbygoogle my-4 rounded-md"
+            style="display:block; text-align:center;"
+            data-ad-layout="in-article"
+            data-ad-format="fluid"
+            data-ad-client="ca-pub-2799839819522052"
+            data-ad-slot="7095594640"
+          )
+        script.
+          (adsbygoogle = window.adsbygoogle || []).push({});
 block scripts
   script(src='/static/scripts/mods.js' type="module")

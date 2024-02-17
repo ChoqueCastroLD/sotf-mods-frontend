@@ -18,6 +18,10 @@ window.openModal = (modalSelector) => {
 window.closeModal = (modalSelector) => {
     document.querySelector(modalSelector).classList.remove('modal-open');
 }
+window.dontShowOneClickModal = () => {
+    localStorage.setItem('one-click-modal', 'false');
+    closeModal('#modalOneClickInstall');
+}
 window.errorTimeout = null;
 window.showError = error => {
     document.querySelector('#alert-wrapper').style.display = 'flex';

@@ -1,0 +1,41 @@
+extends __layout
+
+block title
+  title Artifacts Factory - Sons of the forest Mods
+
+block head
+  link(rel='stylesheet' href='/static/css/libs/drawflow.min.css')
+  link(rel='stylesheet' href='/static/css/artifacts.css')
+
+block body
+  .top-spacer
+  .flex.flex-col.justify-center.items-center.mb-4
+    .text-center(class='lg:text-center')
+      h1.text-5xl.font-bold Artifacts Factory
+      - if (!user)
+        p.text-xl.pt-4 Please login to use the Artifacts Factory
+  .wrapper
+    .col
+      ul#nodes-list.menu.bg-base-200.rounded-box.mx-2.max-h-full.overflow-auto(data-theme="light")
+    .col-right
+      //- .menu
+      //-   ul
+      //-     li.selected(onclick="editor.changeModule('Home'); changeModule(event);") Home
+      //-     li(onclick="editor.changeModule('Other'); changeModule(event);") Other Module
+      #drawflow.rounded-box(data-theme="light" ondrop='drop(event)' ondragover='allowDrop(event)')
+        #btn-save-artifact.btn.btn-outline.btn-success.btn-save.btn-wide Save Artifact
+        .bar-zoom
+          //- Zoom Out
+          svg.w-4.h-4.text-gray-800(onclick='editor.zoom_out()' class='dark:text-white' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20')
+            path(stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m19 19-4-4M5 8h6m4 0A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z')
+          //- Zoom Reset
+          svg.pb-2.w-6.h-6.text-gray-800(onclick='editor.zoom_reset()' class='dark:text-white' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20')
+            path(stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z')
+          //- Zoom In
+          svg.pb-2.w-6.h-6.text-gray-800(onclick='editor.zoom_in()' class='dark:text-white' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20')
+            path(stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m19 19-4-4M5 8h6m-3 3V5m7 3A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z')
+
+block scripts
+  script(src='/static/scripts/libs/drawflow.min.js' type="module")
+  script(src='/static/scripts/artifacts.js' type="module")
+  script(src='/static/scripts/artifacts/drawflow.extras.js' type="module")

@@ -50,8 +50,16 @@ export const router = new Elysia()
         return render('upload', { categories })(context);
     }, { beforeHandle: loggedOnly })
     // public
-    .get('/', ({ set }) => {
-        set.redirect = '/mods'
+    .get('/', async (context) => {
+        if (Date.now() - last_stats_update > 1000 * 60 * 5) {
+            stats = await fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json());
+            last_stats_update = Date.now();
+        }
+        if (Date.now() - last_categories_update > 1000 * 60 * 5) {
+            categories = await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
+            last_categories_update = Date.now();
+        }
+        return render('mods', { categories, stats })(context);
     })
     .get('/mods', async (context) => {
         if (Date.now() - last_stats_update > 1000 * 60 * 5) {
@@ -67,7 +75,11 @@ export const router = new Elysia()
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;
         const mod_id = await getModIdFromSlugs(user_slug, mod_slug)
-        const mod = await fetch(`${Bun.env.API_URL}/api/mods/${mod_id}`).then(res => res.json())
+        const mod = await fetch(`${Bun.env.API_URL}/api/mods/${mod_id}`, {
+            headers: {
+                'Authorization': 'Bearer ' + context.cookie.token.value
+            }
+        }).then(res => res.json())
         return render('mod', { mod })(context)
     })
     .get('/mods/:user_slug/:mod_slug/download/:version', async ({ params: { user_slug, mod_slug, version }, request, set }) => {
@@ -82,3 +94,6 @@ export const router = new Elysia()
         return blob
     })
     .get('/loader', render('loader'))
+    .get('/artifacts', render('artifacts'))
+    .get('/privacy', render('privacy'))
+    .get('/ads.txt', () => 'google.com, pub-2799839819522052, DIRECT, f08c47fec0942fa0')

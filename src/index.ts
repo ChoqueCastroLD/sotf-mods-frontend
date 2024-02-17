@@ -1,8 +1,9 @@
 import { Elysia } from 'elysia'
-import { staticPlugin } from '@elysiajs/static'
+// import { staticPlugin } from '@elysiajs/static'
 
 import { router } from './router'
 import { loggerPlugin } from "./plugins/logger.plugin"
+import { staticPlugin } from "./plugins/static.plugin"
 
 
 const app = new Elysia()

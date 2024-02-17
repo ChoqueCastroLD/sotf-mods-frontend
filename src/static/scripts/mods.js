@@ -35,10 +35,36 @@ async function getMods(page) {
     if (page) {
         url += `&page=${page}`;
     }
-    const response = await fetch(url);
-    const { mods, meta } = await response.json();
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    });
+    let { mods, meta } = await response.json();
+    let featuredMods = await getFeaturedMods();
+    if (meta?.page == 1 && !modsDiscoverNSFW.checked && !modsDiscoverShowUnapproved.checked && search.length === 0) {
+        if (modsDiscoverCategories.value) {
+            featuredMods = featuredMods.filter(mod => mod.category_slug == modsDiscoverCategories.value);
+        }
+
+        mods = [
+            ...featuredMods.map(mod => ({...mod, isFeatured: true})),
+            ...mods.filter(mod => !featuredMods.find(featuredMod => featuredMod.mod_id === mod.mod_id)),
+        ];
+    }
     lastResponse = { mods, meta };
     return { mods, meta };
+}
+
+async function getFeaturedMods() {
+    let url = `${API_URL}/api/mods/featured`;
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    });
+    const mods = await response.json();
+    return mods;
 }
 
 function getModTemplate(mod) {
@@ -49,17 +75,17 @@ function getModTemplate(mod) {
                 <div class="badge badge-ghost">${mod.category_name}</div>
             </a>
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
-            ${mod.isFeatured ? `<div class="badge badge-accent">Featured</div>` : ''}
+            ${mod.isFeatured ? `<div class="badge tooltip badge-accent" data-tip="${mod?.last_week_downloads} downloads in the last week">Featured</div>` : ''}
         </div>
         <h2 class="card-title w-full">${mod.name}<span class="card-title-version">${mod.latest_version}</span></h2>
-        <p>by <a class="text-accent hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
+        <p>by <a class="hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline ${mod.latest_version ? "btn-accent" : ""} btn-sm" href="/mods/${mod.user_slug}/${mod.slug}">See More</a>
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-accent">↗︎ ${mod.downloads} downloads</span>
-            <span class="stat-desc text-secondary ml-2">♥ ${mod.favorites} follows</span>
+            <span class="stat-desc text-secondary ml-2 tooltip" data-tip="${mod.isFavorite ? "You are following this mod" : "You are not following this mod"}">${mod.isFavorite ? "♥" : "♡"} ${mod.favorites} follows</span>
             <span class="stat-desc ml-2">⏱ ${mod.time_ago}</span>
         </div>
     </div>`;
@@ -115,7 +141,7 @@ async function loadMods(page) {
     modsDiscoverPagination.innerHTML = '';
     modsDiscoverPaginationUP.innerHTML = '';
     try {
-        const { mods, meta } = await getMods(page);
+        let { mods, meta } = await getMods(page);
         renderMods(mods, meta);
     } catch (error) {
         console.error(error);

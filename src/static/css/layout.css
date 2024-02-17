@@ -15,7 +15,7 @@ body {
 .body-wrapper {
     margin-left: 10px;
     margin-right: 10px;
-    height: 100%;
+    min-height: 100%;
 }
 .navbar-logo-img {
     height: 40px;
@@ -53,7 +53,7 @@ body {
 .hover-underline-animation {
     display: inline-block;
     position: relative;
-    color: hsl(var(--a) / 1);
+    color: #02cdb3 !important;
 }
 .hover-underline-animation:after {
     content: '';
@@ -63,7 +63,7 @@ body {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: hsl(var(--a) / 1);
+    background-color: #02cdb3 !important;
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 }
