@@ -43,6 +43,9 @@ export const loggerPlugin = new Elysia()
         const hasToken = parseCookie(request.headers.get('cookie') ?? "")?.token !== undefined;
         console.log(`📩 <-- ${request.method} ${url.pathname} ${hasToken ? '🔑 has token' : ''}`)
     })
+    .onError(({ request, error }) => {
+        console.log(`❌ ${request.method} ${request.url} ${error.message}`)
+    })
     .onResponse(({ path, request, set }) => {
         if (path.startsWith('/static')) return;
         console.log(`${typeof set.status === 'number' ? emojiStatus.get(set.status) ?? "" : ""} --> ${request.method} ${path} ${set.status}`)
