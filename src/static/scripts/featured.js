@@ -15,7 +15,6 @@ function getModTemplate(mod) {
                 <div class="badge badge-ghost">${mod.category_name}</div>
             </a>
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
-            ${mod.isFeatured ? `<div class="badge badge-accent">Featured</div>` : ''}
         </div>
         <h2 class="card-title w-full">${mod.name}<span class="card-title-version">${mod.latest_version}</span></h2>
         <p>by <a class="hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
