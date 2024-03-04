@@ -1,5 +1,4 @@
 const modsDiscoverContainer = document.querySelector('#mods-discover-container');
-const modsDiscoverOrientation = document.querySelector('#mods-discover-orientation');
 const modsDiscoverSearch = document.querySelector('#mods-discover-search');
 const modsDiscoverNSFW = document.querySelector('#mods-discover-nsfw');
 const modsDiscoverShowUnapproved = document.querySelector('#mods-discover-show-unapproved');
@@ -25,7 +24,7 @@ function getQueryParam(param) {
 
 async function getMods(page) {
     const search = modsDiscoverSearch.value.trim();
-    let url = `${API_URL}/api/mods?`;
+    let url = `${API_URL}/api/mods?limit=20`;
     if (modsDiscoverNSFW.checked) url += '&nsfw=true';
     if (modsDiscoverShowUnapproved.checked) url += '&approved=false';
     else url += '&approved=true';
@@ -41,17 +40,24 @@ async function getMods(page) {
         }
     });
     let { mods, meta } = await response.json();
-    let featuredMods = await getFeaturedMods();
-    if (meta?.page == 1 && !modsDiscoverNSFW.checked && !modsDiscoverShowUnapproved.checked && search.length === 0) {
-        if (modsDiscoverCategories.value) {
-            featuredMods = featuredMods.filter(mod => mod.category_slug == modsDiscoverCategories.value);
-        }
-
-        mods = [
-            ...featuredMods.map(mod => ({...mod, isFeatured: true})),
-            ...mods.filter(mod => !featuredMods.find(featuredMod => featuredMod.mod_id === mod.mod_id)),
-        ];
-    }
+    getFeaturedMods().then(featuredMods => {
+        document.querySelector('#mods-featured').innerHTML = featuredMods.map((mod, index) => `
+        <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/mods/${mod.user_slug}/${mod.slug}">
+            <figure class="col-start-1 row-start-1"><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}" /></figure>
+            <div class="card-body rounded-lg col-start-1 row-start-1 z-20 relative bg-black bg-opacity-0 transition opacity-10 hover:opacity-100 hover:bg-opacity-80">
+                <h2 class="card-title">
+                    <span class="text-4xl">#${index + 1}</span>
+                    <span class="hover-underline-animation">${mod.name}</span>
+                    <span class="card-title-version text-accent">by ${mod.user_name}</span>
+                </h2>
+                <p>${mod.short_description}</p>
+                <div class="card-actions justify-end">
+                    <p class="text-neutral-content"><span class="text-primary">${mod?.last_week_downloads || 0}</span> downloads in the last week <span class="text-secondary text-xs">(${mod.downloads} total)</span></p>
+                </div>
+            </div>
+        </a>
+        `.trim()).join('');
+    })
     lastResponse = { mods, meta };
     return { mods, meta };
 }
@@ -68,14 +74,14 @@ async function getFeaturedMods() {
 }
 
 function getModTemplate(mod) {
-    return `<figure><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}" loading="lazy"/></figure>
+    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}" loading="lazy"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="/mods?category=${mod.category_slug}">
                 <div class="badge badge-ghost">${mod.category_name}</div>
             </a>
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
-            ${mod.isFeatured ? `<div class="badge tooltip badge-accent" data-tip="${mod?.last_week_downloads} downloads in the last week">Featured</div>` : ''}
+            ${mod?.last_week_downloads ? `<div class="badge tooltip badge-accent" data-tip="${mod?.last_week_downloads} downloads in the last week">Featured</div>` : ''}
         </div>
         <h2 class="card-title w-full">${mod.name}<span class="card-title-version">${mod.latest_version}</span></h2>
         <p>by <a class="hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
@@ -84,8 +90,7 @@ function getModTemplate(mod) {
             <a class="btn btn-outline ${mod.latest_version ? "btn-accent" : ""} btn-sm" href="/mods/${mod.user_slug}/${mod.slug}">See More</a>
         </div>
         <div class="card-actions justify-end">
-            <span class="stat-desc text-accent">↗︎ ${mod.downloads} downloads</span>
-            <span class="stat-desc text-secondary ml-2 tooltip" data-tip="${mod.isFavorite ? "You are following this mod" : "You are not following this mod"}">${mod.isFavorite ? "♥" : "♡"} ${mod.favorites} follows</span>
+            <span class="stat-desc text-accent tooltip" data-tip="${mod?.last_week_downloads || 0} downloads in the last week">↗︎ ${mod.downloads} downloads</span>
             <span class="stat-desc ml-2">⏱ ${mod.time_ago}</span>
         </div>
     </div>`;
@@ -116,16 +121,11 @@ function buildModsPaginationPages(parentElement, {total, page, limit, next_page,
 }
 
 async function renderMods(mods, meta) {
-    const horizontalMode = modsDiscoverOrientation.checked || forceVerticalMod;
     modsDiscoverContainer.innerHTML = '';
     for (const mod of mods) {
         const modElement = document.createElement('div');
         modElement.classList.add('card', 'shadow-xl', 'sm:mb-2', 'mb-4');
-        if (horizontalMode) {
-            modElement.classList.add('card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
-        } else {
-            modElement.classList.add('card-side', 'bg-base-100', 'mod-card');
-        }
+        modElement.classList.add('card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
         modElement.innerHTML = getModTemplate(mod);
         modsDiscoverContainer.appendChild(modElement);
     }
@@ -160,8 +160,6 @@ async function main() {
         modsDiscoverOrderBy.value = getQueryParam('orderby');
     if (getQueryParam('category'))
         modsDiscoverCategories.value = getQueryParam('category');
-    if (getQueryParam('orientation'))
-        modsDiscoverOrientation.checked = getQueryParam('orientation') === 'horizontal';
     if (getQueryParam('search'))
         modsDiscoverSearch.value = getQueryParam('search') || '';
 
@@ -185,10 +183,6 @@ async function main() {
     addEventListenerDebounce('category', modsDiscoverCategories, 'change', () => {
         modifyQueryParam('category', modsDiscoverCategories.value);
         loadMods();
-    });
-    addEventListenerDebounce('orientation', modsDiscoverOrientation, 'change', () => {
-        modifyQueryParam('orientation', modsDiscoverOrientation.checked ? 'horizontal' : null);
-        renderMods(lastResponse.mods, lastResponse.meta);
     });
     function checkWindowSize() {
         if (!forceVerticalMod && window.innerWidth < 600) {

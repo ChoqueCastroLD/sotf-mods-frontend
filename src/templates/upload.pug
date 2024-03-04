@@ -14,17 +14,12 @@ block body
         h1.text-5xl.font-bold Upload a mod
         p.py-6
           | Fill out the fields to see how your mod is going to look
-        <label class="swap swap-rotate ml-2">
-          <input id="mods-discover-orientation" type="checkbox" />
-          <svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28 28"><g fill="none"><path d="M10.75 15A2.25 2.25 0 0 1 13 17.25v5.5A2.25 2.25 0 0 1 10.75 25h-5.5A2.25 2.25 0 0 1 3 22.75v-5.5A2.25 2.25 0 0 1 5.25 15h5.5zm12 0A2.25 2.25 0 0 1 25 17.25v5.5A2.25 2.25 0 0 1 22.75 25h-5.5A2.25 2.25 0 0 1 15 22.75v-5.5A2.25 2.25 0 0 1 17.25 15h5.5zm-12-12A2.25 2.25 0 0 1 13 5.25v5.5A2.25 2.25 0 0 1 10.75 13h-5.5A2.25 2.25 0 0 1 3 10.75v-5.5A2.25 2.25 0 0 1 5.25 3h5.5zm12 0A2.25 2.25 0 0 1 25 5.25v5.5A2.25 2.25 0 0 1 22.75 13h-5.5A2.25 2.25 0 0 1 15 10.75v-5.5A2.25 2.25 0 0 1 17.25 3h5.5z" fill="currentColor"></path></g></svg>
-          <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z" fill="currentColor"></path></svg>
-        </label>
         #mod-list-demo(min-width="472px")
         div(class="md:m-4")
           label.label
             span.label-text Mod description preview
           #mod-description-preview.mod-description-template
-      .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100(action='/upload' method='post')
+      .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100
         .card-body
           p(class="collapse-title text-xl font-medium") Mod upload (.zip)
           input#mod-file(type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs mb-6" accept=".zip")

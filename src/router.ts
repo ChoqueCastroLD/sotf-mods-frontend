@@ -74,12 +74,16 @@ export const router = new Elysia()
     })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;
+        console.log({ user_slug, mod_slug });
+        
         const mod_id = await getModIdFromSlugs(user_slug, mod_slug)
+        console.log(mod_id)
         const mod = await fetch(`${Bun.env.API_URL}/api/mods/${mod_id}`, {
             headers: {
                 'Authorization': 'Bearer ' + context.cookie.token.value
             }
         }).then(res => res.json())
+        console.log(mod)
         return render('mod', { mod })(context)
     })
     .get('/mods/:user_slug/:mod_slug/download/:version', async ({ params: { user_slug, mod_slug, version }, request, set }) => {

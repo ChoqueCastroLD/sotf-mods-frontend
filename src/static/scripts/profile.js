@@ -12,7 +12,7 @@ async function getMods(approved) {
 }
 
 function getModTemplate(mod) {
-    return `<figure><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}"/></figure>
+    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="/mods?category=${mod.category_slug}">
@@ -29,23 +29,17 @@ function getModTemplate(mod) {
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-accent">↗︎ ${mod.downloads} downloads</span>
-            <span class="stat-desc text-secondary ml-2">♥ ${mod.favorites} follows</span>
             <span class="stat-desc ml-2">⏱ ${mod.time_ago}</span>
         </div>
     </div>`;
 }
 
 async function renderMods(mods, meta) {
-    const horizontalMode = forceVerticalMod;
     modsDiscoverContainer.innerHTML = '';
     for (const mod of mods) {
         const modElement = document.createElement('div');
         modElement.classList.add('card', 'shadow-xl', 'sm:mb-2', 'mb-4');
-        if (horizontalMode) {
-            modElement.classList.add('card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
-        } else {
-            modElement.classList.add('card-side', 'bg-base-100', 'mod-card');
-        }
+        modElement.classList.add('card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
         modElement.innerHTML = getModTemplate(mod);
         modsDiscoverContainer.appendChild(modElement);
     }

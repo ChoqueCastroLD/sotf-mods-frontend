@@ -1,5 +1,4 @@
 const modListDemo = document.querySelector('#mod-list-demo');
-const modsDiscoverOrientation = document.querySelector('#mods-discover-orientation');
 
 const modBasicInformation = document.querySelector('#mod-basic-information');
 
@@ -16,7 +15,7 @@ const modThumbnail = document.querySelector('#mod-thumbnail');
 
 function getModTemplate(mod) {
     if (!mod.short_description) mod.short_description = "This is a description of the mod.";
-    return `<figure><img data-lazy-src="${mod.thumbnail_url || "https://cdn.discordapp.com/attachments/1078656518133661737/1140334396172402748/example_image.png"}" alt="${mod.name || "Mod Name"}"/></figure>
+    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url || "https://files.sotf-mods.com/download/thumbnail.png"}" alt="${mod.name || "Mod Name"}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="#!">
@@ -32,7 +31,6 @@ function getModTemplate(mod) {
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-accent">↗︎ 99 downloads</span>
-            <span class="stat-desc text-secondary ml-2">♥ 99 follows</span>
             <span class="stat-desc ml-2">⏱ just released</span>
         </div>
     </div>`;
@@ -40,14 +38,9 @@ function getModTemplate(mod) {
 
 async function renderModItem() {
     const mod = getMod();
-    const horizontalMode = modsDiscoverOrientation.checked;
     modListDemo.innerHTML = '';
     const modElement = document.createElement('div');
-    if (horizontalMode) {
-        modElement.classList.add('card', 'card-compact', 'w-96', 'bg-base-100', 'shadow-xl', 'mod-card-horizontal');
-    } else {
-        modElement.classList.add('card', 'card-side', 'bg-base-100', 'shadow-xl', 'mod-card');
-    }
+    modElement.classList.add('card', 'card-compact', 'w-96', 'bg-base-100', 'shadow-xl', 'mod-card-horizontal');
     modElement.innerHTML = getModTemplate(mod);
     modListDemo.appendChild(modElement);
 }
@@ -143,7 +136,6 @@ function renderDescriptionPreview() {
 
 async function main() {
     await renderModItem();
-    modsDiscoverOrientation.addEventListener('change', renderModItem);
     modName.addEventListener('input', renderModItem);
     modShortDescription.addEventListener('input', renderModItem);
     modDescription.addEventListener('input', renderDescriptionPreview);
