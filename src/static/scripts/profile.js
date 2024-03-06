@@ -24,10 +24,10 @@ function getModTemplate(mod) {
         <p>by <a class="hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
         <div class="card-actions justify-end">
-            <a class="btn btn-outline btn-accent btn-sm" href="/mods/${mod.user_slug}/${mod.slug}">See More</a>
+            <a class="btn btn-outline btn-accent btn-sm" href="/mods/${mod.user_slug}/${mod.slug}">${_("See More")}</a>
         </div>
         <div class="card-actions justify-end">
-            <span class="stat-desc text-accent">↗︎ ${mod.downloads} downloads</span>
+            <span class="stat-desc text-accent">↗︎ ${mod.downloads} ${_("downloads")}</span>
             <span class="stat-desc ml-2">⏱ ${mod.time_ago}</span>
         </div>
     </div>`;
@@ -43,7 +43,7 @@ async function renderMods(mods, meta) {
         modsDiscoverContainer.appendChild(modElement);
     }
     if (mods.length == 0) {
-        modsDiscoverContainer.innerHTML = '<h1 class="text-center">No mods found</h1>';
+        modsDiscoverContainer.innerHTML = `<h1 class="text-center">${_("No mods found")}</h1>`;
     }
 }
 
@@ -55,7 +55,7 @@ async function loadMods() {
         renderMods(mods, meta);
     } catch (error) {
         console.error(error);
-        modsDiscoverContainer.innerHTML = '<h1 class="text-center">Something went wrong :(</h1>';
+        modsDiscoverContainer.innerHTML = `<h1 class="text-center">${_("Something went wrong :(")}</h1>`;
     }
 }
 

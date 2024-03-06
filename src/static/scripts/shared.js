@@ -3,6 +3,11 @@ const loadingScreen = document.querySelector('#loading-screen');
 window.user = document.querySelector('#sotf-mods-u') && JSON.parse(atob(document.querySelector('#sotf-mods-u').dataset.u));
 window.token = document.querySelector('#sotf-mods-t') && JSON.parse(atob(document.querySelector('#sotf-mods-t').dataset.t));
 window.API_URL = document.querySelector('#sotf-mods-a') && JSON.parse(atob(document.querySelector('#sotf-mods-a').dataset.a));
+window.translations = document.querySelector('#sotf-mods-l') && JSON.parse(document.querySelector('#sotf-mods-l').dataset.l);
+
+window._ = (key) => {
+    return window.translations[key] || key;
+}
 
 window.showLoadingScreen = () => {
     loadingScreen.showModal();
@@ -29,7 +34,7 @@ window.showError = error => {
     document.querySelector('#alerts').innerHTML = `
     <div class="alert alert-error">
         <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span>Error! ${error?.message || error?.error || error || 'Something went wrong!'}</span>
+        <span>${_("Error!")} ${error?.message || error?.error || error || _("Something went wrong!")}</span>
     </div>`;
     clearTimeout(window.errorTimeout);
     window.errorTimeout = setTimeout(() => {

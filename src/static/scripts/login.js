@@ -2,7 +2,7 @@ const loginForm = document.querySelector('#login-form');
 
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('registered')) {
-    showSuccess("Success! You have successfully registered. Please login.");
+    showSuccess(_("Success! You have successfully registered. Please login."));
 }
 
 loginForm.addEventListener('submit', async (event) => {

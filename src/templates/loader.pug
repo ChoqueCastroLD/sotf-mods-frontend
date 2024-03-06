@@ -14,7 +14,7 @@ block body
         h1.text-5xl.font-bold.mb-4
           img.m-auto(src='/static/images/redlogo.png' alt='logo')
         p.py-14
-          | All mods on this site are made for Red Loader. It offers a rich featureset for modders and a smoother game integration for users. To get started either head over to the mod loader page for manual installation and documentation or visit the installer page for an easier almost automatic installation.
+          | #{_("loader.text")}
         .flex.justify-center.flex-wrap
           a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedLoader" target="_blank" style="min-width: 150px; margin: 8px;") Red Loader
           a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedManager/releases" target="_blank" style="min-width: 150px; margin: 8px;") Red Manager
@@ -22,7 +22,7 @@ block body
     .hero-content.text-center
       .max-w-full
         h2.text-2xl.font-bold
-          | Featured mods
+          | #{_("loader.featured_mods")}
         #mods-featured-container.flex.flex-wrap.justify-center
           span(class="loading loading-infinity loading-lg text-success center")
 block scripts

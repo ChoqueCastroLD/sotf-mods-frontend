@@ -8,7 +8,7 @@ registerForm.addEventListener('submit', async (event) => {
     
     try {
         if (data.password !== data.confirm_password) {
-            throw 'Passwords do not match';
+            throw _("Passwords do not match");
         }
         const response = await fetch(`${API_URL}/api/auth/register`, {
             method: 'POST',

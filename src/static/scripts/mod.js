@@ -9,11 +9,11 @@ const modThumbnail = document.querySelector('#mod-thumbnail');
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('updated')) {
     window.history.replaceState({}, document.title, window.location.pathname);
-    showSuccess("Congratulations! You have successfully updated your mod");
+    showSuccess(_("Congratulations! You have successfully updated your mod"));
 }
 if (urlParams.has('released')) {
     window.history.replaceState({}, document.title, window.location.pathname);
-    showSuccess("Congratulations! You have successfully released your mod");
+    showSuccess(_("Congratulations! You have successfully released your mod"));
 }
 
 window.toggleFavorite = async function (elem, mod_id) {
@@ -36,7 +36,7 @@ window.toggleFavorite = async function (elem, mod_id) {
         }
         document.querySelector('.follows-count').innerHTML = `${data.count} follows`;
     } else {
-        console.error('There has been a problem with your fetch operation:', data);
+        console.error(_('There has been a problem with your fetch operation:'), data);
     }
     elem.disabled = false;
 }
@@ -52,8 +52,8 @@ window.approve = async function (elem) {
     if (response.ok) {
         location.href = `/mods/${mod.user_slug}/${mod.slug}`;
     } else {
-        console.error('There has been a problem with your fetch operation:', data);
-        showError("There has been a problem approving the mod");
+        console.error(_('There has been a problem with your fetch operation:'), data);
+        showError(_("There has been a problem approving the mod"));
     }
     elem.disabled = false;
 }
@@ -69,8 +69,8 @@ window.unapprove = async function (elem) {
     if (response.ok) {
         location.href = `/mods/${mod.user_slug}/${mod.slug}`;
     } else {
-        console.error('There has been a problem with your fetch operation:', data);
-        showError("There has been a problem unapproving the mod");
+        console.error(_('There has been a problem with your fetch operation:'), data);
+        showError(_("There has been a problem unapproving the mod"));
     }
     elem.disabled = false;
 }
@@ -119,7 +119,7 @@ async function main() {
             updateModBtn.classList.add('hidden');
             location.href = `/mods/${mod.user_slug}/${mod.slug}?updated=true`;
         } else {
-            console.error('There has been a problem with your fetch operation:', data);
+            console.error(_('There has been a problem with your fetch operation:'), data);
             showError(data.error);
         }
         updateModBtn.disabled = false;
@@ -130,7 +130,7 @@ async function main() {
         releaseVersionBtn.disabled = true;
         const modChangelog = sanitizeText(document.getElementById('mod-changelog').value.trim());
         if (!modChangelog) {
-            showError('Please fill the changelog');
+            showError(_('Please fill the changelog'));
             releaseVersionBtn.disabled = false;
             hideLoadingScreen();
             return;
@@ -153,7 +153,7 @@ async function main() {
             releaseVersionBtn.classList.add('hidden');
             location.href = `/mods/${mod.user_slug}/${mod.slug}?released=true`;
         } else {
-            console.error('There has been a problem with your fetch operation:', data);
+            console.error(_('There has been a problem with your fetch operation:'), data);
             showError(data.error);
         }
         releaseVersionBtn.disabled = false;

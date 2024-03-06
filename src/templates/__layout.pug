@@ -1,4 +1,4 @@
-html.dark(lang='en' data-theme="forest")
+html.dark(lang=lang data-theme="forest")
   head
     meta(charset='UTF-8')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
@@ -43,6 +43,7 @@ html.dark(lang='en' data-theme="forest")
       span.loading.loading-infinity.loading-lg.text-success
     .hidden
       #sotf-mods-a(data-a=btoa(JSON.stringify(API_URL)))
+      #sotf-mods-l(data-l=JSON.stringify(translations))
       - if (user)
         #sotf-mods-u(data-u=btoa(JSON.stringify(user)))
       - if (token)

@@ -20,7 +20,7 @@ block body
     .flex.justify-center.mt-8
       p.text-5xl(style="overflow-wrap: anywhere;") #{mod.name}
     .flex.justify-center.mb-8
-      p.text-base by 
+      p.text-base #{_("mod.by")} 
         a.text-accent(href=`/profile/${mod.user_slug}`) #{mod.user_name}
     div(class="grid grid-cols-1 lg:grid-cols-2 gap-4")
       div.mod-info.m-4
@@ -29,59 +29,58 @@ block body
           p.text-base.m-4(style="overflow-wrap: anywhere;") #{mod.short_description}
         - if (!mod.isApproved)
           .flex.justify-center
-            p.text-error.text-xs.mt-4 Pending approval.
+            p.text-error.text-xs.mt-4 #{_("mod.pending_approval")}
         .flex.justify-center.flex-wrap
           - if (mod.latest_version)
             a(
               class="btn btn-outline btn-accent m-4 table-auto"
               href=`/mods/${mod.user_slug}/${mod.slug}/download/${mod.latest_version}`
               target="_blank"
-            ) Direct Download
+            ) #{_("mod.direct_download")}
           - else
             a(
               class="btn btn-outline m-4 table-auto btn-disabled"
               href="#!"
-            ) Direct Download
-          //- div(class="tooltip tooltip-primary tooltip-bottom" data-tip="You must have Red Loader installed to use this feature.")
+            ) #{_("mod.direct_download")}
           button#btnOneClickInstall.btn.btn-outline.btn-secondary.m-4(class=(mod.latest_version ? "" : "btn-disabled"))
-            | One-Click Install
+            | #{_("mod.one_click_install")}
         .flex.justify-center.flex-wrap
-          span.stat-desc.text-accent ↗︎ #{mod.downloads} downloads
-          span.stat-desc.text-secondary.ml-2.follows-count ♥ #{mod.favorites} follows
+          span.stat-desc.text-accent ↗︎ #{mod.downloads} #{_("mod.downloads")}
+          span.stat-desc.text-secondary.ml-2.follows-count ♥ #{mod.favorites} #{_("mod.follows")}
           - if (mod.latest_version)
-            span.stat-desc.ml-2 ⏱ Version #{mod.latest_version} released #{mod.time_ago}
+            span.stat-desc.ml-2 ⏱ #{_("mod.version")} #{mod.latest_version} #{_("mod.released")} #{mod.time_ago}
           - else
-            span.stat-desc.ml-2 ⏱ Announced #{mod.time_ago}
+            span.stat-desc.ml-2 ⏱ #{_("mod.announced")} #{mod.time_ago}
         - if (user && user.slug !== mod.user_slug)
           .flex.justify-center
             a.mod-favorite.m-2(href="#!", onclick="toggleFavorite(this, '" + mod.mod_id + "')")
               span.inline-flex.items-baseline(id="modFavorite:" + mod.mod_id + ":on" class=mod.isFavorite ? "" : "hidden")
                 <svg width="1.6rem" class="self-center w-5 h-5 rounded-full mx-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z" fill="currentColor"></path></svg>
-                span Unfollow
+                span #{_("mod.unfollow")}
               span.inline-flex.items-baseline(id="modFavorite:" + mod.mod_id + ":off" class=mod.isFavorite ? "hidden" : "")
                 <svg width="1.6rem" class="self-center w-5 h-5 rounded-full mx-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3C200.7 23 111.4 15.6 53.6 64.3C-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9c14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7c38.9-32.7 98.9-27.8 136.5 10.5l35 35.7l35-35.7c37.8-38.5 97.8-43.2 136.5-10.6c51.1 43.1 43.5 113.9 7.3 150.8z" fill="currentColor"></path></svg>
-                span Follow
+                span #{_("mod.follow")}
         - if (user && user.slug === mod.user_slug)
           .flex.justify-center.mt-4.flex-wrap
-            a.btn.btn-outline.m-2(onclick="openModal('#modalEdit')") Update details
-            a.btn.btn-outline.m-2(onclick="openModal('#modalReleaseVersion')") Release version
+            a.btn.btn-outline.m-2(onclick="openModal('#modalEdit')") #{_("mod.update_details")}
+            a.btn.btn-outline.m-2(onclick="openModal('#modalReleaseVersion')") #{_("mod.release_version")}
         - if (user && user.canApprove === true)
           .flex.justify-center.mt-4.flex-wrap
             - if (mod.isApproved)
-              button.btn.btn-outline.m-2(onclick="unapprove(this)") Unapprove Mod
+              button.btn.btn-outline.m-2(onclick="unapprove(this)") #{_("mod.unapprove_mod")}
             - else
-              button.btn.btn-outline.m-2(onclick="approve(this)") Approve Mod
+              button.btn.btn-outline.m-2(onclick="approve(this)") #{_("mod.approve_mod")}
 
       div.mod-downloads.m-4
         pre#modDescriptionTemplate.mod-description-template
       .flex.justify-center
-        p.text-3xl.mb-8.mt-4 Version history
+        p.text-3xl.mb-8.mt-4 #{_("mod.version_history")}
           table.table
             thead
               tr
-                th Version
-                th Changelog
-                th Downloads
+                th #{_("mod.version")}
+                th #{_("mod.changelog")}
+                th #{_("mod.Downloads")}
             tbody
               - for (const version of mod.versions)
                 tr(class=version.isLatest ? "bg-base-100" : "")
@@ -109,68 +108,68 @@ block body
     //- Modals
     dialog#modalOneClickInstall.modal
       form.modal-box(method='dialog')
-        h3.font-bold.text-lg One Click Install
-        p.py-4 To enable this you must install "sotf-mods one-click" program. You can download it from the link below
+        h3.font-bold.text-lg #{_("mod.one_click_install_title")}
+        p.py-4 #{_("mod.one_click_install_to_enable")}
         a(href="https://sotf-mods.com/static/downloads/sotfmodsoneclick-setup1.0.0.exe" class="hover-underline-animation" target="_blank" style="color: #36d399; cursor: pointer;")
-          p Download one-click installer
+          p #{_("mod.one_click_install_download")}
         .modal-action
-          button.btn.btn-outline.btn-accent(onclick="dontShowOneClickModal()") I have installed it, don't show this again
-          button.btn(onclick="closeModal('#modalOneClickInstall')") Close
+          button.btn.btn-outline.btn-accent(onclick="dontShowOneClickModal()") #{_("mod.one_click_install_dont_show_again")}
+          button.btn(onclick="closeModal('#modalOneClickInstall')") #{_("mod.one_click_install_close")}
     dialog#modalEdit.modal
       form.modal-box(method='dialog')
-        h3.font-bold.text-lg Update mod details
+        h3.font-bold.text-lg #{_("mod.update_mod_details")}
         .form-control
           label.label
-            span.label-text Name
-          input#mod-name.input.input-bordered(type="text", name="name", placeholder="Enter the name of the mod" minlength="4" maxlength="24" value=mod.name)
+            span.label-text #{_("mod.Name")}
+          input#mod-name.input.input-bordered(type="text", name="name", placeholder=_("mod.mod_name_placeholder") minlength="4" maxlength="24" value=mod.name)
         .form-control
           label.label
-            span.label-text Short description
-          input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder="Enter the short description of the mod" minlength="10" maxlength="100" value=mod.short_description)
+            span.label-text #{_("mod.Short description")}
+          input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder=_("mod.mod_short_description_placeholder") minlength="10" maxlength="100" value=mod.short_description)
         .form-control.mb-4
           div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
             div(class="md:m-4")
               label.label
-                span.label-text Mod description
+                span.label-text #{_("mod.Mod description")}
                 span.label-text-alt
                   | (
                   span#mod-description-character-count #{mod.description.length}
-                  | / 2000 characters)
-              textarea#mod-description.textarea.textarea-bordered.mod-description-textarea(name="description" placeholder='Enter the description of the mod...' minlength="10" maxlength="2000")
+                  | / 2000 #{_("mod.characters")})
+              textarea#mod-description.textarea.textarea-bordered.mod-description-textarea(name="description" placeholder=_("mod.mod_description_placeholder") minlength="10" maxlength="2000")
             div(class="md:m-4")
               label.label
-                span.label-text Mod description preview
+                span.label-text #{_("mod.Mod description preview")}
               #mod-description-preview.mod-description-template(style="line-height: 1.3 !important;")
         .form-control.mt-2
           label.label
-            span.label-text Thumbnail
+            span.label-text #{_("mod.Thumbnail")}
           input#mod-thumbnail(type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.gif")
-        p Mod thumbnail resolution must be 2560x1440 or 1080x608
+        p #{_("mod.thumbnail_resolution")}
         a(href="https://sotf-mods.com/images/thumbnail.png", target="_blank" style="color: #36d399; cursor: pointer;")
-          p Download thumbnail template
+          p #{_("mod.Download thumbnail template")}
         a(href="https://sotf-mods.com/images/hd_thumbnail.png", target="_blank" style="color: #d926a9; cursor: pointer;")
-          p Download hd thumbnail template
+          p #{_("mod.Download hd thumbnail template")}
         label.cursor-pointer.label.ml-2
-          span.label-text Has NSFW content
+          span.label-text #{_("mod.Has NSFW content")}
           input#mod-isNSFW.toggle.toggle-secondary.ml-2(name='isNSFW' type='checkbox' checked=mod.isNSFW)
         .modal-action
-          button.btn(onclick="closeModal('#modalEdit')") Close
-          button#updateModBtn.btn.btn-primary Update
+          button.btn(onclick="closeModal('#modalEdit')") #{_("mod.Close")}
+          button#updateModBtn.btn.btn-primary #{_("mod.Update")}
     dialog#modalReleaseVersion.modal
       form.modal-box(method='dialog')
-        h3.font-bold.text-lg Release version
-        p.py-4 Release a new version of the mod. This will be automatically set as the latest version of the mod. (Current version: #{mod.latest_version || "1.0.0"})
+        h3.font-bold.text-lg #{_("mod.Release version")}
+        p.py-4 #{_("mod.release_text")} (#{_("mod.current_version")}: #{mod.latest_version || "1.0.0"})
         .form-control
           label.label
-            span.label-text Mod file (.zip)
+            span.label-text #{_("mod.Mod file")} (.zip)
         input#mod-file.w-full(type="file" class="file-input file-input-bordered file-input-secondary" accept=".zip")
         .form-control.mt-4
           label.label
-            span.label-text Changelog
-        textarea#mod-changelog.textarea.textarea-bordered.h-24.w-full(name="changelog" placeholder='Enter the changelog of the version...' minlength="10" maxlength="2000")
+            span.label-text #{_("mod.Changelog")}
+        textarea#mod-changelog.textarea.textarea-bordered.h-24.w-full(name="changelog" placeholder=_("mod.mod_changelog_placeholder") minlength="10" maxlength="2000")
         .modal-action
-          button.btn(onclick="closeModal('#modalReleaseVersion')") Close
-          button#releaseVersionBtn.btn.btn-secondary Release
+          button.btn(onclick="closeModal('#modalReleaseVersion')") #{_("mod.Close")}
+          button#releaseVersionBtn.btn.btn-secondary #{_("mod.Release")}
     #sotf-mods-m(data-m=btoa(JSON.stringify(mod)))
 
 block scripts

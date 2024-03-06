@@ -14,12 +14,12 @@ const modThumbnail = document.querySelector('#mod-thumbnail');
 
 
 function getModTemplate(mod) {
-    if (!mod.short_description) mod.short_description = "This is a description of the mod.";
-    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url || "https://files.sotf-mods.com/download/thumbnail.png"}" alt="${mod.name || "Mod Name"}"/></figure>
+    if (!mod.short_description) mod.short_description = _("This is a description of the mod.");
+    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url || "https://files.sotf-mods.com/download/thumbnail.png"}" alt="${mod.name || _("Mod Name")}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="#!">
-                <div class="badge badge-ghost">${parseInt(modCategory.value) ? modCategory.selectedOptions[0]?.innerText : "Category"}</div>
+                <div class="badge badge-ghost">${parseInt(modCategory.value) ? modCategory.selectedOptions[0]?.innerText : _("Category")}</div>
             </a>
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
         </div>
@@ -27,11 +27,11 @@ function getModTemplate(mod) {
         <p class="text-left">by <a class="hover-underline-animation" href="#!">${user.name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
         <div class="card-actions justify-end">
-            <a class="btn btn-outline btn-accent btn-sm" href="#!">See More</a>
+            <a class="btn btn-outline btn-accent btn-sm" href="#!">${_("See More")}</a>
         </div>
         <div class="card-actions justify-end">
-            <span class="stat-desc text-accent">↗︎ 99 downloads</span>
-            <span class="stat-desc ml-2">⏱ just released</span>
+            <span class="stat-desc text-accent">↗︎ 99 ${_("downloads")}</span>
+            <span class="stat-desc ml-2">⏱ ${_("just released")}</span>
         </div>
     </div>`;
 }
@@ -63,25 +63,25 @@ function isVersionValid(version) {
 }
 
 function validateMod(mod) {
-    if (!modFile.files[0]) throw "Mod file is required!";
-    if (!modFile.files[0].name.endsWith('.zip')) throw "Mod file must be a .zip file!";
-    if (modFile.files[0].size > (80 * 1024 * 1024)) throw "Mod file must be less than 80MB!";
-    if (!mod.name) throw "Mod name is required!";
-    if (mod.name.length < 4) throw "Mod name must be at least 4 characters long!";
-    if (mod.name.length > 24) throw "Mod name must be less than 24 characters!";
-    if (!mod.short_description) throw "Mod short description is required!";
-    if (mod.short_description.length < 10) throw "Mod short description must be at least 10 characters long!";
-    if (mod.short_description.length > 100) throw "Mod short description must be less than 100 characters!";
-    if (!mod.description) throw "Mod description is required!";
-    if (mod.description.length < 10) throw "Mod description must be at least 10 characters long!";
-    if (mod.description.length > 2000) throw "Mod description must be less than 2000 characters!";
-    if (!mod.category_id) throw "Mod category is required!";
-    if (isNaN(mod.category_id)) throw "Mod category is not valid!";
-    if (!mod.version) throw "Mod version is required!";
-    if (!isVersionValid(mod.version)) throw "Mod version is not valid! (must follow format x.x.x)";
-    if (!modThumbnail.files[0]) throw "Mod thumbnail is required!";
-    if (!['.zip', '.png', '.jpg', '.gif'].includes(modThumbnail.files[0].name.substring(modThumbnail.files[0].name.lastIndexOf('.')))) throw "Mod thumbnail must be a .png, .jpg, or .gif file!";
-    if (modThumbnail.files[0].size > (8 * 1024 * 1024)) throw "Mod thumbnail must be less than 8MB!";
+    if (!modFile.files[0]) throw _("Mod file is required!");
+    if (!modFile.files[0].name.endsWith('.zip')) throw _("Mod file must be a .zip file!");
+    if (modFile.files[0].size > (80 * 1024 * 1024)) throw _("Mod file must be less than 80MB!");
+    if (!mod.name) throw _("Mod name is required!");
+    if (mod.name.length < 4) throw _("Mod name must be at least 4 characters long!");
+    if (mod.name.length > 24) throw _("Mod name must be less than 24 characters!");
+    if (!mod.short_description) throw _("Mod short description is required!");
+    if (mod.short_description.length < 10) throw _("Mod short description must be at least 10 characters long!");
+    if (mod.short_description.length > 100) throw _("Mod short description must be less than 100 characters!");
+    if (!mod.description) throw _("Mod description is required!");
+    if (mod.description.length < 10) throw _("Mod description must be at least 10 characters long!");
+    if (mod.description.length > 2000) throw _("Mod description must be less than 2000 characters!");
+    if (!mod.category_id) throw _("Mod category is required!");
+    if (isNaN(mod.category_id)) throw _("Mod category is not valid!");
+    if (!mod.version) throw _("Mod version is required!");
+    if (!isVersionValid(mod.version)) throw _("Mod version is not valid! (must follow format x.x.x)");
+    if (!modThumbnail.files[0]) throw _("Mod thumbnail is required!");
+    if (!['.zip', '.png', '.jpg', '.gif'].includes(modThumbnail.files[0].name.substring(modThumbnail.files[0].name.lastIndexOf('.')))) throw _("Mod thumbnail must be a .png, .jpg, or .gif file!");
+    if (modThumbnail.files[0].size > (8 * 1024 * 1024)) throw _("Mod thumbnail must be less than 8MB!");
     return true;
 }
 

@@ -7,45 +7,45 @@ block body
   .top-spacer
 
   .flex.flex-wrap.justify-center.mb-2
-    h1.text-4xl Mods of the week
+    h1.text-4xl #{_("mods.Mods of the week")}
   #mods-featured.flex.flex-wrap.justify-around.mb-4.pb-4.min-h-64
   .stats-container.flex.justify-center.flex-wrap
     .stats.shadow(class="stats-vertical md:stats-horizontal")
       .stat.place-items-center(style="min-width: 280px;")
-        .stat-title Downloads
+        .stat-title #{_("mods.Downloads")}
         .stat-value.text-secondary #{stats.downloads}
-        .stat-desc.text-secondary Since 2023
+        .stat-desc.text-secondary #{_("mods.Since")} 2023
       .stat.place-items-center
-        .stat-title Users
+        .stat-title #{_("mods.Users")}
         .stat-value.text-accent #{stats.users}
-        .stat-desc.text-accent Registered
+        .stat-desc.text-accent #{_("mods.Registered")}
       .stat.place-items-center(style="min-width: 280px;")
-        .stat-title Mods Published
+        .stat-title #{_("mods.Mods Published")}
         .stat-value.text-primary #{stats.mods}
-        .stat-desc.text-primary From #{stats.developers} developers
+        .stat-desc.text-primary #{_("mods.From")} #{stats.developers} #{_("mods.developers")}
   #mods-discover-section.mt-4
     #mods-discover-search-container
       .flex.justify-between.flex-wrap
-        input#mods-discover-search.input.input-bordered.input-success.w-full.mb-2(type='text' placeholder='Type here')
+        input#mods-discover-search.input.input-bordered.input-success.w-full.mb-2(type='text' placeholder=_('mods.Type here'))
         //- Categories
         select#mods-discover-categories.m-auto.select.select-sm.w-38
-          option(value='') All categories
+          option(value='') #{_("mods.All categories")}
           - for(const category of categories)
             option(value=category.slug) #{category.name}
         //- Order by
         select#mods-discover-order-by.m-auto.select.select-sm.w-32
-          option(value='newest') Newest
-          option(value='oldest') Oldest
-          option(value='popular') Popular
-          option(value='unpopular') Unpopular
-          option(value='random' disabled='') Random
+          option(value='newest') #{_("mods.Newest")}
+          option(value='oldest') #{_("mods.Oldest")}
+          option(value='popular') #{_("mods.Popular")}
+          option(value='unpopular') #{_("mods.Unpopular")}
+          option(value='random' disabled='') #{_("mods.Random")}
         //- Show Unapproved
         label.cursor-pointer.label.m-auto
-          span.label-text Unapproved
+          span.label-text #{_("mods.Unapproved")}
           input#mods-discover-show-unapproved.toggle.toggle-secondary.ml-2(type='checkbox')
         //- Show NSFW
         label.cursor-pointer.label.m-auto
-          span.label-text NSFW
+          span.label-text #{_("mods.NSFW")}
           input#mods-discover-nsfw.toggle.toggle-secondary.ml-2(type='checkbox')
       .flex.justify-between.flex-wrap
     #mods-discover-pagination-up.flex.flex-wrap.justify-center

@@ -5,9 +5,32 @@
       img(src='/static/images/logo-sm.png' alt='logo' class="navbar-logo-img hidden sm:block md:hidden")
       img(src='/static/images/logo.png' alt='logo' class="navbar-logo-img block sm:hidden")
   .flex.flex-wrap.justify-end
-    a.btn.btn-ghost(href='/mods') Mods
     a.btn.btn-ghost(href='/loader') Red Loader
     a.btn.btn-ghost(href='https://discord.gg/sotf' target='_blank') Discord
+    .dropdown.dropdown-end
+      label.btn.btn-ghost.btn-circle.uppercase(tabindex='0') #{lang == 'ch' ? '中文' : lang}
+      ul.menu.menu-sm.dropdown-content.mt-3.p-2.shadow.bg-base-100.rounded-box.w-52(tabindex='0' class='z-[1]')
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "ch").then(() => location.reload()).catch(err => console.error(err))') 中文
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "de").then(() => location.reload()).catch(err => console.error(err))') Deutsch
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "en").then(() => location.reload()).catch(err => console.error(err))') English
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "es").then(() => location.reload()).catch(err => console.error(err))') Español
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "fr").then(() => location.reload()).catch(err => console.error(err))') Français
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "nl").then(() => location.reload()).catch(err => console.error(err))') Nederlands
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "pt").then(() => location.reload()).catch(err => console.error(err))') Português
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "ru").then(() => location.reload()).catch(err => console.error(err))') Русский
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "pl").then(() => location.reload()).catch(err => console.error(err))') Polski
+        li.menu-item
+          a(href='#' onclick='cookieStore.set("lang", "se").then(() => location.reload()).catch(err => console.error(err))') Svenska
+
     .dropdown.dropdown-end
       label.btn.btn-ghost.btn-circle.avatar(tabindex='0')
         if user
@@ -27,15 +50,15 @@
             li
                 a.disabled(href='/profile/'+user.slug) #{user.name}
             li
-                a(href='/profile/'+user.slug) Profile
+                a(href='/profile/'+user.slug) #{_("_navbar.profile")}
             li
                 a.justify-between(href='/upload')
-                    | Upload
-                    span.badge New
+                    | #{_("_navbar.upload")}
+                    span.badge #{_("_navbar.new")}
             li
-                a(href='/logout') Logout
+                a(href='/logout') #{_("_navbar.logout")}
         else
             li.menu-item
-                a(href="/login") Login
+                a(href="/login") #{_("_navbar.login")}
             li.menu-item
-                a(href="/register") Register
+                a(href="/register") #{_("_navbar.register")}
