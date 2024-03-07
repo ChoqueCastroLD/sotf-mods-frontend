@@ -8,6 +8,8 @@ import pt from "../translations/pt.translations";
 import ru from "../translations/ru.translations";
 import pl from "../translations/pl.translations";
 import se from "../translations/se.translations";
+import it from "../translations/it.translations";
+import tr from "../translations/tr.translations";
 
 function getIndividualTranslations(lang: string): any {
     switch (lang) {
@@ -31,6 +33,10 @@ function getIndividualTranslations(lang: string): any {
             return pl;
         case 'se':
             return se;
+        case 'it':
+            return it;
+        case 'tr':
+            return tr;
         default:
             return en;
     }
