@@ -4,16 +4,23 @@ import { getTranslator, getTranslations } from "../util/lang.util";
 
 
 export function render(template: string, data?: Object) {
-    return async ({ store, user, token, cookie: { lang }, set }: any) => {
+    return async ({ store, user, token, cookie, request, set }: any) => {
+        let lang = cookie?.lang?.value;
+        if (!lang) {
+            lang = request.headers.get('accept-language')?.split(",")[0].split("-")[0]?.toLowerCase().trim().substring(0, 2);
+        }
+        if (!lang) {
+            lang = "en";
+        }
         const template_path = join(dirname(import.meta.path), `../templates/${template}.pug`);
         set.headers['Content-Type'] = 'text/html; charset=utf-8';
         const API_URL = Bun.env.API_URL ?? "";
         return renderFile(template_path, {
             ...data,
             ...store,
-            lang: lang.value || "en",
-            translations: getTranslations(lang.value || "en"),
-            _: getTranslator(lang.value || "en"),
+            lang,
+            translations: getTranslations(lang),
+            _: getTranslator(lang),
             user,
             token,
             API_URL
