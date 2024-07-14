@@ -3,19 +3,6 @@ import { Elysia } from 'elysia'
 import { render } from './middlewares/render.middleware'
 import { authMiddleware } from './middlewares/auth.middleware'
 
-let last_stats_update = 0;
-let stats = {
-    "users": 2,
-    "mods": 2,
-    "downloads": 2,
-    "developers": 2,
-}
-
-let last_categories_update = 0;
-let categories = [
-    { id: 1, name: "Script", slug: "script" },
-]
-
 const loggedOnly = async ({ user, set }: any) => {
     if (!user) {
         set.redirect = '/login'
@@ -43,39 +30,38 @@ export const router = new Elysia()
         return render('profile', { userProfile })(context);
     })
     .get('/upload', async (context) => {
-        if (Date.now() - last_categories_update > 1000 * 60 * 5) {
-            categories = await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
-            last_categories_update = Date.now();
-        }
+        const categories = await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
         return render('upload', { categories })(context);
     }, { beforeHandle: loggedOnly })
     // public
     .get('/', async (context) => {
-        if (Date.now() - last_stats_update > 1000 * 60 * 5) {
-            stats = await fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json());
-            last_stats_update = Date.now();
-        }
-        if (Date.now() - last_categories_update > 1000 * 60 * 5) {
-            categories = await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
-            last_categories_update = Date.now();
-        }
+        const [
+            stats,
+            categories
+        ] = await Promise.all([
+            fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json()),
+            fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json())
+        ]);
         return render('mods', { categories, stats })(context);
     })
     .get('/mods', async (context) => {
-        if (Date.now() - last_stats_update > 1000 * 60 * 5) {
-            stats = await fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json());
-            last_stats_update = Date.now();
-        }
-        if (Date.now() - last_categories_update > 1000 * 60 * 5) {
-            categories = await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
-            last_categories_update = Date.now();
-        }
+        const [
+            stats,
+            categories
+        ] = await Promise.all([
+            fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json()),
+            fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json())
+        ]);
         return render('mods', { categories, stats })(context);
+    })
+    .get('/api/mods', async (context) => {
+        const queryParams = new URLSearchParams(context.request.url.split('?')[1]);
+        const mods = await fetch(`${Bun.env.API_URL}/api/mods?${queryParams}`).then(res => res.json());
+        return mods;
     })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;
         console.log({ user_slug, mod_slug });
-        
         const mod_id = await getModIdFromSlugs(user_slug, mod_slug)
         console.log(mod_id)
         const mod = await fetch(`${Bun.env.API_URL}/api/mods/${mod_id}`, {
