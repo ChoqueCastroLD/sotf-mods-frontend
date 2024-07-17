@@ -14,6 +14,11 @@ async function getModIdFromSlugs(user_slug: string, mod_slug: string) {
     return mod.mod_id
 }
 
+const cache = {
+    stats: [],
+    categories: []
+};
+
 export const router = new Elysia()
     .use(authMiddleware)
     // auth
@@ -35,23 +40,17 @@ export const router = new Elysia()
     }, { beforeHandle: loggedOnly })
     // public
     .get('/', async (context) => {
-        const [
-            stats,
-            categories
-        ] = await Promise.all([
-            fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json()),
-            fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json())
-        ]);
+        const stats = cache['stats'] || await fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json());
+        const categories = cache['categories'] || await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
+        fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json()).then(stats => cache['stats'] = stats);
+        fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json()).then(categories => cache['categories'] = categories);
         return render('mods', { categories, stats })(context);
     })
     .get('/mods', async (context) => {
-        const [
-            stats,
-            categories
-        ] = await Promise.all([
-            fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json()),
-            fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json())
-        ]);
+        const stats = cache['stats'] || await fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json());
+        const categories = cache['categories'] || await fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json());
+        fetch(`${Bun.env.API_URL}/api/stats`).then(res => res.json()).then(stats => cache['stats'] = stats);
+        fetch(`${Bun.env.API_URL}/api/categories`).then(res => res.json()).then(categories => cache['categories'] = categories);
         return render('mods', { categories, stats })(context);
     })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
