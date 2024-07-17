@@ -159,7 +159,7 @@ export default {
     "just released": "yeni yayınlandı",
     "Mod file is required!": "Mod dosyası gerekli!",
     "Mod file must be a .zip file!": "Mod dosyası bir .zip dosyası olmalıdır!",
-    "Mod file must be less than 80MB!": "Mod dosyası 80MB'den küçük olmalıdır!",
+    "Mod file must be less than 200MB!": "Mod dosyası 200MB'den küçük olmalıdır!",
     "Mod name is required!": "Mod adı gereklidir!",
     "Mod name must be at least 4 characters long!": "Mod adı en az 4 karakter uzunluğunda olmalıdır!",
     "Mod name must be less than 24 characters!": "Mod adı 24 karakterden az olmalıdır!",

@@ -159,7 +159,7 @@ export default {
     "just released": "nyss släppt",
     "Mod file is required!": "Modfil krävs!",
     "Mod file must be a .zip file!": "Modfilen måste vara en .zip-fil!",
-    "Mod file must be less than 80MB!": "Modfilen måste vara mindre än 80MB!",
+    "Mod file must be less than 200MB!": "Modfilen måste vara mindre än 200MB!",
     "Mod name is required!": "Modnamn krävs!",
     "Mod name must be at least 4 characters long!": "Modnamnet måste vara minst 4 tecken långt!",
     "Mod name must be less than 24 characters!": "Modnamnet måste vara mindre än 24 tecken!",

@@ -65,7 +65,7 @@ function isVersionValid(version) {
 function validateMod(mod) {
     if (!modFile.files[0]) throw _("Mod file is required!");
     if (!modFile.files[0].name.endsWith('.zip')) throw _("Mod file must be a .zip file!");
-    if (modFile.files[0].size > (80 * 1024 * 1024)) throw _("Mod file must be less than 80MB!");
+    if (modFile.files[0].size > (200 * 1024 * 1024)) throw _("Mod file must be less than 200MB!");
     if (!mod.name) throw _("Mod name is required!");
     if (mod.name.length < 4) throw _("Mod name must be at least 4 characters long!");
     if (mod.name.length > 24) throw _("Mod name must be less than 24 characters!");

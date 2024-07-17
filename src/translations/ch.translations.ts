@@ -159,7 +159,7 @@ export default {
     "just released": "刚发布",
     "Mod file is required!": "需要模组文件！",
     "Mod file must be a .zip file!": "模组文件必须是 .zip 文件！",
-    "Mod file must be less than 80MB!": "模组文件必须小于 80MB!",
+    "Mod file must be less than 200MB!": "模组文件必须小于 200MB!",
     "Mod name is required!": "需要模组名称！",
     "Mod name must be at least 4 characters long!": "模组名称必须至少 4 个字符！",
     "Mod name must be less than 24 characters!": "模组名称必须少于 24 个字符！",

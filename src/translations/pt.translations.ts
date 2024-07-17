@@ -159,7 +159,7 @@ export default {
     "just released": "recém-lançado",
     "Mod file is required!": "O arquivo do mod é obrigatório!",
     "Mod file must be a .zip file!": "O arquivo do mod deve ser um arquivo .zip!",
-    "Mod file must be less than 80MB!": "O arquivo do mod deve ter menos de 80MB!",
+    "Mod file must be less than 200MB!": "O arquivo do mod deve ter menos de 200MB!",
     "Mod name is required!": "O nome do mod é obrigatório!",
     "Mod name must be at least 4 characters long!": "O nome do mod deve ter pelo menos 4 caracteres!",
     "Mod name must be less than 24 characters!": "O nome do mod deve ter menos de 24 caracteres!",
