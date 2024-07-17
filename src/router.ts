@@ -54,11 +54,6 @@ export const router = new Elysia()
         ]);
         return render('mods', { categories, stats })(context);
     })
-    .get('/api/mods', async (context) => {
-        const queryParams = new URLSearchParams(context.request.url.split('?')[1]);
-        const mods = await fetch(`${Bun.env.API_URL}/api/mods?${queryParams}`).then(res => res.json());
-        return mods;
-    })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;
         console.log({ user_slug, mod_slug });
