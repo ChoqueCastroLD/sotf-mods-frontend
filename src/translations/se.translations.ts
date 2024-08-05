@@ -1,5 +1,10 @@
 // Sweden
 export default {
+    // Red Manager
+    "_mods.question": "Vet du inte var du ska börja?",
+    "_mods.answer": "Installera den rekommenderade modhanteraren Red Manager innan du installerar några mods.",
+    "_mods.answer_2": "Den är gratis och öppen källkod.",
+    "_mods.download_button": "Ladda ner Red Manager",
     // Footer
     "_footer.github_backend": "Bidra till projektets backend",
     "_footer.github_frontend": "Bidra till projektets frontend",
@@ -16,6 +21,7 @@ export default {
     "_navbar.logout": "Logga ut",
     "_navbar.login": "Logga in",
     "_navbar.register": "Registrera",
+    "_navbar.no_ads_tip": "Logga in för att inaktivera annonser",
     // Loader
     "loader.text": "Alla mods på denna webbplats är gjorda för Red Loader. Den erbjuder en rik uppsättning funktioner för moddare och en smidigare spelintegration för användare. För att komma igång kan du antingen gå till modloader-sidan för manuell installation och dokumentation eller besöka installatörsidan för en enklare nästan automatisk installation.",
     "loader.featured_mods": "Utvalda mods",

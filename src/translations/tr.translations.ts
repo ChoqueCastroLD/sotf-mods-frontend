@@ -1,5 +1,10 @@
 // Türkçe
 export default {
+    // Red Manager
+    "_mods.question": "Başlamak için nereye başlamalıyım?",
+    "_mods.answer": "Herhangi bir modu yüklemeden önce önerilen mod yöneticisi Red Manager'ı yükleyin.",
+    "_mods.answer_2": "Ücretsiz ve açık kaynaklıdır.",
+    "_mods.download_button": "Red Manager'ı İndir",
     // Footer
     "_footer.github_backend": "Projeye backend'de katkıda bulun",
     "_footer.github_frontend": "Projeye frontend'de katkıda bulun",
@@ -16,6 +21,7 @@ export default {
     "_navbar.logout": "Çıkış Yap",
     "_navbar.login": "Giriş Yap",
     "_navbar.register": "Kayıt Ol",
+    "_navbar.no_ads_tip": "Reklamları devre dışı bırakmak için giriş yapın",
     // Loader
     "loader.text": "Bu sitedeki tüm modlar Red Loader için yapılmıştır. Modder'lar için zengin bir özellik seti sunar ve kullanıcılar için daha pürüzsüz bir oyun entegrasyonu sağlar. Başlamak için mod yükleyici sayfasına gidip el ile kurulum ve belgelendirme için veya hemen hemen otomatik bir kurulum için yükleyici sayfasını ziyaret edin.",
     "loader.featured_mods": "Öne Çıkan Modlar",

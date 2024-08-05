@@ -1,5 +1,10 @@
 // English
 export default {
+    // Red Manager
+    "_mods.question": "Don't know where to start?",
+    "_mods.answer": "Install the recommended mod manager Red Manager before installing any mods.",
+    "_mods.answer_2": "It's free and open source.",
+    "_mods.download_button": "Download Red Manager",
     // Footer
     "_footer.github_backend": "Contribute to the project's backend",
     "_footer.github_frontend": "Contribute to the project's frontend",
@@ -16,6 +21,7 @@ export default {
     "_navbar.logout": "Logout",
     "_navbar.login": "Login",
     "_navbar.register": "Register",
+    "_navbar.no_ads_tip": "Login to disable ads",
     // Loader
     "loader.text": "All mods on this site are made for Red Loader. It offers a rich featureset for modders and a smoother game integration for users. To get started either head over to the mod loader page for manual installation and documentation or visit the installer page for an easier almost automatic installation.",
     "loader.featured_mods": "Featured mods",

@@ -1,5 +1,10 @@
 // Chinese
 export default {
+    // Red Manager
+    "_mods.question": "不知道从哪里开始？",
+    "_mods.answer": "在安装任何模组之前，请安装推荐的模组管理器 Red Manager。",
+    "_mods.answer_2": "它是免费的，开源的。",
+    "_mods.download_button": "下载 Red Manager",
     // Footer
     "_footer.github_backend": "贡献至项目的后端",
     "_footer.github_frontend": "贡献至项目的前端",
@@ -16,6 +21,7 @@ export default {
     "_navbar.logout": "登出",
     "_navbar.login": "登录",
     "_navbar.register": "注册",
+    "_navbar.no_ads_tip": "登录以禁用广告",
     // Loader
     "loader.text": "本网站上的所有模组都是为 Red Loader 制作的。它为模组制作者提供了丰富的功能集，为用户提供了更顺畅的游戏集成。要开始，请转到模组加载器页面进行手动安装和文档，或者访问安装程序页面进行更简单的几乎自动安装。",
     "loader.featured_mods": "精选模组",

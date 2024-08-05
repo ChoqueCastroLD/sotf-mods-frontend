@@ -5,7 +5,21 @@ block head
 
 block body
   .top-spacer
-
+  - if (!user)
+    <div class="hero bg-base-200 mb-8">
+      <div class="hero-content flex-col lg:flex-row-reverse">
+        <img src="https://static.wikia.nocookie.net/sonsoftheforest_gamepedia_en/images/5/53/GolfCart.png" class="max-w-[150px] rounded-lg shadow-2xl" />
+        <div>
+          <h1 class="text-5xl font-bold">#{_("_mods.question")}</h1>
+          <p class="py-6">
+            | #{_("_mods.answer")}
+            <br />
+            | #{_("_mods.answer_2")}
+          </p>
+          a.btn.btn-secondary(href="https://github.com/ToniMacaroni/RedManager/releases/latest" target="_blank") #{_("_mods.download_button")}
+        </div>
+      </div>
+    </div>
   .flex.flex-wrap.justify-center.mb-2
     h1.text-4xl #{_("mods.Mods of the week")}
   #mods-featured.flex.flex-wrap.justify-around.mb-4.pb-4.min-h-64

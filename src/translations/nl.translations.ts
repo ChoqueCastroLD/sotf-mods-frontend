@@ -1,5 +1,10 @@
 // Dutch
 export default {
+    // Red Manager
+    "_mods.question": "Weet je niet waar je moet beginnen?",
+    "_mods.answer": "Installeer de aanbevolen mod manager Red Manager voordat je een mod installeert.",
+    "_mods.answer_2": "Het is gratis en open source.",
+    "_mods.download_button": "Download Red Manager",
     // Footer
     "_footer.github_backend": "Bijdragen aan de backend van het project",
     "_footer.github_frontend": "Bijdragen aan de frontend van het project",
@@ -16,6 +21,7 @@ export default {
     "_navbar.logout": "Uitloggen",
     "_navbar.login": "Inloggen",
     "_navbar.register": "Registreren",
+    "_navbar.no_ads_tip": "Log in om advertenties te deactiveren",
     // Loader
     "loader.text": "Alle mods op deze site zijn gemaakt voor Red Loader. Het biedt een rijke set functies voor modders en een soepelere integratie van het spel voor gebruikers. Om te beginnen, ga naar de mod loader-pagina voor handmatige installatie en documentatie of bezoek de installer-pagina voor een gemakkelijkere bijna automatische installatie.",
     "loader.featured_mods": "Uitgelichte mods",

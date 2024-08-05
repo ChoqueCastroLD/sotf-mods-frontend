@@ -1,5 +1,10 @@
 // Italiano
 export default {
+    // Red Manager
+    "_mods.question": "Non sai da dove iniziare?",
+    "_mods.answer": "Installa il gestore di modelli consigliato Red Manager prima di installare qualsiasi modello.",
+    "_mods.answer_2": "È gratuito e open source.",
+    "_mods.download_button": "Scarica Red Manager",
     // Footer
     "_footer.github_backend": "Contribuisci al backend del progetto",
     "_footer.github_frontend": "Contribuisci al frontend del progetto",
@@ -16,6 +21,7 @@ export default {
     "_navbar.logout": "Logout",
     "_navbar.login": "Login",
     "_navbar.register": "Registrati",
+    "_navbar.no_ads_tip": "Accedi per disabilitare gli annunci",
     // Loader
     "loader.text": "Tutte le mod su questo sito sono realizzate per Red Loader. Offre una ricca serie di funzionalità per i modder e una migliore integrazione con il gioco per gli utenti. Per iniziare, visita la pagina del mod loader per l'installazione manuale e la documentazione o visita la pagina del programma di installazione per un'installazione più semplice e quasi automatica.",
     "loader.featured_mods": "Mod in primo piano",
