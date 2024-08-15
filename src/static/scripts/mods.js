@@ -43,7 +43,7 @@ async function getMods(page) {
     getFeaturedMods().then(featuredMods => {
         document.querySelector('#mods-featured').innerHTML = featuredMods.map((mod, index) => `
         <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/mods/${mod.user_slug}/${mod.slug}">
-            <figure class="col-start-1 row-start-1"><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}" /></figure>
+            <figure class="col-start-1 row-start-1"><img data-lazy-src="${mod.thumbnail_url}" class="${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name}" /></figure>
             <div class="card-body rounded-lg col-start-1 row-start-1 z-20 relative bg-black bg-opacity-0 transition opacity-10 hover:opacity-100 hover:bg-opacity-80">
                 <h2 class="card-title">
                     <span class="text-4xl">#${index + 1}</span>
@@ -74,7 +74,7 @@ async function getFeaturedMods() {
 }
 
 function getModTemplate(mod) {
-    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}" loading="lazy"/></figure>
+    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url}" class="${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name}" loading="lazy"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="/mods?category=${mod.category_slug}">

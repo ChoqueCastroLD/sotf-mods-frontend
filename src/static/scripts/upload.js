@@ -15,7 +15,7 @@ const modThumbnail = document.querySelector('#mod-thumbnail');
 
 function getModTemplate(mod) {
     if (!mod.short_description) mod.short_description = _("This is a description of the mod.");
-    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url || "https://files.sotf-mods.com/download/thumbnail.png"}" alt="${mod.name || _("Mod Name")}"/></figure>
+    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url || "https://files.sotf-mods.com/download/thumbnail.png"}" class="${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name || _("Mod Name")}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="#!">
