@@ -5,7 +5,8 @@
       img(src='/static/images/logo-sm.png' alt='logo' class="navbar-logo-img hidden sm:block md:hidden")
       img(src='/static/images/logo.png' alt='logo' class="navbar-logo-img block sm:hidden")
   .flex-grow.flex.justify-center.items-center
-    span.text-sm.text-base-content(class='hidden lg:block') #{_("_navbar.no_ads_tip")}
+    - if (!user)
+      span.text-sm.text-base-content(class='hidden lg:block') #{_("_navbar.no_ads_tip")}
   .flex.flex-wrap.justify-end
     a.btn.btn-ghost(href='/loader') Red Loader
     a.btn.btn-ghost(href='https://discord.gg/sotf' target='_blank') Discord
