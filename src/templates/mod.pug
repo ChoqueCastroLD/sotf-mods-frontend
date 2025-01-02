@@ -121,7 +121,7 @@ block body
         .form-control
           label.label
             span.label-text #{_("mod.Name")}
-          input#mod-name.input.input-bordered(type="text", name="name", placeholder=_("mod.mod_name_placeholder") minlength="4" maxlength="24" value=mod.name)
+          input#mod-name.input.input-bordered(type="text", name="name", placeholder=_("mod.mod_name_placeholder") minlength="3" maxlength="64" value=mod.name)
         .form-control
           label.label
             span.label-text #{_("mod.Short description")}

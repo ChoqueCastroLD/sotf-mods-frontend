@@ -34,12 +34,12 @@ block body
                 .form-control
                   label.label
                     span.label-text #{_("upload.Name")}
-                  input#mod-name.input.input-bordered(type="text", name="name", placeholder=_("upload.Enter the name of the mod") minlength="4" maxlength="24")
+                  input#mod-name.input.input-bordered(type="text", name="name", placeholder=_("upload.Enter the name of the mod") minlength="3" maxlength="64")
                 .form-control
                   label.label
                     span.label-text #{_("upload.Short description")}
-                    span.label-text-alt (#{_("upload.max")}: 100 #{_("upload.characters")})
-                  input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder=_("upload.Enter the short description of the mod") minlength="10" maxlength="100")
+                    span.label-text-alt (#{_("upload.max")}: 200 #{_("upload.characters")})
+                  input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder=_("upload.Enter the short description of the mod") minlength="3" maxlength="200")
                 .form-control
                   label.label
                     span.label-text #{_("upload.Description")}
@@ -47,7 +47,7 @@ block body
                       | (
                       span#mod-description-character-count 0
                       | / 2000 #{_("upload.characters")})
-                  textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder=_("upload.Enter the description of the mod...") minlength="10" maxlength="2000")
+                  textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder=_("upload.Enter the description of the mod...") minlength="3" maxlength="2000")
               </div>
             </div>
             <div class="collapse collapse-arrow join-item border border-base-300">

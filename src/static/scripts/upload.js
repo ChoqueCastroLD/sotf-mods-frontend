@@ -67,13 +67,13 @@ function validateMod(mod) {
     if (!modFile.files[0].name.endsWith('.zip')) throw _("Mod file must be a .zip file!");
     if (modFile.files[0].size > (200 * 1024 * 1024)) throw _("Mod file must be less than 200MB!");
     if (!mod.name) throw _("Mod name is required!");
-    if (mod.name.length < 4) throw _("Mod name must be at least 4 characters long!");
-    if (mod.name.length > 24) throw _("Mod name must be less than 24 characters!");
+    if (mod.name.length < 3) throw _("Mod name must be at least 3 characters long!");
+    if (mod.name.length > 64) throw _("Mod name must be less than 64 characters!");
     if (!mod.short_description) throw _("Mod short description is required!");
-    if (mod.short_description.length < 10) throw _("Mod short description must be at least 10 characters long!");
-    if (mod.short_description.length > 100) throw _("Mod short description must be less than 100 characters!");
+    if (mod.short_description.length < 3) throw _("Mod short description must be at least 3 characters long!");
+    if (mod.short_description.length > 200) throw _("Mod short description must be less than 200 characters!");
     if (!mod.description) throw _("Mod description is required!");
-    if (mod.description.length < 10) throw _("Mod description must be at least 10 characters long!");
+    if (mod.description.length < 3) throw _("Mod description must be at least 3 characters long!");
     if (mod.description.length > 2000) throw _("Mod description must be less than 2000 characters!");
     if (!mod.category_id) throw _("Mod category is required!");
     if (isNaN(mod.category_id)) throw _("Mod category is not valid!");
