@@ -20,7 +20,7 @@ window.toggleFavorite = async function (elem, mod_id) {
     elem.disabled = true;
     document.getElementById("modFavorite:" + mod_id + ":off").classList.toggle("hidden");
     document.getElementById("modFavorite:" + mod_id + ":on").classList.toggle("hidden");
-    const response = await fetch(`${API_URL}/api/mods/${mod_id}/favorite`, {
+    const response = await fetch(`${PUBLIC_API_URL}/api/mods/${mod_id}/favorite`, {
         headers: {
             'Authorization': 'Bearer ' + token
         }
@@ -43,7 +43,7 @@ window.toggleFavorite = async function (elem, mod_id) {
 
 window.approve = async function (elem) {
     elem.disabled = true;
-    const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/approve`, {
+    const response = await fetch(`${PUBLIC_API_URL}/api/mods/${mod.mod_id}/approve`, {
         headers: {
             'Authorization': 'Bearer ' + token
         }
@@ -60,7 +60,7 @@ window.approve = async function (elem) {
 
 window.unapprove = async function (elem) {
     elem.disabled = true;
-    const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/unapprove`, {
+    const response = await fetch(`${PUBLIC_API_URL}/api/mods/${mod.mod_id}/unapprove`, {
         headers: {
             'Authorization': 'Bearer ' + token
         }
@@ -107,7 +107,7 @@ async function main() {
         if(modThumbnail && modThumbnail.files && modThumbnail.files[0]) {
             formData.append('modThumbnail', modThumbnail.files[0]);
         }
-        const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/details`, {
+        const response = await fetch(`${PUBLIC_API_URL}/api/mods/${mod.mod_id}/details`, {
             method: 'PATCH',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -141,7 +141,7 @@ async function main() {
         formData.append('changelog', modChangelog);
         formData.append('modFile', modFile.files[0]);
 
-        const response = await fetch(`${API_URL}/api/mods/${mod.mod_id}/release`, {
+        const response = await fetch(`${PUBLIC_API_URL}/api/mods/${mod.mod_id}/release`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

@@ -1,7 +1,7 @@
 const modsDiscoverContainer = document.querySelector('#mods-featured-container');
 
 async function getMods() {
-    let url = `${API_URL}/api/mods/featured`;
+    let url = `${PUBLIC_API_URL}/api/mods/featured`;
     const response = await fetch(url);
     const mods = await response.json();
     return mods;

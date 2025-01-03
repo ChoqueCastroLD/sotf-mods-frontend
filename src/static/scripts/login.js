@@ -11,7 +11,7 @@ loginForm.addEventListener('submit', async (event) => {
     const body = Object.fromEntries(formData);
 
     try {
-        const response = await fetch(`${API_URL}/api/auth/login`, {
+        const response = await fetch(`${PUBLIC_API_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

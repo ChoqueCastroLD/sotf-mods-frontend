@@ -4,7 +4,7 @@
 First create a .env and fill the variables
 ```env
 PORT=4000
-API_URL=https://api.sotf-mods.com
+PUBLIC_API_URL=https://api.sotf-mods.com
 ```
 
 To setup the project run:

@@ -24,7 +24,7 @@ function getQueryParam(param) {
 
 async function getMods(page) {
     const search = modsDiscoverSearch.value.trim();
-    let url = `${API_URL}/api/mods?limit=20`;
+    let url = `${PUBLIC_API_URL}/api/mods?limit=20`;
     if (modsDiscoverNSFW.checked) url += '&nsfw=true';
     if (modsDiscoverShowUnapproved.checked) url += '&approved=false';
     else url += '&approved=true';
@@ -63,7 +63,7 @@ async function getMods(page) {
 }
 
 async function getFeaturedMods() {
-    let url = `${API_URL}/api/mods/featured`;
+    let url = `${PUBLIC_API_URL}/api/mods/featured`;
     const response = await fetch(url, {
         headers: {
             'Authorization': 'Bearer ' + token

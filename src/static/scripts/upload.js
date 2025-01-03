@@ -104,7 +104,7 @@ async function uploadMod() {
         formData.append('modFile', modFile.files[0]);
         formData.append('modThumbnail', modThumbnail.files[0]);
 
-        const res = await fetch(`${API_URL}/api/mods/publish`, {
+        const res = await fetch(`${PUBLIC_API_URL}/api/mods/publish`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -145,7 +145,7 @@ async function main() {
     modFile.addEventListener('change', () => {
         const formData = new FormData();
         formData.append('modFile', modFile.files[0]);
-        fetch(API_URL + '/api/mods/upload', {
+        fetch(PUBLIC_API_URL + '/api/mods/upload', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

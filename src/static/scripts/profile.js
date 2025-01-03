@@ -5,7 +5,7 @@ const modsDiscoverContainer = document.querySelector('#mods-discover-container')
 let forceVerticalMod = false;
 
 async function getMods(approved) {
-    let url = `${API_URL}/api/mods?user_slug=${userProfile.slug}&limit=100&approved=${approved}`;
+    let url = `${PUBLIC_API_URL}/api/mods?user_slug=${userProfile.slug}&limit=100&approved=${approved}`;
     const response = await fetch(url);
     const { mods, meta } = await response.json();
     return { mods, meta };
