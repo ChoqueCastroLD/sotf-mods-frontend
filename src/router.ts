@@ -9,16 +9,6 @@ const loggedOnly = async ({ user, set }: any) => {
     }
 }
 
-async function getModIdFromSlugs(user_slug: string, mod_slug: string) {
-    const mod = await fetch(`${Bun.env.PUBLIC_API_URL}/api/mods/find?user_slug=${user_slug}&mod_slug=${mod_slug}`).then(res => res.json());
-    return mod.mod_id
-}
-
-const cache = {
-    stats: [],
-    categories: []
-};
-
 export const router = new Elysia()
     .use(authMiddleware)
     // auth
@@ -39,26 +29,20 @@ export const router = new Elysia()
         return render('upload', { categories })(context);
     }, { beforeHandle: loggedOnly })
     // public
-    .get('/', async (context) => {
-        const stats = cache['stats'] || await fetch(`${Bun.env.PUBLIC_API_URL}/api/stats`).then(res => res.json());
-        const categories = cache['categories'] || await fetch(`${Bun.env.PUBLIC_API_URL}/api/categories`).then(res => res.json());
-        fetch(`${Bun.env.PUBLIC_API_URL}/api/stats`).then(res => res.json()).then(stats => cache['stats'] = stats);
-        fetch(`${Bun.env.PUBLIC_API_URL}/api/categories`).then(res => res.json()).then(categories => cache['categories'] = categories);
-        return render('mods', { categories, stats })(context);
+    .get('/', async ({ set }) => {
+        set.redirect = '/mods';
     })
     .get('/mods', async (context) => {
-        const stats = cache['stats'] || await fetch(`${Bun.env.PUBLIC_API_URL}/api/stats`).then(res => res.json());
-        const categories = cache['categories'] || await fetch(`${Bun.env.PUBLIC_API_URL}/api/categories`).then(res => res.json());
-        fetch(`${Bun.env.PUBLIC_API_URL}/api/stats`).then(res => res.json()).then(stats => cache['stats'] = stats);
-        fetch(`${Bun.env.PUBLIC_API_URL}/api/categories`).then(res => res.json()).then(categories => cache['categories'] = categories);
+        const [stats, categories] = await Promise.all([
+            fetch(`${Bun.env.PUBLIC_API_URL}/api/stats`).then(res => res.json()),
+            fetch(`${Bun.env.PUBLIC_API_URL}/api/categories`).then(res => res.json())
+        ]);
         return render('mods', { categories, stats })(context);
     })
     .get('/mods/:user_slug/:mod_slug', async (context) => {
         const { params: { user_slug, mod_slug } } = context;
         console.log({ user_slug, mod_slug });
-        const mod_id = await getModIdFromSlugs(user_slug, mod_slug)
-        console.log(mod_id)
-        const mod = await fetch(`${Bun.env.PUBLIC_API_URL}/api/mods/${mod_id}`, {
+        const mod = await fetch(`${Bun.env.PUBLIC_API_URL}/api/mods/slug/${user_slug}/${mod_slug}`, {
             headers: {
                 'Authorization': 'Bearer ' + context.cookie.token.value
             }
@@ -69,8 +53,7 @@ export const router = new Elysia()
     .get('/mods/:user_slug/:mod_slug/download/:version', async ({ params: { user_slug, mod_slug, version }, request, set }) => {
         const ip = "" + request.headers.get("x-forwarded-for")
         const agent = "" + request.headers.get("user-agent")
-        const mod_id = await getModIdFromSlugs(user_slug, mod_slug)
-        const f = await fetch(`${Bun.env.PUBLIC_API_URL}/api/mods/${mod_id}/download/${version}?ip=${ip}&agent=${agent}`)
+        const f = await fetch(`${Bun.env.PUBLIC_API_URL}/api/mods/slug/${user_slug}/${mod_slug}/download/${version}?ip=${ip}&agent=${agent}`)
         const blob = await f.blob()
         set.headers['Content-Type'] = "" + f.headers.get('Content-Type')
         set.headers['Content-Length'] = "" + f.headers.get('Content-Length')

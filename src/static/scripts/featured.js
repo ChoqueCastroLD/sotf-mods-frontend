@@ -7,6 +7,31 @@ async function getMods() {
     return mods;
 }
 
+function timeAgo(date, locale = navigator.language) {
+    const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    const intervals = {
+        year: 31536000,
+        month: 2592000,
+        week: 604800,
+        day: 86400,
+        hour: 3600,
+        minute: 60,
+        second: 1,
+    };
+
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+        if (diffInSeconds >= secondsInUnit) {
+            const diff = Math.floor(diffInSeconds / secondsInUnit);
+            return formatter.format(-diff, unit);
+        }
+    }
+
+    return formatter.format(0, 'second'); // "just now" or equivalent
+}
+
 function getModTemplate(mod) {
     return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url}" class="${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name}" loading="lazy"/></figure>
     <div class="card-body">
@@ -24,7 +49,7 @@ function getModTemplate(mod) {
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-accent">↗︎ ${mod.downloads} ${_("downloads")}</span>
-            <span class="stat-desc ml-2">⏱ ${mod.time_ago}</span>
+            <span class="stat-desc ml-2">⏱ ${timeAgo(mod.lastReleasedAt)}</span>
         </div>
     </div>`;
 }

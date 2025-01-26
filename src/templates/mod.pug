@@ -47,10 +47,6 @@ block body
         .flex.justify-center.flex-wrap
           span.stat-desc.text-accent ↗︎ #{mod.downloads} #{_("mod.downloads")}
           span.stat-desc.text-secondary.ml-2.follows-count ♥ #{mod.favorites} #{_("mod.follows")}
-          - if (mod.latest_version)
-            span.stat-desc.ml-2 ⏱ #{_("mod.version")} #{mod.latest_version} #{_("mod.released")} #{mod.time_ago}
-          - else
-            span.stat-desc.ml-2 ⏱ #{_("mod.announced")} #{mod.time_ago}
         - if (user && user.slug !== mod.user_slug)
           .flex.justify-center
             a.mod-favorite.m-2(href="#!", onclick="toggleFavorite(this, '" + mod.mod_id + "')")
