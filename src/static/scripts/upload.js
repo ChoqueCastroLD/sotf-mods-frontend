@@ -116,7 +116,7 @@ async function uploadMod() {
             window.location.href = `/profile/${user.slug}?mod-uploaded=true`;
             return;
         }
-        throw result;
+        throw result.message || result.error;
     } catch (error) {
         console.log(error);
         showError(error);
@@ -154,7 +154,9 @@ async function main() {
         })
             .then(r => r.json())
             .then(r => {
-                if (r.error) throw r.error;
+                if (!r.status) {
+                    throw r.message || r.error;
+                };
                 modName.value = r.name;
                 modVersion.value = r.version;
                 modShortDescription.value = r.description;

@@ -43,10 +43,10 @@ body {
 }
 #alert-wrapper {
     position: fixed;
-    bottom: 0;
+    top: 0;
     right: 0;
-    margin-bottom: 30px;
-    margin-right: 30px;
+    margin-top: 60px;
+    margin-right: 40px;
     overflow: hidden;
     z-index: 9999;
     background: none;

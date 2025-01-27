@@ -115,12 +115,12 @@ async function main() {
             body: formData  
         })
         const data = await response.json();
-        if (response.ok) {
+        if (data.status) {
             updateModBtn.classList.add('hidden');
             location.href = `/mods/${mod.user_slug}/${mod.slug}?updated=true`;
         } else {
             console.error(_('There has been a problem with your fetch operation:'), data);
-            showError(data.error);
+            showError(data.message || data.error);
         }
         updateModBtn.disabled = false;
         hideLoadingScreen();
@@ -149,12 +149,12 @@ async function main() {
             body: formData,
         });
         const data = await response.json();
-        if (response.ok) {
+        if (data.status) {
             releaseVersionBtn.classList.add('hidden');
             location.href = `/mods/${mod.user_slug}/${mod.slug}?released=true`;
         } else {
             console.error(_('There has been a problem with your fetch operation:'), data);
-            showError(data.error);
+            showError(data.message || data.error);
         }
         releaseVersionBtn.disabled = false;
         hideLoadingScreen();

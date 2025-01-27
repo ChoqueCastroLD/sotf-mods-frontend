@@ -43,7 +43,7 @@ window.showError = error => {
             document.querySelector('#alerts').innerHTML = '';
             document.querySelector('#alerts').classList.remove('animate__backOutRight');
             document.querySelector('#alerts').classList.remove('animate__backInRight');
-            document.querySelector('#alert-wrapper').display = 'none';
+            document.querySelector('#alert-wrapper').style.display = 'none';
             // document.querySelector('#alert-wrapper').close();
         }, 800);
     }, 15000);
