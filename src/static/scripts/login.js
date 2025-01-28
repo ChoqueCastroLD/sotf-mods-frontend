@@ -21,8 +21,8 @@ loginForm.addEventListener('submit', async (event) => {
 
         const data = await response.json();
         
-        if (!data.status) {
-            throw data.message || data.error;
+        if (!response.ok || !data?.token) {
+            throw data.message || data.error || _("Something went wrong");
         }
 
         loginForm.reset();

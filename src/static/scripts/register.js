@@ -20,8 +20,8 @@ registerForm.addEventListener('submit', async (event) => {
 
         const result = await response.json();
 
-        if (!result.status) {
-            throw result.message || result.error;
+        if (result.registered !== true) {
+            throw result.message || result.error || _("Something went wrong");
         }
 
         registerForm.reset();
