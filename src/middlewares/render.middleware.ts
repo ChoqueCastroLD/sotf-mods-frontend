@@ -5,7 +5,7 @@ const nunjucks = require("nunjucks");
 
 const templatesFolder = join(dirname(import.meta.path), `../templates`);
 
-nunjucks.configure(templatesFolder, { autoescape: true, watch: true });
+nunjucks.configure(templatesFolder, { autoescape: true, watch: Bun.env.NODE_ENV === "development" });
 
 export function render(template: string, data?: Object) {
   return async ({ store, user, token, cookie, request, set }: any) => {
