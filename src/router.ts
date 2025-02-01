@@ -71,6 +71,7 @@ export const router = new Elysia()
       modsQuery.set("category", context.query.category);
     if (context.query.search) modsQuery.set("search", context.query.search);
     if (context.query.page) modsQuery.set("page", context.query.page);
+    modsQuery.set("limit", "24");
     const [
       { data: mods, meta },
       { data: featured },
