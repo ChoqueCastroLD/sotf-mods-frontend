@@ -1,0 +1,45 @@
+{% extends "layout.njk" %}
+
+{% block title %}
+    <title>Red Loader - Sons of the forest Mods</title>
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/mods.css">
+    <link rel="stylesheet" href="/static/css/loader.css">
+{% endblock %}
+
+{% block body %}
+    <div class="hero min-h-[90%]">
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="text-5xl font-bold mb-4">
+                    <img class="m-auto" src="/static/images/redlogo.png" alt="logo">
+                </h1>
+                <p class="py-14">
+                    {{ _("loader.text") }}
+                </p>
+                <div class="flex justify-center flex-wrap">
+                    <a class="btn btn-secondary" href="https://github.com/ToniMacaroni/RedLoader" target="_blank" style="min-width: 150px; margin: 8px;">Red Loader</a>
+                    <a class="btn btn-secondary" href="https://github.com/ToniMacaroni/RedManager/releases" target="_blank" style="min-width: 150px; margin: 8px;">Red Manager</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero">
+        <div class="hero-content text-center">
+            <div class="max-w-full">
+                <h2 class="text-2xl font-bold">
+                    {{ _("loader.featured_mods") }}
+                </h2>
+                <div id="mods-featured-container" class="flex flex-wrap justify-center">
+                    <span class="loading loading-infinity loading-lg text-success center"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="module" src="/static/scripts/featured.js"></script>
+{% endblock %}

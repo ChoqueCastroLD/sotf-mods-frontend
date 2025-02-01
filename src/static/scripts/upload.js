@@ -50,7 +50,7 @@ function getMod() {
         "name": modName.value.trim(),
         "short_description": modShortDescription.value.trim(),
         "description": modDescription.value.trim(),
-        "thumbnail_url": modThumbnail.files[0] ? URL.createObjectURL(modThumbnail.files[0]) : null,
+        "thumbnail_url": modThumbnail?.files?.length > 0 ? URL.createObjectURL(modThumbnail.files[0]) : null,
         "isNSFW": modIsNSFW.checked,
         "category_id": parseInt(modCategory.value) || null,
         "version": modVersion.value.trim(),
@@ -111,12 +111,12 @@ async function uploadMod() {
             },
             body: formData,
         });
-        const result = await res.json();
-        if(res.ok) {
+        const { status, message } = await res.json();
+        if (status) {
             window.location.href = `/profile/${user.slug}?mod-uploaded=true`;
             return;
         }
-        throw result.message || result.error;
+        throw message || _("Something went wrong");
     } catch (error) {
         console.log(error);
         showError(error);
@@ -157,9 +157,9 @@ async function main() {
                 if (!r.status) {
                     throw r.message || r.error;
                 };
-                modName.value = r.name;
-                modVersion.value = r.version;
-                modShortDescription.value = r.description;
+                modName.value = r.data.name;
+                modVersion.value = r.data.version;
+                modShortDescription.value = r.data.description;
                 modBasicInformation.classList.remove('hidden');
                 btnSubmitMod.disabled = false;
                 renderModItem();

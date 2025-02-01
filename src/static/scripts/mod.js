@@ -1,7 +1,5 @@
-const mod = JSON.parse(atob(document.querySelector('#sotf-mods-m').dataset.m));
+const mod = JSON.parse(document.querySelector('#sotf-mods-m').dataset.m);
 
-const btnOneClickInstall = document.getElementById('btnOneClickInstall');
-const modalOneClickInstall = document.getElementById('modalOneClickInstall');
 const updateModBtn = document.getElementById('updateModBtn');
 const releaseVersionBtn = document.getElementById('releaseVersionBtn');
 const modThumbnail = document.querySelector('#mod-thumbnail');
@@ -25,8 +23,8 @@ window.toggleFavorite = async function (elem, mod_id) {
             'Authorization': 'Bearer ' + token
         }
     });
-    const data = await response.json();
-    if (response.ok) {
+    const { status, data } = await response.json();
+    if (status) {
         if (data.favorite) {
             document.getElementById("modFavorite:" + mod_id + ":off").classList.add("hidden");
             document.getElementById("modFavorite:" + mod_id + ":on").classList.remove("hidden");
@@ -48,12 +46,12 @@ window.approve = async function (elem) {
             'Authorization': 'Bearer ' + token
         }
     });
-    const data = await response.json();
-    if (response.ok) {
+    const { status, message } = await response.json();
+    if (status) {
         location.href = `/mods/${mod.user_slug}/${mod.slug}`;
     } else {
-        console.error(_('There has been a problem with your fetch operation:'), data);
-        showError(_("There has been a problem approving the mod"));
+        console.error(message || _('There has been a problem with your fetch operation:'));
+        showError(message || _("There has been a problem approving the mod"));
     }
     elem.disabled = false;
 }
@@ -65,12 +63,12 @@ window.unapprove = async function (elem) {
             'Authorization': 'Bearer ' + token
         }
     });
-    const data = await response.json();
-    if (response.ok) {
+    const { status, message } = await response.json();
+    if (status) {
         location.href = `/mods/${mod.user_slug}/${mod.slug}`;
     } else {
-        console.error(_('There has been a problem with your fetch operation:'), data);
-        showError(_("There has been a problem unapproving the mod"));
+        console.error(message || _('There has been a problem with your fetch operation:'));
+        showError(message || _("There has been a problem unapproving the mod"));
     }
     elem.disabled = false;
 }
@@ -84,14 +82,6 @@ function renderDescriptionPreview(description) {
 async function main() {
     document.querySelector('#modDescriptionTemplate').innerHTML = markdownToHTML(mod.description);
     document.querySelector('#mod-description').value = mod.description;
-    btnOneClickInstall.addEventListener('click', () => {
-        const showModal = localStorage.getItem('one-click-modal') !== 'false';
-        if (showModal) {
-            openModal('#modalOneClickInstall');
-        } else {
-            window.location.href = `sotf-mods-oneclick://?mod_id=${encodeURIComponent(mod.mod_id)}&user_slug=${encodeURIComponent(mod.user_slug)}&slug=${encodeURIComponent(mod.slug)}&version=${encodeURIComponent(mod.latest_version)}&type=${encodeURIComponent(mod.type)}&`;
-        }
-    });
     document.querySelector('#mod-description')?.addEventListener('input', (event) => {
         renderDescriptionPreview(document.getElementById('mod-description').value);
     });
@@ -114,13 +104,13 @@ async function main() {
             },
             body: formData  
         })
-        const data = await response.json();
-        if (data.status) {
+        const { status, message } = await response.json();
+        if (status) {
             updateModBtn.classList.add('hidden');
             location.href = `/mods/${mod.user_slug}/${mod.slug}?updated=true`;
         } else {
-            console.error(_('There has been a problem with your fetch operation:'), data);
-            showError(data.message || data.error);
+            console.error(message || _('There has been a problem with your fetch operation:'));
+            showError(message || _("There has been a problem updating the mod"));
         }
         updateModBtn.disabled = false;
         hideLoadingScreen();
@@ -148,13 +138,13 @@ async function main() {
             },
             body: formData,
         });
-        const data = await response.json();
-        if (data.status) {
+        const { status, message } = await response.json();
+        if (status) {
             releaseVersionBtn.classList.add('hidden');
             location.href = `/mods/${mod.user_slug}/${mod.slug}?released=true`;
         } else {
-            console.error(_('There has been a problem with your fetch operation:'), data);
-            showError(data.message || data.error);
+            console.error(message || _('There has been a problem with your fetch operation:'));
+            showError(message || _("There has been a problem releasing the mod"));
         }
         releaseVersionBtn.disabled = false;
         hideLoadingScreen();

@@ -1,0 +1,43 @@
+{% extends "layout.njk" %}
+
+{% block body %}
+    <form id="login-form" class="hero min-h-screen" action="/login" method="post">
+        <div class="hero-content flex-col lg:flex-row-reverse">
+            <div class="text-center lg:text-left">
+                <h1 class="text-5xl font-bold">{{ _("login.login_now") }}</h1>
+                <p class="py-6">
+                    {{ _("login.existing_account") }}<br>
+                    {{ _("login.no_account") }}
+                    <a href="/register" class="link link-primary">{{ _("login.click_here") }}</a>
+                    &nbsp;{{ _("login.to_register") }}
+                </p>
+            </div>
+            <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+                <div class="card-body">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ _("login.email") }}</span>
+                        </label>
+                        <input class="input input-bordered" type="email" name="email" placeholder="{{ _("login.enter_your_email") }}">
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ _("login.password") }}</span>
+                        </label>
+                        <input class="input input-bordered" type="password" name="password" placeholder="{{ _("login.enter_your_password") }}">
+                        <label class="label">
+                            <a class="label-text-alt link link-hover" href="/register">{{ _("login.register_here") }}</a>
+                        </label>
+                    </div>
+                    <div class="form-control mt-6">
+                        <button class="btn btn-primary">{{ _("login.login") }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="module" src="/static/scripts/login.js"></script>
+{% endblock %}

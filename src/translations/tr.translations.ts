@@ -102,6 +102,7 @@ export default {
     "mods.Unapproved": "Onaylanmamış",
     "mods.NSFW": "NSFW",
     "mods.Type here": "Buraya yazın",
+    "mods.Search": "Ara",
     // Register
     "register.Register now!": "Şimdi kaydolun!",
     "register.already_have_an_account": "Zaten bir hesabınız varsa, lütfen kimlik bilgilerinizle giriş yapın.",

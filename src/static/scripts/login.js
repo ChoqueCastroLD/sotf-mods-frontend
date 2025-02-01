@@ -19,10 +19,10 @@ loginForm.addEventListener('submit', async (event) => {
             body: JSON.stringify(body)
         });
 
-        const data = await response.json();
-        
-        if (!response.ok || !data?.token) {
-            throw data.message || data.error || _("Something went wrong");
+        const { status, data, message } = await response.json();
+
+        if (!status || !data?.token) {
+            throw message || _("Something went wrong");
         }
 
         loginForm.reset();

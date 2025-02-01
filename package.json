@@ -20,6 +20,7 @@
     "fastest-levenshtein": "^1.0.16",
     "jose": "^5.9.6",
     "jsonwebtoken": "^9.0.2",
+    "nunjucks": "^3.2.4",
     "pug": "^3.0.3",
     "sanitize-html": "^2.14.0",
     "semver": "^7.6.3",

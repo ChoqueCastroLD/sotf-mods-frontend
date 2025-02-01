@@ -1,4 +1,4 @@
-const userProfile = JSON.parse(atob(document.querySelector('#sotf-mods-p').dataset.p));
+const userProfile = JSON.parse(document.querySelector('#sotf-mods-p').dataset.p);
 
 const modsDiscoverContainer = document.querySelector('#mods-discover-container');
 
@@ -7,33 +7,11 @@ let forceVerticalMod = false;
 async function getMods(approved) {
     let url = `${PUBLIC_API_URL}/api/mods?user_slug=${userProfile.slug}&limit=100&approved=${approved}`;
     const response = await fetch(url);
-    const { mods, meta } = await response.json();
-    return { mods, meta };
-}
-
-function timeAgo(date, locale = navigator.language) {
-    const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-    const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
-
-    const intervals = {
-        year: 31536000,
-        month: 2592000,
-        week: 604800,
-        day: 86400,
-        hour: 3600,
-        minute: 60,
-        second: 1,
-    };
-
-    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-        if (diffInSeconds >= secondsInUnit) {
-            const diff = Math.floor(diffInSeconds / secondsInUnit);
-            return formatter.format(-diff, unit);
-        }
+    const { status, data: mods, meta } = await response.json();
+    if (!status) {
+        throw message || _("Something went wrong");
     }
-
-    return formatter.format(0, 'second'); // "just now" or equivalent
+    return { mods, meta };
 }
 
 function getModTemplate(mod) {

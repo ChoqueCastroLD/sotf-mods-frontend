@@ -5,6 +5,48 @@ window.token = document.querySelector('#sotf-mods-t') && JSON.parse(atob(documen
 window.PUBLIC_API_URL = document.querySelector('#sotf-mods-a') && JSON.parse(atob(document.querySelector('#sotf-mods-a').dataset.a));
 window.translations = document.querySelector('#sotf-mods-l') && JSON.parse(document.querySelector('#sotf-mods-l').dataset.l);
 
+window.timeAgo = (date, locale = navigator.language) => {
+    const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    const intervals = {
+        year: 31536000,
+        month: 2592000,
+        week: 604800,
+        day: 86400,
+        hour: 3600,
+        minute: 60,
+        second: 1,
+    };
+
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+        if (diffInSeconds >= secondsInUnit) {
+            const diff = Math.floor(diffInSeconds / secondsInUnit);
+            return formatter.format(-diff, unit);
+        }
+    }
+
+    return formatter.format(0, 'second'); // "just now" or equivalent
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-time-ago]').forEach(element => {
+        element.textContent = timeAgo(new Date(element.dataset.timeAgo));
+    });
+});
+
+window.redirectWithParams = (newParams = "") => {
+    const url = new URL(window.location);
+    if (newParams) {
+        const params = new URLSearchParams(newParams);
+        for (const [key, value] of params.entries()) {
+            url.searchParams.set(key, value);
+        }
+    }
+    window.location.href = url.toString();
+}
+
 window._ = (key) => {
     return window.translations[key] || key;
 }
@@ -22,10 +64,6 @@ window.openModal = (modalSelector) => {
 }
 window.closeModal = (modalSelector) => {
     document.querySelector(modalSelector).classList.remove('modal-open');
-}
-window.dontShowOneClickModal = () => {
-    localStorage.setItem('one-click-modal', 'false');
-    closeModal('#modalOneClickInstall');
 }
 window.errorTimeout = null;
 window.showError = error => {
@@ -72,10 +110,12 @@ window.showSuccess = message => {
 
 window.sanitizeText = (text) => {
     if (!text) return "";
-    const allowedPattern = /[^a-zA-Z0-9,.¡!¿?$%&()#+;/'" _-]/g;
-    const sanitizedInput = DOMPurify.sanitize(text).replace(allowedPattern, "");
-    return sanitizedInput.trim().replace(/<[^>]*>?/gm, '');
-}
+    const allowedPattern = /[^a-zA-Z0-9,.¡!¿?$%&()#+;/'"\n _-]/g;
+    let sanitizedInput = DOMPurify.sanitize(text).replace(allowedPattern, "");
+    sanitizedInput = sanitizedInput.trim().replace(/<[^>]*>?/gm, '');
+    return sanitizedInput.replace(/\n/g, "<br>");
+};
+
 
 window.debounceDict = {};
 window.addEventListenerDebounce = (name, element, event, callback) => {

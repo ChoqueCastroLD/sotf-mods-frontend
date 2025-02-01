@@ -1,0 +1,56 @@
+{% extends "layout.njk" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/main.css">
+{% endblock %}
+
+{% block body %}
+    <form id="register-form" class="hero min-h-screen" action="/register" method="post">
+        <div class="hero-content flex-col lg:flex-row-reverse">
+            <div class="text-center lg:text-left">
+                <h1 class="text-5xl font-bold">{{ _("register.Register now!") }}</h1>
+                <p class="py-6">
+                    {{ _("register.already_have_an_account") }}<br>
+                    {{ _("register.You can do so by") }}&nbsp;
+                    <a href="/login" class="link link-primary">{{ _("register.clicking here") }}</a>
+                    &nbsp;{{ _("register.to log in.") }}
+                </p>
+            </div>
+            <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+                <div class="card-body">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ _("register.Email") }}</span>
+                        </label>
+                        <input class="input input-bordered" type="email" name="email" placeholder="{{ _("register.email_placeholder") }}">
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ _("register.Username") }}</span>
+                        </label>
+                        <input class="input input-bordered" type="text" name="username" placeholder="{{ _("register.username_placeholder") }}">
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ _("register.Password") }}</span>
+                        </label>
+                        <input class="input input-bordered" type="password" name="password" placeholder="{{ _("register.password_placeholder") }}">
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ _("register.Confirm Password") }}</span>
+                        </label>
+                        <input class="input input-bordered" type="password" name="confirm_password" placeholder="{{ _("register.repeat_password_placeholder") }}">
+                    </div>
+                    <div class="form-control mt-6">
+                        <button class="btn btn-primary">{{ _("register.Register") }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="module" src="/static/scripts/register.js"></script>
+{% endblock %}

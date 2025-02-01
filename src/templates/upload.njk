@@ -1,0 +1,124 @@
+{% extends "layout.njk" %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="/static/css/description.css">
+  <link rel="stylesheet" href="/static/css/mods.css">
+  <link rel="stylesheet" href="/static/css/upload.css">
+{% endblock %}
+
+{% block body %}
+  <div class="top-spacer"></div>
+  <div class="hero min-h-screen">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+      <div class="text-center lg:text-left">
+        <h1 class="text-5xl font-bold">{{ _("upload.Upload a mod") }}</h1>
+        <p class="py-6">
+          {{ _("upload.Fill out the fields to see how your mod is going to look") }}
+        </p>
+        <div id="mod-list-demo" style="min-width: 472px;"></div>
+        <div class="md:m-4">
+          <label class="label">
+            <span class="label-text">{{ _("upload.Mod description preview") }}</span>
+          </label>
+          <div id="mod-description-preview" class="mod-description-template"></div>
+        </div>
+      </div>
+      <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+        <div class="card-body">
+          <p class="collapse-title text-xl font-medium">{{ _("upload.Mod upload") }} (.zip)</p>
+          <input id="mod-file" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs mb-6" accept=".zip">
+          <input id="mod-version" type="hidden" name="version" value="1.0.0">
+
+          <div id="mod-basic-information" class="join join-vertical w-full hidden">
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" checked="checked">
+              <div class="collapse-title text-xl font-medium">
+                {{ _("upload.Basic information") }}
+              </div>
+              <div class="collapse-content">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("upload.Name") }}</span>
+                  </label>
+                  <input id="mod-name" type="text" class="input input-bordered" name="name" placeholder="{{ _("upload.Enter the name of the mod") }}" minlength="3" maxlength="64">
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("upload.Short description") }}</span>
+                    <span class="label-text-alt">({{ _("upload.max") }}: 200 {{ _("upload.characters") }})</span>
+                  </label>
+                  <input id="mod-shortDescription" type="text" class="input input-bordered" name="name" placeholder="{{ _("upload.Enter the short description of the mod") }}" minlength="3" maxlength="200">
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("upload.Description") }}</span>
+                    <span class="label-text-alt">
+                      ( <span id="mod-description-character-count">0</span> / 2000 {{ _("upload.characters") }} )
+                    </span>
+                  </label>
+                  <textarea id="mod-description" class="textarea textarea-bordered h-24" name="description" placeholder="{{ _("upload.Enter the description of the mod...") }}" minlength="3" maxlength="2000"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4">
+              <div class="collapse-title text-xl font-medium">
+                {{ _("upload.Category") }}
+              </div>
+              <div class="collapse-content">
+                <label class="cursor-pointer label ml-2">
+                  <span class="label-text">{{ _("upload.Has NSFW content") }}</span>
+                  <input id="mod-isNSFW" name="isNSFW" type="checkbox" class="toggle toggle-secondary ml-2">
+                </label>
+                <div class="form-control w-full max-w-xs">
+                  <label class="label">
+                    <span class="label-text">{{ _("upload.Category") }}</span>
+                  </label>
+                  <select id="mod-category" class="select select-bordered">
+                    <option disabled selected>{{ _("upload.Pick one category") }}</option>
+                    {% for category in categories %}
+                      <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4">
+              <div class="collapse-title text-xl font-medium">
+                {{ _("upload.Images") }}
+              </div>
+              <div class="collapse-content">
+                <p>{{ _("upload.Images must be in .png, .jpeg or .gif format") }}</p>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("upload.Thumbnail") }}</span>
+                  </label>
+                  <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.gif" required>
+                </div>
+                <p>{{ _("upload.Mod thumbnail resolution must be 2560x1440 or 1080x608") }}</p>
+                <a href="/static/images/thumbnail.png" target="_blank" style="color: #36d399; cursor: pointer;">
+                  <p>{{ _("upload.Download thumbnail template") }}</p>
+                </a>
+                <a href="/static/images/hd_thumbnail.png" target="_blank" style="color: #d926a9; cursor: pointer;">
+                  <p>{{ _("upload.Download hd thumbnail template") }}</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-submit-mod" class="btn btn-outline btn-accent" disabled>{{ _("upload.Submit") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="mod-page-demo"></div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+  <script src="/static/scripts/upload.js" type="module"></script>
+{% endblock %}

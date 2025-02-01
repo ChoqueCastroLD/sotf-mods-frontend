@@ -102,6 +102,7 @@ export default {
     "mods.Unapproved": "Не утвержденные",
     "mods.NSFW": "Для взрослых",
     "mods.Type here": "Введите здесь",
+    "mods.Search": "Поиск",
     // Register
     "register.Register now!": "Зарегистрируйтесь сейчас!",
     "register.already_have_an_account": "Если у вас уже есть учетная запись, пожалуйста, войдите с помощью своих учетных данных.",

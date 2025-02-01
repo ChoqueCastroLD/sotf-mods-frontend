@@ -102,6 +102,7 @@ export default {
     "mods.Unapproved": "Niet goedgekeurd",
     "mods.NSFW": "NSFW",
     "mods.Type here": "Typ hier",
+    "mods.Search": "Zoeken",
     // Register
     "register.Register now!": "Registreer nu!",
     "register.already_have_an_account": "Als je al een account hebt, log dan in met je gegevens.",

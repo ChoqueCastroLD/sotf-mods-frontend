@@ -102,6 +102,7 @@ export default {
     "mods.Unapproved": "Ej godkända",
     "mods.NSFW": "NSFW",
     "mods.Type here": "Skriv här",
+    "mods.Search": "Sök",
     // Register
     "register.Register now!": "Registrera dig nu!",
     "register.already_have_an_account": "Om du redan har ett konto, logga in med dina uppgifter.",

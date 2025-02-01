@@ -102,6 +102,7 @@ export default {
     "mods.Unapproved": "未批准",
     "mods.NSFW": "NSFW",
     "mods.Type here": "在此输入",
+    "mods.Search": "搜索",
     // Register
     "register.Register now!": "立即注册！",
     "register.already_have_an_account": "如果您已经有账号，请使用您的凭据登录。",

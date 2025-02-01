@@ -1,0 +1,77 @@
+<nav class="navbar fixed bg-navbar flex-wrap" style="z-index: 100; top: 0;">
+    <div>
+        <a class="btn btn-ghost normal-case text-xl navbar-logo-button" href="/">
+            <img src="/static/images/logo-large.png" alt="logo" class="navbar-logo-img hidden md:block">
+            <img src="/static/images/logo-sm.png" alt="logo" class="navbar-logo-img hidden sm:block md:hidden">
+            <img src="/static/images/logo.png" alt="logo" class="navbar-logo-img block sm:hidden">
+        </a>
+    </div>
+    <div class="flex-grow flex justify-center items-center">
+        {% if not user %}
+            <span class="text-sm text-base-content hidden lg:block">{{ _("_navbar.no_ads_tip") }}</span>
+        {% endif %}
+    </div>
+    <div class="flex flex-wrap justify-end">
+        <a class="btn btn-ghost" href="/loader">Red Loader</a>
+        <a class="btn btn-ghost" href="https://discord.gg/sotf" target="_blank">Discord</a>
+        
+        <div class="dropdown dropdown-end">
+            <label class="btn btn-ghost btn-circle uppercase" tabindex="0">{{ "中文" if lang == 'ch' else lang }}</label>
+            <ul class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-[1]" tabindex="0">
+                {% for language in languages %}
+                    <li class="menu-item">
+                        <a href="#" onclick='cookieStore.set("lang", "{{ language.code }}").then(() => location.reload()).catch(err => console.error(err))'>{{ language.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="dropdown dropdown-end">
+            <label class="btn btn-ghost btn-circle avatar" tabindex="0">
+                {% if user %}
+                    {% if user.image_url %}
+                        <div class="w-10 rounded-full">
+                            <img src="{{ user.image_url }}">
+                        </div>
+                    {% else %}
+                        <div class="avatar placeholder">
+                            <div class="bg-neutral-focus text-neutral-content rounded-full w-12">
+                                <span>{{ user.name | first | upper }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="w-10 rounded-full">
+                        <img src="https://videogames.si.com/.image/ar_4:3%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTk2NDYxOTIwNjQ2MDc5NjM4/sons-of-the-forest-kelvin.jpg">
+                    </div>
+                {% endif %}
+            </label>
+            <ul class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-[1]" tabindex="0">
+                {% if user %}
+                    <li>
+                        <a class="disabled" href="/profile/{{ user.slug }}">{{ user.name }}</a>
+                    </li>
+                    <li>
+                        <a href="/profile/{{ user.slug }}">{{ _("_navbar.profile") }}</a>
+                    </li>
+                    <li>
+                        <a class="justify-between" href="/upload">
+                            {{ _("_navbar.upload") }}
+                            <span class="badge">{{ _("_navbar.new") }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/logout">{{ _("_navbar.logout") }}</a>
+                    </li>
+                {% else %}
+                    <li class="menu-item">
+                        <a href="/login">{{ _("_navbar.login") }}</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/register">{{ _("_navbar.register") }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
