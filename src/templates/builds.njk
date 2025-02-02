@@ -9,24 +9,26 @@
     {% if not user %}
         <div class="hero bg-base-200 mb-8">
             <div class="hero-content flex-col lg:flex-row-reverse">
-                <img src="https://static.wikia.nocookie.net/sonsoftheforest_gamepedia_en/images/5/53/GolfCart.png" class="max-w-[150px] rounded-lg shadow-2xl"/>
+                <img src="https://cdn.pixabay.com/photo/2022/05/13/09/56/log-cabin-7193291_960_720.png" class="max-w-[150px] rounded-lg shadow-2xl"/>
                 <div>
                     <h1 class="text-5xl font-bold">{{ _("_mods.question") }}</h1>
                     <p class="py-6">
-                        {{ _("_mods.answer") }}<br>
-                        {{ _("_mods.answer_2") }}
+                        {{ _("Install BuildShare to use and share builds.") }}<br>
+                        {{ _("BuildShare is a mod that allows you to create and share builds for Sons of the Forest.") }}
                     </p>
-                    <a class="btn btn-secondary" href="https://github.com/ToniMacaroni/RedManager/releases/latest" target="_blank">{{ _("_mods.download_button") }}</a>
+                    <a class="btn btn-secondary" href="https://sotf-mods.com/mods/tonimacaroni/buildshare" target="_blank">{{ _("Download BuildShare") }}</a>
+
+
                 </div>
             </div>
         </div>
     {% endif %}
     <div class="flex flex-wrap justify-center mb-2">
-        <h1 class="text-4xl">{{ _("mods.Mods of the week") }}</h1>
+        <h1 class="text-4xl">{{ _("Builds of the week") }}</h1>
     </div>
     <div id="mods-featured" class="flex flex-wrap justify-around mb-4 pb-4 min-h-64">
         {% for mod in featured %}
-            <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/mods/{{ mod.user_slug }}/{{ mod.slug }}">
+            <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/builds/{{ mod.user_slug }}/{{ mod.slug }}">
                 <figure class="col-start-1 row-start-1"><img data-lazy-src="{{ mod.imageUrl }}" alt="{{ mod.name }}" loading="lazy"/></figure>
                 <div class="card-body rounded-lg col-start-1 row-start-1 z-20 relative bg-black bg-opacity-0 transition opacity-10 hover:opacity-100 hover:bg-opacity-80">
                     <h2 class="card-title">
@@ -55,16 +57,17 @@
                 <div class="stat-desc text-secondary">{{ _("mods.Since") }} 2023</div>
             </div>
             <div class="stat place-items-center">
-                <div class="stat-title">{{ _("mods.Users") }}</div>
+                <div class="stat-title">{{ _("Users") }}</div>
                 <div class="stat-value text-accent">{{ stats.users }}</div>
-                <div class="stat-desc text-accent">{{ _("mods.Registered") }}</div>
+                <div class="stat-desc text-accent">{{ _("Registered") }}</div>
             </div>
             <div class="stat place-items-center" style="min-width: 280px;">
-                <div class="stat-title">{{ _("mods.Mods Published") }}</div>
+                <div class="stat-title">{{ _("Builds Published") }}</div>
                 <div class="stat-value text-primary">{{ stats.mods }}</div>
-                <div class="stat-desc text-primary">{{ _("mods.From") }}
+                <div class="stat-desc text-primary">{{ _("From") }}
                     {{ stats.developers }}
-                    {{ _("mods.developers") }}</div>
+
+                    {{ _("builders") }}</div>
             </div>
         </div>
     </div>
@@ -86,14 +89,6 @@
                     <option value="unpopular">{{ _("mods.Unpopular") }}</option>
                     <option value="random" disabled>{{ _("mods.Random") }}</option>
                 </select>
-                <label class="cursor-pointer label m-auto">
-                    <span class="label-text">{{ _("mods.Unapproved") }}</span>
-                    <input id="mods-discover-show-unapproved" name="show_unapproved" class="toggle toggle-secondary ml-2" type="checkbox">
-                </label>
-                <label class="cursor-pointer label m-auto">
-                    <span class="label-text">{{ _("mods.NSFW") }}</span>
-                    <input id="mods-discover-nsfw" name="nsfw" class="toggle toggle-secondary ml-2" type="checkbox">
-                </label>
             </div>
             <div class="flex justify-center mt-4">
                 <button type="submit" class="btn btn-primary uppercase btn-search">{{ _("mods.Search") }}</button>
@@ -123,20 +118,17 @@
                     </figure>
                     <div class="card-body">
                         <div class="mod-card-badges">
-                            <a href="/mods?category={{ mod.category_slug }}">
+                            <a href="/builds?category={{ mod.category_slug }}">
                                 <div class="badge badge-ghost">{{ mod.category_name }}</div>
                             </a>
-                            {% if mod.isNSFW %}
-                                <div class="badge badge-secondary badge-outline">NSFW</div>
-                            {% endif %}
                         </div>
                         <h2 class="card-title w-full">{{ mod.name }}
-                            <span class="card-title-version">{{ mod.latest_version }}</span></h2>
+                            <span class="card-title-version"></span></h2>
                         <p>by <a class="hover-underline-animation" href="/profile/{{ mod.user_slug }}">{{ mod.user_name }}</a>
                         </p>
                         <p class="text-justify text-wrap-anywhere">{{ mod.short_description }}</p>
                         <div class="card-actions justify-end">
-                            <a class="btn btn-outline {% if mod.latest_version %}btn-accent{% endif %} btn-sm" href="/mods/{{ mod.user_slug }}/{{ mod.slug }}">{{ _("See More") }}</a>
+                            <a class="btn btn-outline {% if mod.latest_version %}btn-accent{% endif %} btn-sm" href="/builds/{{ mod.user_slug }}/{{ mod.slug }}">{{ _("See More") }}</a>
                         </div>
                         <div class="card-actions justify-end">
                             <span class="stat-desc text-accent tooltip" data-tip="{{ mod.lastWeekDownloads or 0 }} {{ _("downloads in the last week") }}">↗︎ {{ mod.downloads }}
@@ -146,7 +138,7 @@
                     </div>
                 </div>
             {% else %}
-                <h1 class="text-center">{{ _("No mods found") }}</h1>
+                <h1 class="text-center">{{ _("No builds found") }}</h1>
             {% endfor %}
 
         </div>
@@ -180,5 +172,5 @@
 {% endblock %}
 
 {% block scripts %}
-    <script type="module" src="/static/scripts/mods.js"></script>
+    <script type="module" src="/static/scripts/builds.js"></script>
 {% endblock %}

@@ -17,6 +17,7 @@ export default {
     // Navbar
     "_navbar.profile": "Profil",
     "_navbar.upload": "Hochladen",
+    "_navbar.upload_build": "Build hochladen",
     "_navbar.new": "Neu",
     "_navbar.logout": "Abmelden",
     "_navbar.login": "Anmelden",

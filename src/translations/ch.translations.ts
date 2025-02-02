@@ -17,6 +17,7 @@ export default {
     // Navbar
     "_navbar.profile": "个人资料",
     "_navbar.upload": "上传",
+    "_navbar.upload_build": "上传构建",
     "_navbar.new": "新建",
     "_navbar.logout": "登出",
     "_navbar.login": "登录",
@@ -132,7 +133,7 @@ export default {
     "upload.Has NSFW content": "含有 NSFW 内容",
     "upload.Pick one category": "选择一个分类",
     "upload.Images": "图片",
-    "upload.Images must be in .png, .jpeg or .gif format": "图片必须是 .png、.jpeg 或 .gif 格式",
+    "upload.Images must be in .png, .jpeg, .jpg or .gif format": "图片必须是 .png、.jpeg、.jpg 或 .gif 格式",
     "upload.Thumbnail": "缩略图",
     "upload.Mod thumbnail resolution must be 2560x1440 or 1080x608": "模组缩略图分辨率必须为 2560x1440 或 1080x608",
     "upload.Download thumbnail template": "下载缩略图模板",

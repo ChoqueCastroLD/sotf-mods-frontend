@@ -28,12 +28,8 @@
         <img class="mod-logo {{ 'blur-md hover:blur-none' if mod.isNSFW and not user else '' }}" data-lazy-src="{{ mod.imageUrl }}" alt="{{ mod.name }}">
         <div class="flex justify-center flex-wrap">
           <p class="text-base m-4" style="overflow-wrap: anywhere;">{{ mod.short_description }}</p>
+
         </div>
-        {% if not mod.isApproved %}
-          <div class="flex justify-center">
-            <p class="text-error text-xs mt-4">{{ _("mod.pending_approval") }}</p>
-          </div>
-        {% endif %}
         <div class="flex justify-center flex-wrap">
           {% if mod.latest_version %}
             <a class="btn btn-outline btn-accent m-4 table-auto" href="/mods/{{ mod.user_slug }}/{{ mod.slug }}/download/{{ mod.latest_version }}" target="_blank">
@@ -73,15 +69,6 @@
           <div class="flex justify-center mt-4 flex-wrap">
             <a class="btn btn-outline m-2" onclick="openModal('#modalEdit')">{{ _("mod.update_details") }}</a>
             <a class="btn btn-outline m-2" onclick="openModal('#modalReleaseVersion')">{{ _("mod.release_version") }}</a>
-          </div>
-        {% endif %}
-        {% if user and user.canApprove %}
-          <div class="flex justify-center mt-4 flex-wrap">
-            {% if mod.isApproved %}
-              <button class="btn btn-outline m-2" onclick="unapprove(this)">{{ _("mod.unapprove_mod") }}</button>
-            {% else %}
-              <button class="btn btn-outline m-2" onclick="approve(this)">{{ _("mod.approve_mod") }}</button>
-            {% endif %}
           </div>
         {% endif %}
       </div>
@@ -179,23 +166,18 @@
       </div>
       <p>{{ _("mod.thumbnail_resolution") }}</p>
       <a href="https://sotf-mods.com/images/thumbnail.png" target="_blank" style="color: #36d399; cursor: pointer;">
-
         <p>{{ _("mod.Download thumbnail template") }}</p>
       </a>
       <a href="https://sotf-mods.com/images/hd_thumbnail.png" target="_blank" style="color: #d926a9; cursor: pointer;">
         <p>{{ _("mod.Download hd thumbnail template") }}</p>
       </a>
       <label class="cursor-pointer label ml-2">
-        <span class="label-text">{{ _("mod.Has NSFW content") }}</span>
-        <input id="mod-isNSFW" type="checkbox" class="toggle toggle-secondary ml-2" name="isNSFW" {{ "checked" if mod.isNSFW }}>
-      </label>
-      <label class="cursor-pointer label ml-2">
-        <span class="label-text">{{ _("mod.Update images") }}</span>
+        <span class="label-text">{{ _("Update images") }}</span>
         <input id="mod-update-images" type="checkbox" class="toggle toggle-secondary ml-2" name="updateImages">
       </label>
       <div id="mod-update-images-container" class="hidden">
         <label class="cursor-pointer label ml-2">
-          <span class="label-text">{{ _("mod.Update images") }}</span>
+          <span class="label-text">{{ _("New images") }}</span>
           <input id="mod-images" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.gif" multiple max="5">
         </label>
       </div>
@@ -203,7 +185,6 @@
 
         <button class="btn" onclick="closeModal('#modalEdit')">{{ _("mod.Close") }}</button>
         <button id="updateModBtn" class="btn btn-primary">{{ _("mod.Update") }}</button>
-
       </div>
     </form>
   </dialog>
@@ -236,5 +217,5 @@
 
 {% block scripts %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
-  <script src="/static/scripts/mod.js" type="module"></script>
+  <script src="/static/scripts/build.js" type="module"></script>
 {% endblock %}

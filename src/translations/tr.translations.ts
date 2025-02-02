@@ -17,6 +17,7 @@ export default {
     // Navbar
     "_navbar.profile": "Profil",
     "_navbar.upload": "Yükle",
+    "_navbar.upload_build": "Yükle Build",
     "_navbar.new": "Yeni",
     "_navbar.logout": "Çıkış Yap",
     "_navbar.login": "Giriş Yap",

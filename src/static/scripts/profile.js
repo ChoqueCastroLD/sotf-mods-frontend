@@ -15,7 +15,7 @@ async function getMods(approved) {
 }
 
 function getModTemplate(mod) {
-    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.thumbnail_url}" class="${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name}"/></figure>
+    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.imageUrl}" class="${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="/mods?category=${mod.category_slug}">

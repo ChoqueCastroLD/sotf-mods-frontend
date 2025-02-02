@@ -47,11 +47,27 @@ export const router = new Elysia()
   .get(
     "/upload",
     async (context) => {
-      const { status, data: categories } = await callAPI(`/api/categories`);
+      const { status, data: categories } = await callAPI(
+        `/api/categories?type=Mod`
+      );
       if (!status) {
         return (context.set.redirect = "/404");
       }
       return render("upload", { categories })(context);
+    },
+
+    { beforeHandle: loggedOnly }
+  )
+  .get(
+    "/upload-build",
+    async (context) => {
+      const { status, data: categories } = await callAPI(
+        `/api/categories?type=Build`
+      );
+      if (!status) {
+        return (context.set.redirect = "/404");
+      }
+      return render("upload-build", { categories })(context);
     },
     { beforeHandle: loggedOnly }
   )
@@ -59,6 +75,7 @@ export const router = new Elysia()
   .get("/", async ({ set }) => {
     set.redirect = "/mods";
   })
+
   .get("/mods", async (context) => {
     let modsQuery = new URLSearchParams();
     modsQuery.set("nsfw", context.query.nsfw === "true" ? "true" : "false");
@@ -72,6 +89,7 @@ export const router = new Elysia()
     if (context.query.search) modsQuery.set("search", context.query.search);
     if (context.query.page) modsQuery.set("page", context.query.page);
     modsQuery.set("limit", "24");
+    modsQuery.set("type", "Mod");
     const [
       { data: mods, meta },
       { data: featured },
@@ -81,10 +99,41 @@ export const router = new Elysia()
       callAPI(`/api/mods?${modsQuery.toString()}`),
       callAPI(`/api/mods/featured`),
       callAPI(`/api/stats`),
-      callAPI(`/api/categories`),
+      callAPI(`/api/categories?type=Mod`),
     ]);
-    
+
     return render("mods", { mods, meta, stats, categories, featured })(context);
+  })
+  .get("/builds", async (context) => {
+    let modsQuery = new URLSearchParams();
+    modsQuery.set("nsfw", context.query.nsfw === "true" ? "true" : "false");
+    modsQuery.set(
+      "approved",
+      context.query.showunapproved === "true" ? "false" : "true"
+    );
+    modsQuery.set("orderby", context.query.orderby || "newest");
+    if (context.query.category)
+      modsQuery.set("category", context.query.category);
+    if (context.query.search) modsQuery.set("search", context.query.search);
+    if (context.query.page) modsQuery.set("page", context.query.page);
+    modsQuery.set("limit", "24");
+    modsQuery.set("type", "Build");
+    const [
+      { data: mods, meta },
+      { data: featured },
+      { data: stats },
+      { data: categories },
+    ] = await Promise.all([
+      callAPI(`/api/mods?${modsQuery.toString()}`),
+      callAPI(`/api/builds/featured`),
+      callAPI(`/api/stats/builds`),
+      callAPI(`/api/categories?type=Build`),
+    ]);
+    console.log(`/api/mods?${modsQuery.toString()}`);
+    
+    return render("builds", { mods, meta, stats, categories, featured })(
+      context
+    );
   })
   .get("/mods/:user_slug/:mod_slug", async (context) => {
     const {
@@ -105,6 +154,26 @@ export const router = new Elysia()
     console.log(mod);
 
     return render("mod", { mod })(context);
+  })
+  .get("/builds/:user_slug/:build_slug", async (context) => {
+    const {
+      params: { user_slug, build_slug },
+    } = context;
+
+    console.log({ user_slug, build_slug });
+    const { status, data: build } = await callAPI(
+      `/api/mods/slug/${user_slug}/${build_slug}`,
+      {
+        headers: {
+          Authorization: "Bearer " + context.cookie.token.value,
+        },
+      }
+    );
+    if (!status) {
+      return (context.set.redirect = "/404");
+    }
+    console.log(build);
+    return render("build", { mod: build })(context);
   })
   .get(
     "/mods/:user_slug/:mod_slug/download/:version",

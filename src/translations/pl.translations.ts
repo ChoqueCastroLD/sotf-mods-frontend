@@ -17,6 +17,7 @@ export default {
     // Navbar
     "_navbar.profile": "Profil",
     "_navbar.upload": "Prześlij mod",
+    "_navbar.upload_build": "Prześlij build",
     "_navbar.new": "Nowy",
     "_navbar.logout": "Wyloguj",
     "_navbar.login": "Zaloguj się",

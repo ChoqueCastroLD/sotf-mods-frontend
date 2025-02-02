@@ -12,6 +12,8 @@
         {% endif %}
     </div>
     <div class="flex flex-wrap justify-end">
+        <a class="btn btn-ghost" href="/mods">Mods</a>
+        <a class="btn btn-ghost" href="/builds">Builds</a>
         <a class="btn btn-ghost" href="/loader">Red Loader</a>
         <a class="btn btn-ghost" href="https://discord.gg/sotf" target="_blank">Discord</a>
         
@@ -57,6 +59,11 @@
                     <li>
                         <a class="justify-between" href="/upload">
                             {{ _("_navbar.upload") }}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="justify-between" href="/upload-build">
+                            {{ _("_navbar.upload_build") }}
                             <span class="badge">{{ _("_navbar.new") }}</span>
                         </a>
                     </li>

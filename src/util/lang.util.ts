@@ -50,7 +50,7 @@ export function getTranslations(lang: string): any {
 }
 
 export function _(lang: string, key: string): string {
-  return getTranslations(lang)[key];
+  return getTranslations(lang)[key] || getTranslations("en")[key] || key;
 }
 
 export function getTranslator(lang: string) {

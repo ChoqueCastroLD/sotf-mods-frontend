@@ -1,0 +1,134 @@
+{% extends "layout.njk" %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="/static/css/description.css">
+  <link rel="stylesheet" href="/static/css/mods.css">
+  <link rel="stylesheet" href="/static/css/upload-build.css">
+{% endblock %}
+
+{% block body %}
+  <div class="top-spacer"></div>
+  <div class="hero min-h-screen">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+      <div class="text-center lg:text-left">
+        <h1 class="text-5xl font-bold">{{ _("Upload a build") }}</h1>
+        <p class="py-6">
+          {{ _("Fill out the fields to see how your build is going to look") }}
+        </p>
+        <div id="build-list-demo" style="min-width: 472px;"></div>
+        <div class="md:m-4">
+          <label class="label">
+            <span class="label-text">{{ _("Build description preview") }}</span>
+          </label>
+          <div id="build-description-preview" class="build-description-template"></div>
+        </div>
+      </div>
+      <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+        <div class="card-body">
+          <p class="collapse-title text-xl font-medium">{{ _("Build upload") }} (.json)</p>
+          <input id="build-file" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs mb-6" accept=".json">
+          <input id="build-version" type="hidden" name="version" value="1.0.0">
+
+
+          <div id="build-basic-information" class="join join-vertical w-full hidden">
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" checked="checked">
+              <div class="collapse-title text-xl font-medium">
+                {{ _("Basic information") }}
+              </div>
+              <div class="collapse-content">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("Name") }}</span>
+                  </label>
+                  <input id="build-name" type="text" class="input input-bordered" name="name" disabled>
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("Short description") }}</span>
+                    <span class="label-text-alt">({{ _("max") }}: 200 {{ _("characters") }})</span>
+                  </label>
+
+                  <input id="build-shortDescription" type="text" class="input input-bordered" name="name" disabled>
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("Description") }}</span>
+                    <span class="label-text-alt">
+                      ( <span id="build-description-character-count">0</span> / 2000 {{ _("characters") }} )
+
+                    </span>
+                  </label>
+                  <textarea id="build-description" class="textarea textarea-bordered h-24" name="description" placeholder="{{ _("Enter the description of the build...") }}" minlength="3" maxlength="2000"></textarea>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4">
+              <div class="collapse-title text-xl font-medium">
+                {{ _("Category") }}
+              </div>
+              <div class="collapse-content">
+
+                <div class="form-control w-full max-w-xs">
+                  <label class="label">
+                    <span class="label-text">{{ _("Category") }}</span>
+                  </label>
+                  <select id="build-category" class="select select-bordered">
+
+                    <option disabled selected>{{ _("Pick one category") }}</option>
+                    {% for category in categories %}
+                      <option value="{{ category.id }}">{{ category.name }}</option>
+
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4">
+              <div class="collapse-title text-xl font-medium">
+                {{ _("Images") }}
+              </div>
+              <div class="collapse-content">
+
+                <p>{{ _("Images must be in .png, .jpeg or .gif format") }}</p>
+                <div class="form-control">
+                  <label class="label">
+
+                    <span class="label-text">{{ _("Thumbnail") }}</span>
+                  </label>
+                  <input id="build-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.jpg,.gif" required>
+
+
+                </div>
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ _("Images") }}</span>
+                  </label>
+                  <input id="build-images" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.jpg,.gif" multiple>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <button id="btn-submit-build" class="btn btn-outline btn-accent" disabled>{{ _("Submit") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="build-page-demo"></div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+  <script src="/static/scripts/upload-build.js" type="module"></script>
+{% endblock %}

@@ -17,6 +17,7 @@ export default {
     // Navbar
     "_navbar.profile": "Perfil",
     "_navbar.upload": "Subir",
+    "_navbar.upload_build": "Subir Build",
     "_navbar.new": "Nuevo",
     "_navbar.logout": "Cerrar sesión",
     "_navbar.login": "Iniciar sesión",

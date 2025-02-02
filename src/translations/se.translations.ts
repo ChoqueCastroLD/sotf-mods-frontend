@@ -17,6 +17,7 @@ export default {
     // Navbar
     "_navbar.profile": "Profil",
     "_navbar.upload": "Ladda upp",
+    "_navbar.upload_build": "Ladda upp build",
     "_navbar.new": "Ny",
     "_navbar.logout": "Logga ut",
     "_navbar.login": "Logga in",
