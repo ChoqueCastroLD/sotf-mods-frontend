@@ -162,7 +162,7 @@
         <label class="label">
           <span class="label-text">{{ _("mod.Thumbnail") }}</span>
         </label>
-        <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.gif">
+        <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.webp,.gif">
       </div>
       <p>{{ _("mod.thumbnail_resolution") }}</p>
       <a href="https://sotf-mods.com/images/thumbnail.png" target="_blank" style="color: #36d399; cursor: pointer;">
@@ -178,11 +178,10 @@
       <div id="mod-update-images-container" class="hidden">
         <label class="cursor-pointer label ml-2">
           <span class="label-text">{{ _("New images") }}</span>
-          <input id="mod-images" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.gif" multiple max="5">
+          <input id="mod-images" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.webp,.gif" multiple max="5">
         </label>
       </div>
       <div class="modal-action">
-
         <button class="btn" onclick="closeModal('#modalEdit')">{{ _("mod.Close") }}</button>
         <button id="updateModBtn" class="btn btn-primary">{{ _("mod.Update") }}</button>
       </div>

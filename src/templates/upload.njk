@@ -92,13 +92,14 @@
                 {{ _("upload.Images") }}
               </div>
               <div class="collapse-content">
-                <p>{{ _("upload.Images must be in .png, .jpeg, .jpg or .gif format") }}</p>
+                <p>{{ _("upload.Images must be in .png, .jpeg, .jpg, .webp or .gif format") }}</p>
                 <div class="form-control">
                   <label class="label">
                     <span class="label-text">{{ _("upload.Thumbnail") }}</span>
                   </label>
-                  <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.jpg,.gif" required>
+                  <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.jpg,.webp,.gif" required>
                 </div>
+
 
                 <p>{{ _("upload.Mod thumbnail resolution must be 2560x1440 or 1080x608") }}</p>
                 <a href="/static/images/thumbnail.png" target="_blank" style="color: #36d399; cursor: pointer;">

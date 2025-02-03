@@ -88,8 +88,8 @@ function validateMod(mod) {
   if (!modFile.files[0]) throw _("Build file is required!");
   if (!modFile.files[0].name.endsWith(".json"))
     throw _("Build file must be a .json file!");
-  if (modFile.files[0].size > 2 * 1024 * 1024)
-    throw _("Build file must be less than 2MB!");
+  if (modFile.files[0].size > 100 * 1024 * 1024)
+    throw _("Build file must be less than 100MB!");
   if (!mod.name) throw _("Build name is required!");
   if (mod.name.length < 3)
     throw _("Build name must be at least 3 characters long!");
@@ -109,24 +109,25 @@ function validateMod(mod) {
   if (isNaN(mod.category_id)) throw _("Build category is not valid!");
   if (!modThumbnail.files[0]) throw _("Build thumbnail is required!");
   if (
-    ![".png", ".jpg", ".gif"].includes(
+    ![".png", ".jpg", ".jpeg", ".webp", ".gif"].includes(
       modThumbnail.files[0].name.substring(
         modThumbnail.files[0].name.lastIndexOf(".")
       )
     )
   )
-    throw _("Build thumbnail must be a .png, .jpg, or .gif file!");
+
+    throw _("Build thumbnail must be a .png, .jpg, .jpeg, .webp or .gif file!");
   if (modThumbnail.files[0].size > 8 * 1024 * 1024)
     throw _("Build thumbnail must be less than 8MB!");
   if ([...modImages.files].length > 5)
     throw _("Build images must be less than 5 files!");
   for (const file of [...modImages.files]) {
     if (
-      ![".png", ".jpg", ".gif"].includes(
+      ![".png", ".jpg", ".jpeg", ".webp", ".gif"].includes(
         file.name.substring(file.name.lastIndexOf("."))
       )
     )
-      throw _("Build images must be a .png, .jpg, or .gif file!");
+      throw _("Build images must be a .png, .jpg, .jpeg, .webp or .gif file!");
     if (file.size > 8 * 1024 * 1024)
       throw _("Build images must be less than 8MB!");
   }

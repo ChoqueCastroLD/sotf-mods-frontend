@@ -122,24 +122,24 @@ function validateMod(mod) {
     throw _("Mod version is not valid! (must follow format x.x.x)");
   if (!modThumbnail.files[0]) throw _("Mod thumbnail is required!");
   if (
-    ![".zip", ".png", ".jpg", ".gif"].includes(
+    ![".zip", ".png", ".jpg", ".jpeg", ".webp", ".gif"].includes(
       modThumbnail.files[0].name.substring(
         modThumbnail.files[0].name.lastIndexOf(".")
       )
     )
   )
-    throw _("Mod thumbnail must be a .png, .jpg, or .gif file!");
+    throw _("Mod thumbnail must be a .png, .jpg, .jpeg, .webp or .gif file!");
   if (modThumbnail.files[0].size > 8 * 1024 * 1024)
     throw _("Mod thumbnail must be less than 8MB!");
   if ([...modImages.files].length > 5)
     throw _("Build images must be less than 5 files!");
   for (const file of [...modImages.files]) {
     if (
-      ![".png", ".jpg", ".gif"].includes(
+      ![".png", ".jpg", ".jpeg", ".webp", ".gif"].includes(
         file.name.substring(file.name.lastIndexOf("."))
       )
     )
-      throw _("Build images must be a .png, .jpg, or .gif file!");
+      throw _("Build images must be a .png, .jpg, .jpeg, .webp or .gif file!");
     if (file.size > 8 * 1024 * 1024)
       throw _("Build images must be less than 8MB!");
   }
