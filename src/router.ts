@@ -129,6 +129,8 @@ export const router = new Elysia()
       callAPI(`/api/stats/builds`),
       callAPI(`/api/categories?type=Build`),
     ]);
+    console.log(featured);
+    
     console.log(`/api/mods?${modsQuery.toString()}`);
     
     return render("builds", { mods, meta, stats, categories, featured })(
