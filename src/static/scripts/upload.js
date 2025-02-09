@@ -147,7 +147,6 @@ function validateMod(mod) {
 }
 
 async function uploadMod() {
-  showLoadingScreen();
   btnSubmitMod.classList.add("btn-disabled");
   btnSubmitMod.disabled = true;
   try {
@@ -185,7 +184,6 @@ async function uploadMod() {
     console.log(error);
     showError(error);
   } finally {
-    hideLoadingScreen();
     btnSubmitMod.classList.remove("btn-disabled");
     btnSubmitMod.disabled = false;
   }

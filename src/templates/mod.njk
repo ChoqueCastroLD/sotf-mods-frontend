@@ -170,7 +170,7 @@
           </div>
           <div class="md:m-4">
             <label class="label">
-              <span class="label-text">{{ _("mod.Mod description preview") }}</span>
+              <span class="label-text">{{ _("Mod description preview") }}</span>
             </label>
             <div id="mod-description-preview" class="mod-description-template" style="line-height: 1.3 !important;"></div>
           </div>
@@ -178,35 +178,27 @@
       </div>
       <div class="form-control mt-2">
         <label class="label">
-          <span class="label-text">{{ _("mod.Thumbnail") }}</span>
+          <span class="label-text">{{ _("Thumbnail") }}</span>
         </label>
         <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.webp,.gif">
       </div>
-      <p>{{ _("mod.thumbnail_resolution") }}</p>
-      <a href="https://sotf-mods.com/images/thumbnail.png" target="_blank" style="color: #36d399; cursor: pointer;">
-        <p>{{ _("mod.Download thumbnail template") }}</p>
-      </a>
-      <a href="https://sotf-mods.com/images/hd_thumbnail.png" target="_blank" style="color: #d926a9; cursor: pointer;">
-        <p>{{ _("mod.Download hd thumbnail template") }}</p>
-      </a>
       <label class="cursor-pointer label ml-2">
-        <span class="label-text">{{ _("mod.Has NSFW content") }}</span>
+        <span class="label-text">{{ _("Has NSFW content") }}</span>
         <input id="mod-isNSFW" type="checkbox" class="toggle toggle-secondary ml-2" name="isNSFW" {{ "checked" if mod.isNSFW }}>
       </label>
       <label class="cursor-pointer label ml-2">
-        <span class="label-text">{{ _("mod.Update images") }}</span>
+        <span class="label-text">{{ _("Update images") }}</span>
         <input id="mod-update-images" type="checkbox" class="toggle toggle-secondary ml-2" name="updateImages">
       </label>
       <div id="mod-update-images-container" class="hidden">
         <label class="cursor-pointer label ml-2">
-          <span class="label-text">{{ _("mod.Update images") }}</span>
+          <span class="label-text">{{ _("Update images") }}</span>
           <input id="mod-images" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.webp,.gif" multiple max="5">
         </label>
       </div>
       <div class="modal-action">
-        <button class="btn" onclick="closeModal('#modalEdit')">{{ _("mod.Close") }}</button>
-        <button id="updateModBtn" class="btn btn-primary">{{ _("mod.Update") }}</button>
-
+        <button class="btn" onclick="closeModal('#modalEdit')">{{ _("Close") }}</button>
+        <button id="updateModBtn" class="btn btn-primary">{{ _("Update") }}</button>
       </div>
     </form>
   </dialog>

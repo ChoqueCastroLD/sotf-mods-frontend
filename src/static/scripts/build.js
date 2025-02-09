@@ -94,7 +94,6 @@ async function main() {
     });
   renderDescriptionPreview(mod.description);
   updateModBtn.addEventListener("click", async () => {
-    showLoadingScreen();
     updateModBtn.disabled = true;
     const formData = new FormData();
     formData.append(
@@ -138,10 +137,8 @@ async function main() {
       showError(message || _("There has been a problem updating the mod"));
     }
     updateModBtn.disabled = false;
-    hideLoadingScreen();
   });
   releaseVersionBtn.addEventListener("click", async () => {
-    showLoadingScreen();
     releaseVersionBtn.disabled = true;
     const modChangelog = sanitizeText(
       document.getElementById("mod-changelog").value.trim()
@@ -149,7 +146,6 @@ async function main() {
     if (!modChangelog) {
       showError(_("Please fill the changelog"));
       releaseVersionBtn.disabled = false;
-      hideLoadingScreen();
       return;
     }
 
@@ -180,7 +176,6 @@ async function main() {
     }
 
     releaseVersionBtn.disabled = false;
-    hideLoadingScreen();
   });
 }
 

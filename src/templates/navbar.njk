@@ -1,4 +1,4 @@
-<div class="navbar flex-wrap justify-center z-[10] sticky top-2 mb-8 p-4 bg-black bg-opacity-20 backdrop-blur-sm rounded-full">
+<div class="navbar flex-wrap justify-center mb-8 p-4 bg-black bg-opacity-20 backdrop-blur-sm rounded-full"> {# z-[10] sticky top-2 #}
   <div class="flex">
     <a class="btn btn-ghost text-xl hover:bg-transparent" href="/">
 
@@ -39,17 +39,17 @@
       </li>
     </ul>
   </div>
-  <div class="flex-none">
-    <div class="dropdown dropdown-end">
+  <div class="flex-none z-[10]">
+    <div class="dropdown dropdown-end z-[10]">
       <label class="btn btn-ghost btn-circle uppercase" tabindex="0">
         {{ "中文" if lang == 'ch' else lang }}
       </label>
-      <ul class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-[1]" tabindex="0">
+      <ul class="menu menu-sm z-[10] dropdown-content mt-3 p-2 shadow bg-base-100 bg-opacity-100 rounded-box w-52" tabindex="0">
         {% for language in languages %}
-          <li class="menu-item">
+          <li class="menu-item z-[10]">
             <a href="#" onclick='cookieStore.set("lang", "{{ language.code }}").then(() => location.reload()).catch(err => console.error(err))'>
               {% if lang == language.code %}
-                <span class="text-primary">
+                <span class="text-primary z-[10]">
                   {{ language.name }}
                 </span>
               {% else %}
@@ -73,7 +73,7 @@
       </div>
       <ul
         tabindex="0"
-        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[100] mt-3 w-52 p-2 shadow">
         {% if user %}
           <li>
             <a class="disabled" href="/profile/{{ user.slug }}">{{ user.name }}</a>

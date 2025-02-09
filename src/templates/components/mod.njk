@@ -1,0 +1,74 @@
+<div class="card md:card-side bg-base-100 shadow-xl w-full p-4 group">
+  <figure class="relative object-fit w-64 h-44 min-w-64 min-h-44 max-w-64 max-h-44 bg-black rounded-lg mx-auto">
+    <img
+      src="{{ mod.imageUrl }}"
+      alt="{{ mod.name }}"
+      class="object-cover w-full h-full"
+      view-transition-name="{{ mod.slug }}_image_transition"/>
+  </figure>
+  <div class="card-body px-4 py-2">
+    <div class="flex flex-col h-full gap-2 justify-between">
+      <div class="flex flex-col flex-grow gap-2">
+        <div class="flex gap-1 items-center">
+          <div class="flex flex-grow gap-1 items-end">
+            <h2 class="card-title text-2xl font-bold" view-transition-name="{{ mod.slug }}_name_transition">{{ mod.name }}</h2>
+            <span class="text-xs mb-1">{{ mod.latest_version }}</span>
+          </div>
+          <div class="flex gap-1 items-center">
+            <div
+              onclick="transitionTo('/mods/{{ mod.user_slug }}/{{ mod.slug }}')"
+              class="transition-all duration-300 group-hover:text-[#02cdb3] hover:scale-125 group-hover:animate-pulse cursor-pointer"
+            >
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 4h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm">{{ mod.short_description }}</p>
+
+      </div>
+      <div class="flex gap-4 justify-between">
+
+        {# Developer #}
+        <a class="flex gap-1 items-center hover-underline-animation" href="/profile/{{ mod.user_slug }}">
+          <div class="avatar">
+            {# <div class="w-6 rounded-full">
+              <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
+            </div> #}
+            <svg class="w-6 h-6 text-[#02cdb3]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <span class="text-sm">{{ mod.user_name }}</span>
+        </a>
+        {# Categories #}
+        <div class="flex flex-wrap justify-end gap-4">
+          {# Downloads #}
+          <div class="flex gap-1 items-center">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
+            </svg>
+            <span class="text-xs">{{ mod.downloads }}</span>
+          </div>
+          {# Last updated #}
+          <div class="flex gap-1 items-center">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+            </svg>
+            <span class="text-xs">
+              <span data-time-ago="{{ mod.lastReleasedAt }}"></span></span>
+          </div>
+          {# Category #}
+          <div class="flex gap-1 items-center">
+
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v3c0 .5523.44772 1 1 1h8v-8m-9 4v-4m0 4h9m-9-4V6c0-.55228.44772-1 1-1h16c.5523 0 1 .44772 1 1v4M3 11h11m6.25 5c0 1.2426-1.0073 2.25-2.25 2.25M20.25 16c0-1.2426-1.0073-2.25-2.25-2.25M20.25 16H21m-3 2.25c-1.2426 0-2.25-1.0074-2.25-2.25M18 18.25V19m-2.25-3c0-1.2426 1.0074-2.25 2.25-2.25M15.75 16H15m3-2.25V13m-1.591 1.409-.5303-.5303m4.2426 4.2426-.5303-.5303m-3.182 0-.5303.5303m4.2426-4.2426-.5303.5303"/>
+            </svg>
+            <span class="text-xs">{{ mod.category_name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

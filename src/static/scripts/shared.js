@@ -1,5 +1,3 @@
-const loadingScreen = document.querySelector('#loading-screen');
-
 window.user = document.querySelector('#sotf-mods-u') && JSON.parse(atob(document.querySelector('#sotf-mods-u').dataset.u));
 window.token = document.querySelector('#sotf-mods-t') && JSON.parse(atob(document.querySelector('#sotf-mods-t').dataset.t));
 window.PUBLIC_API_URL = document.querySelector('#sotf-mods-a') && JSON.parse(atob(document.querySelector('#sotf-mods-a').dataset.a));
@@ -51,14 +49,6 @@ window._ = (key) => {
     return window.translations[key] || key;
 }
 
-window.showLoadingScreen = () => {
-    loadingScreen.showModal();
-    loadingScreen.style.display = 'flex';
-}
-window.hideLoadingScreen = () => {
-    loadingScreen.close();
-    loadingScreen.style.display = 'none';
-}
 window.openModal = (modalSelector) => {
     document.querySelector(modalSelector).classList.add('modal-open');
 }
