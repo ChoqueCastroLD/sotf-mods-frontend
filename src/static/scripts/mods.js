@@ -33,3 +33,12 @@ document.querySelector('form#mods-discover-search-container')?.addEventListener(
     queryParams.set('page', "1");
     window.location.href = `/mods?${queryParams.toString()}`;
 });
+
+
+document.querySelector('#mods-filter-pin-toggle').addEventListener('change', (e) => {
+    if (e.target.checked) {
+        document.querySelector('#mods-filter-header').classList.add('sticky');
+    } else {
+        document.querySelector('#mods-filter-header').classList.remove('sticky');
+    }
+});

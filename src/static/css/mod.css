@@ -1,12 +1,7 @@
-.mod-logo {
-    border-radius: 30px;
+[view-transition-name] {
+    transition: all 0.5s ease-in-out;
+    contain: layout;
 }
-.mod-favorite {
-    color: #d926a9;
-}
-#modalEdit .modal-box {
-    max-width: 64rem;
-}
-#mod-description {
-    min-height: 420px;
+@view-transition {
+    navigation: auto;
 }

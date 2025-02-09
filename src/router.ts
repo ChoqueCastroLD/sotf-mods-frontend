@@ -88,7 +88,7 @@ export const router = new Elysia()
       modsQuery.set("category", context.query.category);
     if (context.query.search) modsQuery.set("search", context.query.search);
     if (context.query.page) modsQuery.set("page", context.query.page);
-    modsQuery.set("limit", "24");
+    modsQuery.set("limit", "16");
     modsQuery.set("type", "Mod");
     const [
       { data: mods, meta },
@@ -116,7 +116,7 @@ export const router = new Elysia()
       modsQuery.set("category", context.query.category);
     if (context.query.search) modsQuery.set("search", context.query.search);
     if (context.query.page) modsQuery.set("page", context.query.page);
-    modsQuery.set("limit", "24");
+    modsQuery.set("limit", "16");
     modsQuery.set("type", "Build");
     const [
       { data: mods, meta },

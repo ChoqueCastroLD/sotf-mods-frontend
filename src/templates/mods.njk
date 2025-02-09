@@ -1,184 +1,265 @@
 {% extends "layout.njk" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/static/css/mods.css">
+  <link rel="stylesheet" href="/static/css/mods.css">
 {% endblock %}
 
 {% block body %}
-    <div class="top-spacer"></div>
-    {% if not user %}
-        <div class="hero bg-base-200 mb-8">
-            <div class="hero-content flex-col lg:flex-row-reverse">
-                <img src="https://static.wikia.nocookie.net/sonsoftheforest_gamepedia_en/images/5/53/GolfCart.png" class="max-w-[150px] rounded-lg shadow-2xl"/>
-                <div>
-                    <h1 class="text-5xl font-bold">{{ _("_mods.question") }}</h1>
-                    <p class="py-6">
-                        {{ _("_mods.answer") }}<br>
-                        {{ _("_mods.answer_2") }}
-                    </p>
-                    <a class="btn btn-secondary" href="https://github.com/ToniMacaroni/RedManager/releases/latest" target="_blank">{{ _("_mods.download_button") }}</a>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    <div class="flex flex-wrap justify-center mb-2">
-        <h1 class="text-4xl">{{ _("mods.Mods of the week") }}</h1>
-    </div>
-    <div id="mods-featured" class="flex flex-wrap justify-around mb-4 pb-4 min-h-64">
-        {% for mod in featured %}
-            <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/mods/{{ mod.user_slug }}/{{ mod.slug }}">
-                <figure class="col-start-1 row-start-1"><img data-lazy-src="{{ mod.imageUrl }}" alt="{{ mod.name }}" loading="lazy"/></figure>
-                <div class="card-body rounded-lg col-start-1 row-start-1 z-20 relative bg-black bg-opacity-0 transition opacity-10 hover:opacity-100 hover:bg-opacity-80">
-                    <h2 class="card-title">
-                        <span class="text-4xl">#{{ loop.index }}</span>
-                        <span class="hover-underline-animation">{{ mod.name }}</span>
-                        <span class="card-title-version text-accent">by {{ mod.user_name }}</span>
-                    </h2>
-                    <p>{{ mod.short_description }}</p>
-                    <div class="card-actions justify-end">
-                        <p class="text-neutral-content">
-                            <span class="text-primary">{{ mod.lastWeekDownloads }}</span>
-                            {{ _("downloads in the last week") }}
-                            <span class="text-secondary text-xs">({{ mod.downloads }}
-                                {{ _("total") }})</span></p>
-                    </div>
-                </div>
-            </a>
-        {% endfor %}
-    </div>
+  <div class="flex p-4">
+    <div class="w-2/3 p-2">
+      {# Filters Header #}
+      <div id="mods-filter-header" class="sticky top-24 z-[5] bg-[#15191d] bg-opacity-80 backdrop-blur-sm rounded-lg px-2 py-2">
+        <div class="flex items-center justify-between gap-2">
+          <h1 class="text-4xl m-2 font-bold">{{ _("Mods") }}</h1>
+          <label class="swap p-4 cursor-pointer">
 
-    <div class="stats-container flex justify-center flex-wrap">
-        <div class="stats shadow stats-vertical md:stats-horizontal">
-            <div class="stat place-items-center" style="min-width: 280px;">
-                <div class="stat-title">{{ _("mods.Downloads") }}</div>
-                <div class="stat-value text-secondary">{{ stats.downloads }}</div>
-                <div class="stat-desc text-secondary">{{ _("mods.Since") }} 2023</div>
+            <input type="checkbox" id="mods-filter-pin-toggle" checked/>
+            <div class="swap-on">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
+              </svg>
             </div>
-            <div class="stat place-items-center">
-                <div class="stat-title">{{ _("mods.Users") }}</div>
-                <div class="stat-value text-accent">{{ stats.users }}</div>
-                <div class="stat-desc text-accent">{{ _("mods.Registered") }}</div>
+            <div class="swap-off">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M13.2131 9.78732c-.6359-.63557-1.4983-.99259-2.3974-.99259-.89911 0-1.76143.35702-2.39741.99259l-3.4253 3.42528C4.35719 13.8485 4 14.7108 4 15.61c0 .8992.35719 1.7616.99299 2.3974.63598.6356 1.4983.9926 2.39742.9926.89912 0 1.76144-.357 2.39742-.9926l.32157-.3043m-.32157-4.4905c.63587.6358 1.49827.993 2.39747.993.8991 0 1.7615-.3572 2.3974-.993l3.4243-3.42528c.6358-.63585.993-1.49822.993-2.39741 0-.89919-.3572-1.76156-.993-2.39741C17.3712 4.357 16.509 4 15.6101 4c-.899 0-1.7612.357-2.397.9925l-1.0278.96062m7.3873 14.04678-1.7862-1.7862m0 0L16 16.4274m1.7864 1.7863 1.7862-1.7863m-1.7862 1.7863L16 20"/>
+              </svg>
             </div>
-            <div class="stat place-items-center" style="min-width: 280px;">
-                <div class="stat-title">{{ _("mods.Mods Published") }}</div>
-                <div class="stat-value text-primary">{{ stats.mods }}</div>
-                <div class="stat-desc text-primary">{{ _("mods.From") }}
-                    {{ stats.developers }}
-                    {{ _("mods.developers") }}</div>
-            </div>
+          </label>
         </div>
-    </div>
+        <hr class="my-4 border-accent">
+        <form id="mods-discover-search-container" class="flex w-full items-center justify-around gap-2" action="/mods" method="get">
+          {# Search #}
+          <div class="flex flex-grow flex-col gap-1">
+            <input id="mods-discover-search" name="search" class="input input-bordered input-success w-full mb-2" type="text" placeholder="{{ _('mods.Type here') }}">
+            <div class="flex gap-1">
+              {# Approved #}
+              <label class="swap">
+                <input type="checkbox" id="mods-discover-show-unapproved" name="show_unapproved"/>
+                <div class="swap-on text-secondary">{{ _("Unapproved") }}</div>
+                <div class="swap-off text-accent">{{ _("Approved") }}</div>
+              </label>
+              {# NSFW #}
+              <label class="swap">
+                <input type="checkbox" id="mods-discover-nsfw" name="nsfw"/>
+                <div class="swap-on text-secondary">{{ _("NSFW") }}</div>
+                <div class="swap-off">{{ _("SFW") }}</div>
+              </label>
+              {# Categories #}
+              <select id="mods-discover-categories" name="category" class="m-auto select select-sm w-38">
+                <option value="">{{ _("mods.All categories") }}</option>
+                {% for category in categories %}
 
-    <div id="mods-discover-section" class="mt-4">
-        <form id="mods-discover-search-container" action="/mods" method="get">
-            <div class="flex justify-between flex-wrap">
-                <input id="mods-discover-search" name="search" class="input input-bordered input-success w-full mb-2" type="text" placeholder="{{ _('mods.Type here') }}">
-                <select id="mods-discover-categories" name="category" class="m-auto select select-sm w-38">
-                    <option value="">{{ _("mods.All categories") }}</option>
-                    {% for category in categories %}
-                        <option value="{{ category.slug }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-                <select id="mods-discover-order-by" name="order_by" class="m-auto select select-sm w-32">
-                    <option value="newest">{{ _("mods.Newest") }}</option>
-                    <option value="oldest">{{ _("mods.Oldest") }}</option>
-                    <option value="popular">{{ _("mods.Popular") }}</option>
-                    <option value="unpopular">{{ _("mods.Unpopular") }}</option>
-                    <option value="random" disabled>{{ _("mods.Random") }}</option>
-                </select>
-                <label class="cursor-pointer label m-auto">
-                    <span class="label-text">{{ _("mods.Unapproved") }}</span>
-                    <input id="mods-discover-show-unapproved" name="show_unapproved" class="toggle toggle-secondary ml-2" type="checkbox">
-                </label>
-                <label class="cursor-pointer label m-auto">
-                    <span class="label-text">{{ _("mods.NSFW") }}</span>
-                    <input id="mods-discover-nsfw" name="nsfw" class="toggle toggle-secondary ml-2" type="checkbox">
-                </label>
+                  <option value="{{ category.slug }}">{{ category.name }}</option>
+                {% endfor %}
+              </select>
+              {# Order by #}
+              <select id="mods-discover-order-by" name="order_by" class="m-auto select select-sm w-32">
+                <option value="newest">{{ _("mods.Newest") }}</option>
+                <option value="oldest">{{ _("mods.Oldest") }}</option>
+                <option value="popular">{{ _("mods.Popular") }}</option>
+                <option value="unpopular">{{ _("mods.Unpopular") }}</option>
+                <option value="random" disabled>{{ _("mods.Random") }}</option>
+              </select>
+              {# Submit #}
+              <button type="submit" class="btn btn-outline btn-success uppercase py-1">{{ _("Search") }}</button>
             </div>
-            <div class="flex justify-center mt-4">
-                <button type="submit" class="btn btn-primary uppercase btn-search">{{ _("mods.Search") }}</button>
-            </div>
+          </div>
+          {# Pagination #}
+          <div class="my-4">
+
+            {% if meta.pages > 1 %}
+              <div class="join">
+                {% for i in range(1, meta.pages + 1) %}
+                  <button
+                  class="join-item btn btn-sm {% if i == meta.page %}btn-disabled{% endif %}"
+                  {% if i != meta.page %}onclick="redirectWithParams('?page={{ i }}'){% endif %}"
+                >
+                    {{ i }}
+                  </button>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
         </form>
-        <div id="mods-discover-pagination-up" class="flex flex-wrap justify-center">
-            <div class="pagination-container">
-                {% if meta.pages > 1 %}
-                    <div class="join">
-                        {% for i in range(1, meta.pages + 1) %}
-                            <button
-                                class="join-item btn btn-sm {% if i == meta.page %}btn-disabled{% endif %}"
-                                {% if i != meta.page %}onclick="redirectWithParams('?page={{ i }}'){% endif %}"
-                            >
-                                {{ i }}
-                            </button>
-                        {% endfor %}
+      </div>
+      {# Mods list #}
+      <div class="flex flex-wrap gap-2">
+        {% for mod in mods %}
+          <div class="card card-side bg-base-100 shadow-xl w-full p-4 group">
+            <figure class="relative object-fit w-64 h-44 min-w-64 min-h-44 max-w-64 max-h-44 bg-black rounded-lg">
+              <img
+                src="{{ mod.imageUrl }}"
+                alt="{{ mod.name }}"
+                class="object-cover w-full h-full"
+                view-transition-name="{{ mod.slug }}_image_transition"/>
+            </figure>
+            <div class="card-body px-4 py-2">
+              <div class="flex flex-col h-full gap-2 justify-between">
+                <div class="flex flex-col flex-grow gap-2">
+                  <div class="flex gap-1 items-center">
+                    <div class="flex flex-grow gap-1 items-end">
+                      <h2 class="card-title text-2xl font-bold" view-transition-name="{{ mod.slug }}_name_transition">{{ mod.name }}</h2>
+                      <span class="text-xs mb-1">{{ mod.latest_version }}</span>
                     </div>
-                {% endif %}
-            </div>
-        </div>
-        <div id="mods-discover-container" class="flex flex-wrap justify-center">
-            {% for mod in mods %}
-                <div class="card shadow-xl sm:mb-2 mb-4 card-compact w-96 bg-base-100 mod-card-horizontal">
-                    <figure class="skeleton w-100 h-[216px]">
-                        <img src="{{ mod.imageUrl }}" class="{% if mod.isNSFW and not user %}blur-md hover:blur-none{% endif %}" alt="{{ mod.name }}" loading="lazy">
-                    </figure>
-                    <div class="card-body">
-                        <div class="mod-card-badges">
-                            <a href="/mods?category={{ mod.category_slug }}">
-                                <div class="badge badge-ghost">{{ mod.category_name }}</div>
-                            </a>
-                            {% if mod.isNSFW %}
-                                <div class="badge badge-secondary badge-outline">NSFW</div>
-                            {% endif %}
-                        </div>
-                        <h2 class="card-title w-full">{{ mod.name }}
-                            <span class="card-title-version">{{ mod.latest_version }}</span></h2>
-                        <p>by <a class="hover-underline-animation" href="/profile/{{ mod.user_slug }}">{{ mod.user_name }}</a>
-                        </p>
-                        <p class="text-justify text-wrap-anywhere">{{ mod.short_description }}</p>
-                        <div class="card-actions justify-end">
-                            <a class="btn btn-outline {% if mod.latest_version %}btn-accent{% endif %} btn-sm" href="/mods/{{ mod.user_slug }}/{{ mod.slug }}">{{ _("See More") }}</a>
-                        </div>
-                        <div class="card-actions justify-end">
-                            <span class="stat-desc text-accent tooltip" data-tip="{{ mod.lastWeekDownloads or 0 }} {{ _("downloads in the last week") }}">↗︎ {{ mod.downloads }}
-                                {{ _("downloads") }}</span>
-                            <span class="stat-desc ml-2">⏱ <span data-time-ago="{{ mod.lastReleasedAt }}"></span></span>
-                        </div>
+                    <div class="flex gap-1 items-center">
+                      <div
+                        onclick="transitionTo('/mods/{{ mod.user_slug }}/{{ mod.slug }}')"
+                        class="transition-all duration-300 group-hover:text-[#02cdb3] hover:scale-125 group-hover:animate-pulse cursor-pointer"
+                      >
+                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 4h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5"/>
+                        </svg>
+                      </div>
                     </div>
+                  </div>
+                  <p class="text-sm">{{ mod.short_description }}</p>
+
                 </div>
-            {% else %}
-                <h1 class="text-center">{{ _("No mods found") }}</h1>
-            {% endfor %}
+                <div class="flex gap-4 justify-between">
 
-        </div>
-        <div id="mods-discover-pagination" class="flex flex-wrap justify-center">
-            <div class="pagination-container">
-                {% if meta.pages > 1 %}
-                    <div class="join">
-                        {% for i in range(1, meta.pages + 1) %}
-                            <button
-                                class="join-item btn btn-sm {% if i == meta.page %}btn-disabled{% endif %}"
-                                {% if i != meta.page %}onclick="redirectWithParams('?page={{ i }}'){% endif %}"
-                            >
-                                {{ i }}
-                            </button>
-                        {% endfor %}
+                  {# Developer #}
+                  <a class="flex gap-1 items-center hover-underline-animation" href="/profile/{{ mod.user_slug }}">
+                    <div class="avatar">
+                      {# <div class="w-6 rounded-full">
+                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
+                      </div> #}
+                      <svg class="w-6 h-6 text-[#02cdb3]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+                      </svg>
                     </div>
-                {% endif %}
-            </div>
-        </div>
+                    <span class="text-sm">{{ mod.user_name }}</span>
+                  </a>
+                  {# Categories #}
+                  <div class="flex gap-4">
+                    {# Downloads #}
+                    <div class="flex gap-1 items-center">
+                      <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
+                      </svg>
+                      <span class="text-xs">{{ mod.downloads }}
+                        {{ _("downloads") }}</span>
+                    </div>
+                    {# Last updated #}
+                    <div class="flex gap-1 items-center">
+                      <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+                      </svg>
+                      <span class="text-xs">
+                        <span data-time-ago="{{ mod.lastReleasedAt }}"></span></span>
+                    </div>
+                    {# Category #}
+                    <div class="flex gap-1 items-center">
 
-        {% if not user %}
-            <div>
-                <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2799839819522052" crossorigin="anonymous" async></script>
-                <ins class="adsbygoogle my-4 rounded-md" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-2799839819522052" data-ad-slot="7095594640"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                      <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v3c0 .5523.44772 1 1 1h8v-8m-9 4v-4m0 4h9m-9-4V6c0-.55228.44772-1 1-1h16c.5523 0 1 .44772 1 1v4M3 11h11m6.25 5c0 1.2426-1.0073 2.25-2.25 2.25M20.25 16c0-1.2426-1.0073-2.25-2.25-2.25M20.25 16H21m-3 2.25c-1.2426 0-2.25-1.0074-2.25-2.25M18 18.25V19m-2.25-3c0-1.2426 1.0074-2.25 2.25-2.25M15.75 16H15m3-2.25V13m-1.591 1.409-.5303-.5303m4.2426 4.2426-.5303-.5303m-3.182 0-.5303.5303m4.2426-4.2426-.5303.5303"/>
+                      </svg>
+                      <span class="text-xs">{{ mod.category_name }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-        {% endif %}
+          </div>
+        {% endfor %}
+      </div>
     </div>
+    {# Right Bar #}
+    <div class="w-1/3 p-2">
+      <div class="flex sticky top-28 flex-col gap-4 items-center justify-center">
+        {# Stats #}
+        <div class="flex flex-col gap-2 items-center justify-center p-2">
+          <div class="stats bg-opacity-0 stats-horizontal">
+            <div class="stat p-2 place-items-center">
+              <div class="stat-title">{{ _("mods.Downloads") }}</div>
+              <div class="stat-value text-accent">{{ stats.downloads }}</div>
+              <div class="stat-desc text-accent">{{ _("from") }}
+                {{ stats.users }}
+                {{ _("users") }}</div>
+            </div>
+            <div class="stat p-2 place-items-center">
+              <div class="stat-title">{{ _("mods.Mods Published") }}</div>
+              <div class="stat-value text-secondary">{{ stats.mods }}</div>
+              <div class="stat-desc text-secondary">{{ _("from") }}
+                {{ stats.developers }}
+                {{ _("mods.developers") }}</div>
+            </div>
+          </div>
+        </div>
+        {# Mods of the week #}
+        <h1 class="text-xl">{{ _("Mods of the week") }}</h1>
+        <div class="flex flex-wrap gap-2">
+          {% for mod in featured %}
+            <div class="card group w-full shadow-xl rounded-lg bg-base-200 cursor-pointer" onclick="transitionTo('/mods/{{ mod.user_slug }}/{{ mod.slug }}')">
+              <div class="card-body p-4">
+                <div class="flex gap-2">
+                  {# Position Number #}
+                  <div class="flex gap-1">
+                    <span class="text-2xl font-bold mt-1">#</span>
+                    <span class="text-6xl font-bold">{{ loop.index }}</span>
+                  </div>
+                  {# Mod info #}
+                  <div class="flex flex-grow flex-col gap-2">
+                    {# Mod name and version #}
+                    <div class="flex gap-1 items-center">
+                      <div class="flex flex-grow gap-1 items-end">
+                        <h2 class="card-title text-2xl font-bold" view-transition-name="{{ mod.slug }}_name_transition">{{ mod.name }}</h2>
+                        <span class="text-xs mb-1">{{ mod.latest_version }}</span>
+                      </div>
+                      <div class="flex gap-1 items-center">
+                        <div
+                        onclick="transitionTo('/mods/{{ mod.user_slug }}/{{ mod.slug }}')"
+                        class="transition-all duration-300 group-hover:text-[#02cdb3] hover:scale-125 group-hover:animate-pulse cursor-pointer"
+                      >
+                          <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 4h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    {# Downloads and Developer #}
+                    <div class="flex justify-between">
+                      {# Downloads #}
+                      <div class="flex gap-1 items-center">
+                        <span class="text-sm text-accent font-bold">{{ mod.lastWeekDownloads }}</span>
+                        <span class="text-xs">{{ _("downloads in the last week") }}</span>
+                      </div>
+                      {# Developer #}
+                      <a class="flex gap-1 items-center hover-underline-animation w-fit" href="/profile/{{ mod.user_slug }}">
+                        <div class="avatar">
+                          {#
+                          <div class="w-6 rounded-full">
+                            <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
+                          </div>
+                        #}
+                          <svg class="w-6 h-6 text-[#02cdb3]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+                          </svg>
+                        </div>
+                        <span class="text-sm">{{ mod.user_name }}</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if not user %}
+    <div>
+      <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2799839819522052" crossorigin="anonymous" async></script>
+      <ins class="adsbygoogle my-4 rounded-md" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-2799839819522052" data-ad-slot="7095594640"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  {% endif %}
 {% endblock %}
 
 {% block scripts %}
-    <script type="module" src="/static/scripts/mods.js"></script>
+  <script type="module" src="/static/scripts/mods.js"></script>
 {% endblock %}

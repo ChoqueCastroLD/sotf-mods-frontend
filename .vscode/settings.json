@@ -1,0 +1,20 @@
+{
+  "json.schemaDownload.enable": true,
+  "files.associations": {
+    "*.njk": "nunjucks"
+  },
+  "emmet.includeLanguages": {
+    "nunjucks": "html"
+  },
+  "[nunjucks]": {
+    "tailwindcss.enabled": true,
+    "editor.defaultFormatter": "okitavera.vscode-nunjucks-formatter",
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "plaintext": "njk",
+    "njk": "html"
+  }
+}

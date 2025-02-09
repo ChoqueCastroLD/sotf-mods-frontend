@@ -16,7 +16,7 @@
   <div class="top-spacer"></div>
   <div class="wrapper m-4">
     <div class="flex justify-center mt-8">
-      <p class="text-5xl" style="overflow-wrap: anywhere;">{{ mod.name }}</p>
+      <p class="text-5xl" style="overflow-wrap: anywhere;" view-transition-name="{{ mod.slug }}_name_transition">{{ mod.name }}</p>
     </div>
     <div class="flex justify-center mb-8">
       <p class="text-base">{{ _("mod.by") }}
@@ -25,7 +25,12 @@
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="mod-info m-4">
-        <img class="mod-logo {{ 'blur-md hover:blur-none' if mod.isNSFW and not user else '' }}" data-lazy-src="{{ mod.imageUrl }}" alt="{{ mod.name }}">
+        <img
+          class="mod-logo"
+          src="{{ mod.imageUrl }}"
+          alt="{{ mod.name }}"
+          view-transition-name="{{ mod.slug }}_image_transition"
+        />
         <div class="flex justify-center flex-wrap">
           <p class="text-base m-4" style="overflow-wrap: anywhere;">{{ mod.short_description }}</p>
         </div>
