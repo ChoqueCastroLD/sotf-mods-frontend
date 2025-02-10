@@ -3,7 +3,8 @@
     <img
       src="{{ mod.imageUrl }}"
       alt="{{ mod.name }}"
-      class="object-cover w-full h-full"
+      class="object-cover w-full h-full cursor-pointer transition-all duration-300 hover:scale-105"
+      onclick="transitionTo('/mods/{{ mod.user_slug }}/{{ mod.slug }}')"
       view-transition-name="{{ mod.slug }}_image_transition"/>
   </figure>
   <div class="card-body px-4 py-2">
