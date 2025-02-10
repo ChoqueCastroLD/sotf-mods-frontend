@@ -182,18 +182,3 @@ const observer = new MutationObserver(mutationCallback);
 lazyLoadImages(document.querySelectorAll('img[data-lazy-src]'));
 
 observer.observe(document.body, observerOptions);
-window.transitionTo = (url) => {
-    window.location.href = url;
-    // try {
-    //   if (document.startViewTransition) {
-    //     document.startViewTransition(() => {
-    //       window.location.href = url;
-    //     });
-    //   } else {
-    //     window.location.href = url; // Fallback for unsupported browsers
-    //   }
-    // } catch (error) {
-    //   console.error('View Transition Error:', error);
-    //   window.location.href = url;
-    // }
-  };

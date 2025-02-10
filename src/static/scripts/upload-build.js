@@ -12,8 +12,8 @@ const modThumbnail = document.querySelector("#build-thumbnail");
 const modImages = document.querySelector("#build-images");
 
 function getModTemplate(mod) {
-  if (!mod.short_description)
-    mod.short_description = _("This is a description of the mod.");
+  if (!mod.shortDescription)
+    mod.shortDescription = _("This is a description of the mod.");
   return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${
     mod.imageUrl || "https://files.sotf-mods.com/download/thumbnail.png"
   }" class="${mod.isNSFW && !user ? "blur-md hover:blur-none" : ""}" alt="${
@@ -37,12 +37,12 @@ function getModTemplate(mod) {
         <h2 class="card-title w-full">${
           mod.name || "Mod Name"
         }<span class="card-title-version">${
-    (mod.latest_version && mod.latest_version.version) || ""
+    (mod.latestVersion && mod.latestVersion.version) || ""
   }</span></h2>
         <p class="text-left">by <a class="hover-underline-animation" href="#!">${
           user.name
         }</a></p>
-        <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
+        <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline btn-accent btn-sm" href="#!">${_(
               "See More"
@@ -74,7 +74,7 @@ async function renderModItem() {
 function getMod() {
   return {
     name: modName.value.trim(),
-    short_description: modShortDescription.value.trim(),
+    shortDescription: modShortDescription.value.trim(),
     description: modDescription.value.trim(),
     imageUrl:
       modThumbnail?.files?.length > 0
@@ -95,10 +95,10 @@ function validateMod(mod) {
     throw _("Build name must be at least 3 characters long!");
   if (mod.name.length > 64)
     throw _("Build name must be less than 64 characters!");
-  if (!mod.short_description) throw _("Build short description is required!");
-  if (mod.short_description.length < 3)
+  if (!mod.shortDescription) throw _("Build short description is required!");
+  if (mod.shortDescription.length < 3)
     throw _("Build short description must be at least 3 characters long!");
-  if (mod.short_description.length > 200)
+  if (mod.shortDescription.length > 200)
     throw _("Build short description must be less than 200 characters!");
   if (!mod.description) throw _("Build description is required!");
   if (mod.description.length < 3)

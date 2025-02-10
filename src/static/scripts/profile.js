@@ -5,7 +5,7 @@ const modsDiscoverContainer = document.querySelector('#mods-discover-container')
 let forceVerticalMod = false;
 
 async function getMods(approved) {
-    let url = `${PUBLIC_API_URL}/api/mods?user_slug=${userProfile.slug}&limit=100&approved=${approved}`;
+    let url = `${PUBLIC_API_URL}/api/mods?userSlug=${userProfile.slug}&limit=100&approved=${approved}`;
     const response = await fetch(url);
     const { status, data: mods, meta } = await response.json();
     if (!status) {
@@ -19,15 +19,15 @@ function getModTemplate(mod) {
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="/mods?category=${mod.category_slug}">
-                <div class="badge badge-ghost">${mod.category_name}</div>
+                <div class="badge badge-ghost">${mod.category.name}</div>
             </a>
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
         </div>
-        <h2 class="card-title w-full">${mod.name}<span class="card-title-version">${mod.latest_version}</span></h2>
-        <p>by <a class="hover-underline-animation" href="/profile/${mod.user_slug}">${mod.user_name}</a></p>
-        <p class="text-justify text-wrap-anywhere">${mod.short_description}</p>
+        <h2 class="card-title w-full">${mod.name}<span class="card-title-version">${mod.latestVersion}</span></h2>
+        <p>by <a class="hover-underline-animation" href="/profile/${mod.user.slug}">${mod.user.name}</a></p>
+        <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
         <div class="card-actions justify-end">
-            <a class="btn btn-outline btn-accent btn-sm" href="/mods/${mod.user_slug}/${mod.slug}">${_("See More")}</a>
+            <a class="btn btn-outline btn-accent btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">${_("See More")}</a>
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-accent">↗︎ ${mod.downloads} ${_("downloads")}</span>

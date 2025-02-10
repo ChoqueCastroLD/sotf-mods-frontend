@@ -129,7 +129,7 @@ async function main() {
     const { status, message } = await response.json();
     if (status) {
       updateModBtn.classList.add("hidden");
-      location.href = `/builds/${mod.user_slug}/${mod.slug}?updated=true`;
+      location.href = `/builds/${mod.user.slug}/${mod.slug}?updated=true`;
     } else {
       console.error(
         message || _("There has been a problem with your fetch operation:")
@@ -167,7 +167,7 @@ async function main() {
     const { status, message } = await response.json();
     if (status) {
       releaseVersionBtn.classList.add("hidden");
-      location.href = `/builds/${mod.user_slug}/${mod.slug}?released=true`;
+      location.href = `/builds/${mod.user.slug}/${mod.slug}?released=true`;
     } else {
       console.error(
         message || _("There has been a problem with your fetch operation:")

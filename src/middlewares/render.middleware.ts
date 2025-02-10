@@ -23,6 +23,7 @@ export function render(template: string, data?: Object) {
       lang = "en";
     }
     set.headers["Content-Type"] = "text/html; charset=utf-8";
+    const PUBLIC_BASE_URL = Bun.env.PUBLIC_BASE_URL ?? "";
     const PUBLIC_API_URL = Bun.env.PUBLIC_API_URL ?? "";
     return nunjucks.render(template + ".njk", {
       ...data,
@@ -33,6 +34,7 @@ export function render(template: string, data?: Object) {
       _: getTranslator(lang),
       user,
       token,
+      PUBLIC_BASE_URL,
       PUBLIC_API_URL,
       layout: {
         encoded_api_url: btoa(JSON.stringify(PUBLIC_API_URL)),

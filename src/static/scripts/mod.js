@@ -86,7 +86,7 @@ window.approve = async function (elem) {
   );
   const { status, message } = await response.json();
   if (status) {
-    location.href = `/mods/${mod.user_slug}/${mod.slug}`;
+    location.href = `/mods/${mod.user.slug}/${mod.slug}`;
   } else {
     console.error(
       message || _("There has been a problem with your fetch operation:")
@@ -108,7 +108,7 @@ window.unapprove = async function (elem) {
   );
   const { status, message } = await response.json();
   if (status) {
-    location.href = `/mods/${mod.user_slug}/${mod.slug}`;
+    location.href = `/mods/${mod.user.slug}/${mod.slug}`;
   } else {
     console.error(
       message || _("There has been a problem with your fetch operation:")
@@ -175,7 +175,7 @@ async function main() {
     const { status, message } = await response.json();
     if (status) {
       updateModBtn.classList.add("hidden");
-      location.href = `/mods/${mod.user_slug}/${mod.slug}?updated=true`;
+      location.href = `/mods/${mod.user.slug}/${mod.slug}?updated=true`;
     } else {
       console.error(
         message || _("There has been a problem with your fetch operation:")
@@ -213,7 +213,7 @@ async function main() {
     const { status, message } = await response.json();
     if (status) {
       releaseVersionBtn.classList.add("hidden");
-      location.href = `/mods/${mod.user_slug}/${mod.slug}?released=true`;
+      location.href = `/mods/${mod.user.slug}/${mod.slug}?released=true`;
     } else {
       console.error(
         message || _("There has been a problem with your fetch operation:")

@@ -32,12 +32,12 @@ export const router = new Elysia()
     set.redirect = "/login";
   })
   // user
-  .get("/profile/:user_slug", async (context) => {
+  .get("/profile/:userSlug", async (context) => {
     const {
-      params: { user_slug },
+      params: { userSlug },
     } = context;
     const { status, data: userProfile } = await callAPI(
-      `/api/users/${user_slug}`
+      `/api/users/${userSlug}`
     );
     if (!status) {
       return (context.set.redirect = "/404");
@@ -101,7 +101,8 @@ export const router = new Elysia()
       callAPI(`/api/stats`),
       callAPI(`/api/categories?type=Mod`),
     ]);
-
+    console.log(mods);
+    
     return render("mods", { mods, meta, stats, categories, featured })(context);
   })
   .get("/builds", async (context) => {
@@ -137,13 +138,13 @@ export const router = new Elysia()
       context
     );
   })
-  .get("/mods/:user_slug/:mod_slug", async (context) => {
+  .get("/mods/:userSlug/:mod_slug", async (context) => {
     const {
-      params: { user_slug, mod_slug },
+      params: { userSlug, mod_slug },
     } = context;
-    console.log({ user_slug, mod_slug });
+    console.log({ userSlug, mod_slug });
     const { status, data: mod } = await callAPI(
-      `/api/mods/slug/${user_slug}/${mod_slug}`,
+      `/api/mods/slug/${userSlug}/${mod_slug}`,
       {
         headers: {
           Authorization: "Bearer " + context.cookie.token.value,
@@ -157,14 +158,14 @@ export const router = new Elysia()
 
     return render("mod", { mod })(context);
   })
-  .get("/builds/:user_slug/:build_slug", async (context) => {
+  .get("/builds/:userSlug/:build_slug", async (context) => {
     const {
-      params: { user_slug, build_slug },
+      params: { userSlug, build_slug },
     } = context;
 
-    console.log({ user_slug, build_slug });
+    console.log({ userSlug, build_slug });
     const { status, data: build } = await callAPI(
-      `/api/mods/slug/${user_slug}/${build_slug}`,
+      `/api/mods/slug/${userSlug}/${build_slug}`,
       {
         headers: {
           Authorization: "Bearer " + context.cookie.token.value,
@@ -178,12 +179,12 @@ export const router = new Elysia()
     return render("build", { mod: build })(context);
   })
   .get(
-    "/mods/:user_slug/:mod_slug/download/:version",
-    async ({ params: { user_slug, mod_slug, version }, request, set }) => {
+    "/mods/:userSlug/:mod_slug/download/:version",
+    async ({ params: { userSlug, mod_slug, version }, request, set }) => {
       const ip = "" + request.headers.get("x-forwarded-for");
       const agent = "" + request.headers.get("user-agent");
       const f = await fetch(
-        `${Bun.env.PUBLIC_API_URL}/api/mods/slug/${user_slug}/${mod_slug}/download/${version}?ip=${ip}&agent=${agent}`
+        `${Bun.env.PUBLIC_API_URL}/api/mods/slug/${userSlug}/${mod_slug}/download/${version}?ip=${ip}&agent=${agent}`
       );
       const blob = await f.blob();
       set.headers["Content-Type"] = "" + f.headers.get("Content-Type");

@@ -1,176 +1,175 @@
 {% extends "layout.njk" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/static/css/mods.css">
+  <link rel="stylesheet" href="/static/css/mods.css">
 {% endblock %}
 
 {% block body %}
-    <div class="top-spacer"></div>
-    {% if not user %}
-        <div class="hero bg-base-200 mb-8">
-            <div class="hero-content flex-col lg:flex-row-reverse">
-                <img src="https://cdn.pixabay.com/photo/2022/05/13/09/56/log-cabin-7193291_960_720.png" class="max-w-[150px] rounded-lg shadow-2xl"/>
-                <div>
-                    <h1 class="text-5xl font-bold">{{ _("_mods.question") }}</h1>
-                    <p class="py-6">
-                        {{ _("Install BuildShare to use and share builds.") }}<br>
-                        {{ _("BuildShare is a mod that allows you to create and share builds for Sons of the Forest.") }}
-                    </p>
-                    <a class="btn btn-secondary" href="https://sotf-mods.com/mods/tonimacaroni/buildshare" target="_blank">{{ _("Download BuildShare") }}</a>
+  <div class="top-spacer"></div>
+  {% if not user %}
+    <div class="hero bg-base-200 mb-8">
+      <div class="hero-content flex-col lg:flex-row-reverse">
+        <img src="https://cdn.pixabay.com/photo/2022/05/13/09/56/log-cabin-7193291_960_720.png" class="max-w-[150px] rounded-lg shadow-2xl"/>
+        <div>
+          <h1 class="text-5xl font-bold">{{ _("_mods.question") }}</h1>
+          <p class="py-6">
+            {{ _("Install BuildShare to use and share builds.") }}<br>
+            {{ _("BuildShare is a mod that allows you to create and share builds for Sons of the Forest.") }}
+          </p>
+          <a class="btn btn-secondary" href="https://sotf-mods.com/mods/tonimacaroni/buildshare" target="_blank">{{ _("Download BuildShare") }}</a>
 
-
-                </div>
-            </div>
         </div>
-    {% endif %}
-    <div class="flex flex-wrap justify-center mb-2">
-        <h1 class="text-4xl">{{ _("Builds of the week") }}</h1>
+      </div>
     </div>
-    <div id="mods-featured" class="flex flex-wrap justify-around mb-4 pb-4 min-h-64">
-        {% for mod in featured %}
-            <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/builds/{{ mod.user_slug }}/{{ mod.slug }}">
-                <figure class="col-start-1 row-start-1"><img data-lazy-src="{{ mod.imageUrl }}" alt="{{ mod.name }}" loading="lazy"/></figure>
-                <div class="card-body rounded-lg col-start-1 row-start-1 relative bg-black bg-opacity-0 transition opacity-10 hover:opacity-100 hover:bg-opacity-80">
-                    <h2 class="card-title">
-                        <span class="text-4xl">#{{ loop.index }}</span>
-                        <span class="hover-underline-animation">{{ mod.name }}</span>
-                        <span class="card-title-version text-accent">by {{ mod.user_name }}</span>
-                    </h2>
-                    <p>{{ mod.short_description }}</p>
-                    <div class="card-actions justify-end">
-                        <p class="text-neutral-content">
-                            <span class="text-primary">{{ mod.lastWeekDownloads }}</span>
-                            {{ _("downloads in the last week") }}
-                            <span class="text-secondary text-xs">({{ mod.downloads }}
-                                {{ _("total") }})</span></p>
-                    </div>
-                </div>
-            </a>
-        {% endfor %}
-    </div>
-
-    <div class="stats-container flex justify-center flex-wrap">
-        <div class="stats shadow stats-vertical md:stats-horizontal">
-            <div class="stat place-items-center" style="min-width: 280px;">
-                <div class="stat-title">{{ _("mods.Downloads") }}</div>
-                <div class="stat-value text-secondary">{{ stats.downloads }}</div>
-                <div class="stat-desc text-secondary">{{ _("mods.Since") }} 2023</div>
-            </div>
-            <div class="stat place-items-center">
-                <div class="stat-title">{{ _("Users") }}</div>
-                <div class="stat-value text-accent">{{ stats.users }}</div>
-                <div class="stat-desc text-accent">{{ _("Registered") }}</div>
-            </div>
-            <div class="stat place-items-center" style="min-width: 280px;">
-                <div class="stat-title">{{ _("Builds Published") }}</div>
-                <div class="stat-value text-primary">{{ stats.mods }}</div>
-                <div class="stat-desc text-primary">{{ _("From") }}
-                    {{ stats.developers }}
-
-                    {{ _("builders") }}</div>
-            </div>
+  {% endif %}
+  <div class="flex flex-wrap justify-center mb-2">
+    <h1 class="text-4xl">{{ _("Builds of the week") }}</h1>
+  </div>
+  <div id="mods-featured" class="flex flex-wrap justify-around mb-4 pb-4 min-h-64">
+    {% for mod in featured %}
+      <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/builds/{{ mod.user.slug }}/{{ mod.slug }}">
+        <figure class="col-start-1 row-start-1"><img data-lazy-src="{{ mod.imageUrl }}" alt="{{ mod.name }}" loading="lazy"/></figure>
+        <div class="card-body rounded-lg col-start-1 row-start-1 relative bg-black bg-opacity-0 transition opacity-10 hover:opacity-100 hover:bg-opacity-80">
+          <h2 class="card-title">
+            <span class="text-4xl">#{{ loop.index }}</span>
+            <span class="hover-underline-animation">{{ mod.name }}</span>
+            <span class="card-title-version text-accent">by {{ mod.user.name }}</span>
+          </h2>
+          <p>{{ mod.shortDescription }}</p>
+          <div class="card-actions justify-end">
+            <p class="text-neutral-content">
+              <span class="text-primary">{{ mod.lastWeekDownloads }}</span>
+              {{ _("downloads in the last week") }}
+              <span class="text-secondary text-xs">({{ mod.downloads }}
+                {{ _("total") }})</span></p>
+          </div>
         </div>
-    </div>
+      </a>
+    {% endfor %}
+  </div>
 
-    <div id="mods-discover-section" class="mt-4">
-        <form id="mods-discover-search-container" action="/mods" method="get">
-            <div class="flex justify-between flex-wrap">
-                <input id="mods-discover-search" name="search" class="input input-bordered input-success w-full mb-2" type="text" placeholder="{{ _('mods.Type here') }}">
-                <select id="mods-discover-categories" name="category" class="m-auto select select-sm w-38">
-                    <option value="">{{ _("mods.All categories") }}</option>
-                    {% for category in categories %}
-                        <option value="{{ category.slug }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-                <select id="mods-discover-order-by" name="order_by" class="m-auto select select-sm w-32">
-                    <option value="newest">{{ _("mods.Newest") }}</option>
-                    <option value="oldest">{{ _("mods.Oldest") }}</option>
-                    <option value="popular">{{ _("mods.Popular") }}</option>
-                    <option value="unpopular">{{ _("mods.Unpopular") }}</option>
-                    <option value="random" disabled>{{ _("mods.Random") }}</option>
-                </select>
-            </div>
-            <div class="flex justify-center mt-4">
-                <button type="submit" class="btn btn-primary uppercase btn-search">{{ _("mods.Search") }}</button>
-            </div>
-        </form>
-        <div id="mods-discover-pagination-up" class="flex flex-wrap justify-center">
-            <div class="pagination-container">
-                {% if meta.pages > 1 %}
-                    <div class="join">
-                        {% for i in range(1, meta.pages + 1) %}
-                            <button
+  <div class="stats-container flex justify-center flex-wrap">
+    <div class="stats shadow stats-vertical md:stats-horizontal">
+      <div class="stat place-items-center" style="min-width: 280px;">
+        <div class="stat-title">{{ _("mods.Downloads") }}</div>
+        <div class="stat-value text-secondary">{{ stats.downloads }}</div>
+        <div class="stat-desc text-secondary">{{ _("mods.Since") }} 2023</div>
+      </div>
+      <div class="stat place-items-center">
+        <div class="stat-title">{{ _("Users") }}</div>
+        <div class="stat-value text-accent">{{ stats.users }}</div>
+        <div class="stat-desc text-accent">{{ _("Registered") }}</div>
+      </div>
+      <div class="stat place-items-center" style="min-width: 280px;">
+        <div class="stat-title">{{ _("Builds Published") }}</div>
+        <div class="stat-value text-primary">{{ stats.mods }}</div>
+        <div class="stat-desc text-primary">{{ _("From") }}
+          {{ stats.developers }}
+
+          {{ _("builders") }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mods-discover-section" class="mt-4">
+    <form id="mods-discover-search-container" action="/mods" method="get">
+      <div class="flex justify-between flex-wrap">
+        <input id="mods-discover-search" name="search" class="input input-bordered input-success w-full mb-2" type="text" placeholder="{{ _('mods.Type here') }}">
+        <select id="mods-discover-categories" name="category" class="m-auto select select-sm w-38">
+          <option value="">{{ _("mods.All categories") }}</option>
+          {% for category in categories %}
+            <option value="{{ category.slug }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+        <select id="mods-discover-order-by" name="order_by" class="m-auto select select-sm w-32">
+          <option value="newest">{{ _("mods.Newest") }}</option>
+          <option value="oldest">{{ _("mods.Oldest") }}</option>
+          <option value="popular">{{ _("mods.Popular") }}</option>
+          <option value="unpopular">{{ _("mods.Unpopular") }}</option>
+          <option value="random" disabled>{{ _("mods.Random") }}</option>
+        </select>
+      </div>
+      <div class="flex justify-center mt-4">
+        <button type="submit" class="btn btn-primary uppercase btn-search">{{ _("mods.Search") }}</button>
+      </div>
+    </form>
+    <div id="mods-discover-pagination-up" class="flex flex-wrap justify-center">
+      <div class="pagination-container">
+        {% if meta.pages > 1 %}
+          <div class="join">
+            {% for i in range(1, meta.pages + 1) %}
+              <button
                                 class="join-item btn btn-sm {% if i == meta.page %}btn-disabled{% endif %}"
                                 {% if i != meta.page %}onclick="redirectWithParams('?page={{ i }}'){% endif %}"
                             >
-                                {{ i }}
-                            </button>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <div id="mods-discover-container" class="flex flex-wrap justify-center">
-            {% for mod in mods %}
-                <div class="card shadow-xl sm:mb-2 mb-4 card-compact w-96 bg-base-100 mod-card-horizontal">
-                    <figure class="skeleton w-100 h-[216px]">
-                        <img src="{{ mod.imageUrl }}" class="{% if mod.isNSFW and not user %}blur-md hover:blur-none{% endif %}" alt="{{ mod.name }}" loading="lazy">
-                    </figure>
-                    <div class="card-body">
-                        <div class="mod-card-badges">
-                            <a href="/builds?category={{ mod.category_slug }}">
-                                <div class="badge badge-ghost">{{ mod.category_name }}</div>
-                            </a>
-                        </div>
-                        <h2 class="card-title w-full">{{ mod.name }}
-                            <span class="card-title-version"></span></h2>
-                        <p>by <a class="hover-underline-animation" href="/profile/{{ mod.user_slug }}">{{ mod.user_name }}</a>
-                        </p>
-                        <p class="text-justify text-wrap-anywhere">{{ mod.short_description }}</p>
-                        <div class="card-actions justify-end">
-                            <a class="btn btn-outline {% if mod.latest_version %}btn-accent{% endif %} btn-sm" href="/builds/{{ mod.user_slug }}/{{ mod.slug }}">{{ _("See More") }}</a>
-                        </div>
-                        <div class="card-actions justify-end">
-                            <span class="stat-desc text-accent tooltip" data-tip="{{ mod.lastWeekDownloads or 0 }} {{ _("downloads in the last week") }}">↗︎ {{ mod.downloads }}
-                                {{ _("downloads") }}</span>
-                            <span class="stat-desc ml-2">⏱ <span data-time-ago="{{ mod.lastReleasedAt }}"></span></span>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <h1 class="text-center">{{ _("No builds found") }}</h1>
+                {{ i }}
+              </button>
             {% endfor %}
-
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="mods-discover-container" class="flex flex-wrap justify-center">
+      {% for mod in mods %}
+        <div class="card shadow-xl sm:mb-2 mb-4 card-compact w-96 bg-base-100 mod-card-horizontal">
+          <figure class="skeleton w-100 h-[216px]">
+            <img src="{{ mod.imageUrl }}" class="{% if mod.isNSFW and not user %}blur-md hover:blur-none{% endif %}" alt="{{ mod.name }}" loading="lazy">
+          </figure>
+          <div class="card-body">
+            <div class="mod-card-badges">
+              <a href="/builds?category={{ mod.category_slug }}">
+                <div class="badge badge-ghost">{{ mod.category.name }}</div>
+              </a>
+            </div>
+            <h2 class="card-title w-full">{{ mod.name }}
+              <span class="card-title-version"></span></h2>
+            <p>by <a class="hover-underline-animation" href="/profile/{{ mod.user.slug }}">{{ mod.user.name }}</a>
+            </p>
+            <p class="text-justify text-wrap-anywhere">{{ mod.shortDescription }}</p>
+            <div class="card-actions justify-end">
+              <a class="btn btn-outline {% if mod.latestVersion %}btn-accent{% endif %} btn-sm" href="/builds/{{ mod.user.slug }}/{{ mod.slug }}">{{ _("See More") }}</a>
+            </div>
+            <div class="card-actions justify-end">
+              <span class="stat-desc text-accent tooltip" data-tip="{{ mod.lastWeekDownloads or 0 }} {{ _("downloads in the last week") }}">↗︎ {{ mod.downloads }}
+                {{ _("downloads") }}</span>
+              <span class="stat-desc ml-2">⏱ <span data-time-ago="{{ mod.lastReleasedAt }}"></span></span>
+            </div>
+          </div>
         </div>
-        <div id="mods-discover-pagination" class="flex flex-wrap justify-center">
-            <div class="pagination-container">
-                {% if meta.pages > 1 %}
-                    <div class="join">
-                        {% for i in range(1, meta.pages + 1) %}
-                            <button
+      {% else %}
+        <h1 class="text-center">{{ _("No builds found") }}</h1>
+      {% endfor %}
+
+    </div>
+    <div id="mods-discover-pagination" class="flex flex-wrap justify-center">
+      <div class="pagination-container">
+        {% if meta.pages > 1 %}
+          <div class="join">
+            {% for i in range(1, meta.pages + 1) %}
+              <button
                                 class="join-item btn btn-sm {% if i == meta.page %}btn-disabled{% endif %}"
                                 {% if i != meta.page %}onclick="redirectWithParams('?page={{ i }}'){% endif %}"
                             >
-                                {{ i }}
-                            </button>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        {% if not user %}
-            <div>
-                <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2799839819522052" crossorigin="anonymous" async></script>
-                <ins class="adsbygoogle my-4 rounded-md" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-2799839819522052" data-ad-slot="7095594640"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
+                {{ i }}
+              </button>
+            {% endfor %}
+          </div>
         {% endif %}
+      </div>
     </div>
+
+    {% if not user %}
+      <div>
+        <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2799839819522052" crossorigin="anonymous" async></script>
+        <ins class="adsbygoogle my-4 rounded-md" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-2799839819522052" data-ad-slot="7095594640"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block scripts %}
-    <script type="module" src="/static/scripts/builds.js"></script>
+  <script type="module" src="/static/scripts/builds.js"></script>
 {% endblock %}
