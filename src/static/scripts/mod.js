@@ -225,3 +225,23 @@ async function main() {
 }
 
 main();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const mainModImages = [...document.querySelectorAll(".mod-main-image")];
+  const modThumbnailImages = [...document.querySelectorAll(".mod-image")];
+
+  modThumbnailImages.forEach((image) => {
+    image.addEventListener("click", (event) => {
+      event.preventDefault();
+      mainModImages.forEach((mainModImage) => {
+        if (
+          mainModImage.dataset.modImageIndex === image.dataset.modImageIndex
+        ) {
+          mainModImage.classList.remove("hidden");
+        } else {
+          mainModImage.classList.add("hidden");
+        }
+      });
+    });
+  });
+});

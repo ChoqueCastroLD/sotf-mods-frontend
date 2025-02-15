@@ -1,5 +1,10 @@
 {% extends "layout.njk" %}
 
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+  <script src="/static/scripts/mod.js" type="module"></script>
+{% endblock %}
+
 {% block title %}
   <title>{{ mod.name }} - Sons of the Forest Mods</title>
 {% endblock %}
@@ -9,52 +14,137 @@
   <meta content="{{ mod.shortDescription }}" property="og:description">
   <meta content="{{ mod.imageUrl or 'https://files.sotf-mods.com/download/1722086199054_lowergraphicstool222_thumbnail.png' }}" property="og:image">
   <link type="application/json+oembed" href="https://sotf-mods.com/mods/{{ mod.user.slug }}/{{ mod.slug }}.json">
+{% endblock %}
+
+{% block head %}
   <link rel="stylesheet" href="/static/css/mod.css">
   <link rel="stylesheet" href="/static/css/description.css">
 {% endblock %}
+
 {% block body %}
-  <div class="top-spacer"></div>
-  <div class="wrapper m-4">
-    <div class="flex justify-center mt-8">
-      <p class="text-5xl" style="overflow-wrap: anywhere;" view-transition-name="{{ mod.slug }}_name_transition">{{ mod.name }}</p>
-    </div>
-    <div class="flex justify-center mb-8">
-      <p class="text-base">{{ _("by") }}
-        <a class="text-accent" href="/profile/{{ mod.user.slug }}">{{ mod.user.name }}</a>
-      </p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div class="mod-info m-4">
+  {# Images Section #}
+  <div class="flex flex-col-reverse lg:flex-row justify-center p-2 rounded-md">
+    <!-- Main Image Section -->
+    <div class="mod-main-image-container flex-grow flex justify-center items-center p-2 lg:h-[600px]">
+      <figure>
         <img
-          class="mod-logo"
+          class="mod-main-image rounded-md shadow-lg max-h-[600px] object-fit"
+          data-mod-image-index="0"
           src="{{ mod.imageUrl }}"
           alt="{{ mod.name }}"
-          view-transition-name="{{ mod.slug }}_image_transition"
-/>
-        <div class="flex justify-center flex-wrap">
-          <p class="text-base m-4" style="overflow-wrap: anywhere;">{{ mod.shortDescription }}</p>
+          view-transition-name="{{ mod.slug }}_image_transition"/>
+        {% for image in mod.images %}
+          <img
+            class="mod-main-image rounded-md shadow-lg max-h-[600px] object-fit hidden"
+            data-mod-image-index="{{ loop.index }}"
+            src="{{ image.url }}"
+            alt="{{ mod.name }} - Image {{ loop.index }}"/>
+        {% endfor %}
+      </figure>
+    </div>
+
+    <!-- Thumbnail Section -->
+    <div class="flex flex-row lg:flex-col justify-around gap-4 p-2 bg-base-200 rounded-lg shadow-lg">
+      <figure class="max-w-[140px] max-h-[140px]">
+        <img
+          class="mod-image transition-all duration-300 hover:scale-105 hover:brightness-125 rounded-md cursor-pointer shadow-lg w-full h-full object-cover object-center"
+          data-mod-image-index="0"
+          src="{{ mod.imageUrl }}"
+          alt="{{ mod.name }} - Thumbnail"
+          view-transition-name="{{ mod.slug }}_image_transition"/>
+      </figure>
+
+      {% for image in mod.images %}
+        <figure class="max-w-[140px] max-h-[140px]">
+          <img
+            class="mod-image transition-all duration-300 hover:scale-105 hover:brightness-125 rounded-md cursor-pointer shadow-lg w-full h-full object-cover object-center"
+            data-mod-image-index="{{ loop.index }}"
+            src="{{ image.url }}"
+            alt="{{ mod.name }} - Image {{ loop.index }}"/>
+        </figure>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Header & Download Section #}
+  <div class="flex flex-wrap md:flex-nowrap justify-center p-2 rounded-md gap-4">
+    <div class="flex flex-col flex-grow justify-center items-start gap-2 p-2">
+      <p class="text-5xl" style="overflow-wrap: anywhere;" view-transition-name="{{ mod.slug }}_name_transition">{{ mod.name }}</p>
+      <p class="text-base" style="overflow-wrap: anywhere;">{{ mod.shortDescription }}</p>
+      <hr class="w-full">
+      <div class="flex w-full justify-between items-center">
+        {# Developer #}
+        <a
+        class="flex gap-1 items-center hover-underline-animation"
+        aria-label="View {{ mod.user.name }}'s profile"
+        href="/profile/{{ mod.user.slug }}">
+          <div class="avatar">
+            {# <div class="w-6 rounded-full">
+            <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
+          </div> #}
+            <svg class="w-6 h-6 text-[#02cdb3]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <span class="text-sm">{{ mod.user.name }}</span>
+        </a>
+
+        {# Categories #}
+        <div class="flex flex-wrap justify-end gap-4">
+          {# Downloads #}
+          <div class="flex gap-1 items-center">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
+            </svg>
+            <span class="text-xs">{{ mod.downloads }}</span>
+          </div>
+          {# Last updated #}
+          <div class="flex gap-1 items-center">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+            </svg>
+            <span class="text-xs">
+              <span data-time-ago="{{ mod.lastReleasedAt }}"></span></span>
+          </div>
+          {# Category #}
+          <div class="flex gap-1 items-center cursor-pointer" onclick="redirectWithParams('?category={{ mod.category.slug }}')">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v3c0 .5523.44772 1 1 1h8v-8m-9 4v-4m0 4h9m-9-4V6c0-.55228.44772-1 1-1h16c.5523 0 1 .44772 1 1v4M3 11h11m6.25 5c0 1.2426-1.0073 2.25-2.25 2.25M20.25 16c0-1.2426-1.0073-2.25-2.25-2.25M20.25 16H21m-3 2.25c-1.2426 0-2.25-1.0074-2.25-2.25M18 18.25V19m-2.25-3c0-1.2426 1.0074-2.25 2.25-2.25M15.75 16H15m3-2.25V13m-1.591 1.409-.5303-.5303m4.2426 4.2426-.5303-.5303m-3.182 0-.5303.5303m4.2426-4.2426-.5303.5303"/>
+            </svg>
+            <span class="text-xs">{{ mod.category.name }}</span>
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="flex flex-col justify-center items-center gap-2 p-2">
+      {% if mod.latestVersion %}
+        <a class="btn btn-outline btn-accent table-auto w-full" href="/mods/{{ mod.user.slug }}/{{ mod.slug }}/download/{{ mod.latestVersion }}" target="_blank">
+          {{ _("Download") }}
+          {{mod.name}}@{{ mod.latestVersion }}
+        </a>
+      {% else %}
+        <a class="btn btn-outline table-auto w-full btn-disabled" href="#!">
+          {{ _("download") }}
+        </a>
+      {% endif %}
+      <a class="btn btn-outline btn-secondary table-auto w-full btn-disabled" href="/mods/{{ mod.user.slug }}/{{ mod.slug }}/download/{{ mod.latestVersion }}" target="_blank">
+        {{ _("Install with Red Manager") }}
+      </a>
+    </div>
+  </div>
+
+  {# Description Section #}
+  <div class="flex flex-wrap md:flex-nowrap justify-center p-2 rounded-md gap-4">
+    <div class="flex flex-col flex-grow justify-center items-start gap-2 p-4 bg-base-100 rounded-xl">
+      <pre id="modDescriptionTemplate" class="mod-description-template min-w-md"></pre>
+    </div>
+    <div class="flex flex-col justify-start items-start gap-4 p-4 bg-base-200 rounded-xl">
+      <div class="mod-info">
         {% if not mod.isApproved %}
           <div class="flex justify-center">
             <p class="text-error text-xs mt-4">{{ _("pending_approval") }}</p>
           </div>
         {% endif %}
-        <div class="flex justify-center flex-wrap">
-          {% if mod.latestVersion %}
-            <a class="btn btn-outline btn-accent m-4 table-auto" href="/mods/{{ mod.user.slug }}/{{ mod.slug }}/download/{{ mod.latestVersion }}" target="_blank">
-              {{ _("direct_download") }}
-            </a>
-          {% else %}
-            <a class="btn btn-outline m-4 table-auto btn-disabled" href="#!">
-              {{ _("direct_download") }}
-            </a>
-          {% endif %}
-        </div>
-        <div class="flex justify-center flex-wrap">
-          <span class="stat-desc text-accent">↗︎ {{ mod.downloads }}
-            {{ _("downloads") }}</span>
-          <span class="stat-desc text-secondary ml-2 follows-count">♥ {{ mod._count.favorites }} {{ _("favorites") }}</span>
-        </div>
         {% if user and user.slug != mod.user.slug %}
           <div class="flex justify-center">
             <a class="mod-favorite m-2" href="#!" onclick="toggleFavorite(this, '{{ mod.mod_id }}')">
@@ -88,18 +178,10 @@
             {% endif %}
           </div>
         {% endif %}
-      </div>
 
-      <div class="mod-downloads m-4">
-        <pre id="modDescriptionTemplate" class="mod-description-template"></pre>
-      </div>
-      <div class="flex justify-center flex-wrap gap-4">
-        {% for image in mod.images %}
-          <img src="{{ image.url }}" alt="{{ mod.name }}">
-        {% endfor %}
       </div>
       <div class="flex flex-col">
-        <p class="text-3xl mb-8 mt-4">{{ _("version_history") }}</p>
+        <p class="text-xl">{{ _("version_history") }}</p>
         <table class="table">
           <thead>
             <tr>
@@ -141,6 +223,11 @@
         </div>
       {% endif %}
     </div>
+  </div>
+
+  <div class="flex flex-col-reverse lg:flex-row justify-center p-2 rounded-md">
+    <div class="flex flex-col flex-grow justify-center items-start p-2"></div>
+    <div class="flex flex-col justify-around items-start gap-4 p-2"></div>
   </div>
 
   <dialog id="modalEdit" class="modal">
@@ -218,7 +305,7 @@
         <label class="label">
           <span class="label-text">{{ _("Changelog") }}</span>
         </label>
-        <textarea id="mod-changelog" class="textarea textarea-bordered h-24 w-full" name="changelog" placeholder="{{ _("mod_changelog_placeholder") }}" minlength="10" maxlength="2000"></textarea>
+        <textarea id="mod-changelog" class="textarea textarea-bordered h-24 w-full" name="changelog" placeholder="{{ _("mod_changelog_placeholder") }}" minlength="1" maxlength="2000"></textarea>
       </div>
       <div class="modal-action">
         <button class="btn" onclick="closeModal('#modalReleaseVersion')">{{ _("Close") }}</button>
@@ -228,9 +315,4 @@
   </dialog>
 
   <div id="sotf-mods-m" data-m="{{ mod | dump }}"></div>
-{% endblock %}
-
-{% block scripts %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
-  <script src="/static/scripts/mod.js" type="module"></script>
 {% endblock %}

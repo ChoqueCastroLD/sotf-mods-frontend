@@ -92,7 +92,7 @@
     <div class="w-full lg:w-2/3 p-2">
       {# Filters Header #}
       <div id="mods-filter-header" class="sticky top-5 z-[5] bg-[#15191d] bg-opacity-80 backdrop-blur-sm rounded-lg px-2 py-2">
-        <div class="flex items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           {# Mods Subtitle #}
           <h1 class="text-4xl m-2 font-bold">{{ _("Mods") }}</h1>
           <div class="flex items-center justify-between gap-2">
@@ -135,7 +135,7 @@
           <div class="flex flex-grow flex-col gap-1">
             <input id="mods-discover-search" name="search" class="input input-bordered input-success w-full mb-2" type="text" placeholder="{{ _('mods.Type here') }}">
             <div class="flex gap-1">
-              <div class="flex flex-grow justify-start items-center gap-4">
+              <div class="flex flex-wrap flex-grow justify-start items-center gap-4">
                 {# Categories #}
                 <select id="mods-discover-categories" name="category" class="select select-sm w-38">
                   <option value="">{{ _("All categories") }}</option>
