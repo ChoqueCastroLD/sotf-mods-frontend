@@ -30,46 +30,34 @@ document
   });
 
 window.toggleFavorite = async function (elem, mod_id) {
-  elem.disabled = true;
-  document
-    .getElementById("modFavorite:" + mod_id + ":off")
-    .classList.toggle("hidden");
-  document
-    .getElementById("modFavorite:" + mod_id + ":on")
-    .classList.toggle("hidden");
+  console.log({ elem, mod_id });
+  const isFavorite = elem.checked;
   const response = await fetch(
-    `${PUBLIC_API_URL}/api/mods/${mod_id}/favorite`,
+    `${PUBLIC_API_URL}/api/favorites/toggle`,
     {
+      method: "POST",
       headers: {
         Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        modId: mod_id,
+        favorite: isFavorite,
+      }),
     }
   );
-  const { status, data } = await response.json();
-  if (status) {
-    if (data.favorite) {
-      document
-        .getElementById("modFavorite:" + mod_id + ":off")
-        .classList.add("hidden");
-      document
-        .getElementById("modFavorite:" + mod_id + ":on")
-        .classList.remove("hidden");
-    } else {
-      document
-        .getElementById("modFavorite:" + mod_id + ":off")
-        .classList.remove("hidden");
-      document
-        .getElementById("modFavorite:" + mod_id + ":on")
-        .classList.add("hidden");
+  const { data } = await response.json();
+  if (data?.count !== undefined) { 
+    if (document.querySelector(".follows-count-" + mod_id)) {
+      document.querySelector(".follows-count-" + mod_id).innerHTML = `${data.count}`;
     }
-    document.querySelector(
-      ".follows-count"
-    ).innerHTML = `${data.count} follows`;
-  } else {
-    console.error(
-      _("There has been a problem with your fetch operation:"),
-      data
-    );
+    if (document.querySelector(".following-tooltip-" + mod_id)) {
+      if (isFavorite) {
+        document.querySelector(".following-tooltip-" + mod_id).dataset.tip = data.count + " " + _("following") + _(" with me");
+      } else {
+        document.querySelector(".following-tooltip-" + mod_id).dataset.tip = data.count + " " + _("following");
+      }
+    }
   }
   elem.disabled = false;
 };

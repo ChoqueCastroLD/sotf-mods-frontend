@@ -138,6 +138,12 @@
             <input id="mods-discover-search" name="search" class="input input-bordered input-success w-full mb-2" type="text" placeholder="{{ _('mods.Type here') }}">
             <div class="flex gap-1">
               <div class="flex flex-wrap flex-grow justify-start items-center gap-4">
+                {# Type #}
+                <select id="mods-discover-type" name="type" class="select select-sm w-38">
+                  <option value="Both">{{ _("All types") }}</option>
+                  <option value="Mod" selected>{{ _("Mods") }}</option>
+                  <option value="Build">{{ _("Builds") }}</option>
+                </select>
                 {# Categories #}
                 <select id="mods-discover-categories" name="category" class="select select-sm w-38">
                   <option value="">{{ _("All categories") }}</option>
@@ -147,11 +153,16 @@
                 </select>
                 {# Order by #}
                 <select id="mods-discover-order-by" name="order_by" class="select select-sm w-32">
-                  <option value="newest">{{ _("mods.Newest") }}</option>
-                  <option value="oldest">{{ _("mods.Oldest") }}</option>
-                  <option value="popular">{{ _("mods.Popular") }}</option>
-                  <option value="unpopular">{{ _("mods.Unpopular") }}</option>
-                  <option value="random" disabled>{{ _("mods.Random") }}</option>
+                  <option value="most_downloaded">{{ _("Most downloaded") }}</option>
+                  <option value="least_downloaded">{{ _("Least downloaded") }}</option>
+                  <option value="most_downloaded_week">{{ _("Most downloaded in the last week") }}</option>
+                  <option value="least_downloaded_week">{{ _("Least downloaded in the last week") }}</option>
+                  <option value="most_followed">{{ _("Most followed") }}</option>
+                  <option value="least_followed">{{ _("Least followed") }}</option>
+                  <option value="highest_rating">{{ _("Highest rating") }}</option>
+                  <option value="lowest_rating">{{ _("Lowest rating") }}</option>
+                  <option value="oldest">{{ _("Oldest") }}</option>
+                  <option value="newest" selected>{{ _("Newest") }}</option>
                 </select>
                 {# Approved #}
                 <label class="swap">

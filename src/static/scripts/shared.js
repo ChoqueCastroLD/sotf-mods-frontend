@@ -182,3 +182,26 @@ const observer = new MutationObserver(mutationCallback);
 lazyLoadImages(document.querySelectorAll('img[data-lazy-src]'));
 
 observer.observe(document.body, observerOptions);
+
+async function getFollowingMods() {
+    const response = await fetch(
+        `${PUBLIC_API_URL}/api/favorites`,
+        {
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        }
+    );
+    const { data } = await response.json();
+    for (const following of data) {
+        const followingMod = document.querySelector('.following-tooltip-' + following.mod.id);
+        if (followingMod) {
+            followingMod.dataset.tip = following.mod.favoritesCount + " " + _("following") + _(" with me");
+        }
+        const followingCheckbox = document.querySelector('.following-checkbox-' + following.mod.id);
+        if (followingCheckbox) {
+            followingCheckbox.checked = true;
+        }
+    }
+}
+getFollowingMods();

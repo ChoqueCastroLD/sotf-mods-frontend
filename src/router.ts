@@ -89,7 +89,7 @@ export const router = new Elysia()
     if (context.query.search) modsQuery.set("search", context.query.search);
     if (context.query.page) modsQuery.set("page", context.query.page);
     modsQuery.set("limit", "16");
-    modsQuery.set("type", "Mod");
+    modsQuery.set("type", context.query.type || "Mod");
     const [
       { data: mods, meta },
       { data: featured },
@@ -101,7 +101,6 @@ export const router = new Elysia()
       callAPI(`/api/stats`),
       callAPI(`/api/categories?type=Mod`),
     ]);
-    console.log(mods);
     
     return render("mods", { mods, meta, stats, categories, featured })(context);
   })
@@ -130,8 +129,6 @@ export const router = new Elysia()
       callAPI(`/api/stats/builds`),
       callAPI(`/api/categories?type=Build`),
     ]);
-    console.log(featured);
-    
     console.log(`/api/mods?${modsQuery.toString()}`);
     
     return render("builds", { mods, meta, stats, categories, featured })(
