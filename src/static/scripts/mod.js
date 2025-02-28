@@ -30,7 +30,11 @@ document
   });
 
 window.toggleFavorite = async function (elem, mod_id) {
-  console.log({ elem, mod_id });
+  if (!token) {
+    showError(_("Please log in to follow mods"));
+    elem.checked = false;
+    return;
+  }
   const isFavorite = elem.checked;
   const response = await fetch(
     `${PUBLIC_API_URL}/api/favorites/toggle`,

@@ -184,6 +184,7 @@ lazyLoadImages(document.querySelectorAll('img[data-lazy-src]'));
 observer.observe(document.body, observerOptions);
 
 async function getFollowingMods() {
+    if (!token) return;
     const response = await fetch(
         `${PUBLIC_API_URL}/api/favorites`,
         {
