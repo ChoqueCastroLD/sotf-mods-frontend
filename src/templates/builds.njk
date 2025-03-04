@@ -29,7 +29,7 @@
     {% for mod in featured %}
       <a class="card w-96 mb-2 mt-2 shadow-xl rounded-lg bg-black grid" href="/builds/{{ mod.user.slug }}/{{ mod.slug }}">
         <figure class="col-start-1 row-start-1"><img data-lazy-src="{{ mod.imageUrl }}" alt="{{ mod.name }}" loading="lazy"/></figure>
-        <div class="card-body rounded-lg col-start-1 row-start-1 relative bg-black bg-opacity-0 transition opacity-10 hover:opacity-100 hover:bg-opacity-80">
+        <div class="card-body rounded-lg col-start-1 row-start-1 relative bg-black/0 transition opacity-10 hover:opacity-100 hover:bg-black/80">
           <h2 class="card-title">
             <span class="text-4xl">#{{ loop.index }}</span>
             <span class="hover-underline-animation">{{ mod.name }}</span>

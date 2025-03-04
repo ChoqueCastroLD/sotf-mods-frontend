@@ -8,8 +8,8 @@
             <title>Sons of The Forest Mods</title>
         {% endblock %}
 
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css"/>
-        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         <link rel="stylesheet" href="/static/css/layout.css">
         <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
@@ -44,9 +44,9 @@
     </head>
     <body class="bg-base-300">
         <div class="max-w-screen-xl mx-auto">
-            {% include "navbar.njk" %}
+            {% include "components/navbar.njk" %}
             {% block body %}{% endblock %}
-            {% include "footer.njk" %}
+            {% include "components/footer.njk" %}
 
         </div>
 

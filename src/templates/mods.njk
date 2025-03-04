@@ -13,7 +13,7 @@
       <div class="flex flex-col gap-4 items-center justify-center">
         {# Stats #}
         <div class="flex flex-col gap-2 items-center justify-center p-2">
-          <div class="stats bg-opacity-0 stats-horizontal">
+          <div class="stats bg-black/0 stats-horizontal">
             <div class="stat p-2 place-items-center">
               <div class="stat-title">{{ _("mods.Downloads") }}</div>
               <div class="stat-value text-accent">{{ stats.downloads }}</div>
@@ -93,7 +93,7 @@
     </div>
     <div class="w-full lg:w-2/3 p-2">
       {# Filters Header #}
-      <div id="mods-filter-header" class="sticky top-5 z-[5] bg-[#15191d] bg-opacity-80 backdrop-blur-sm rounded-lg px-2 py-2">
+      <div id="mods-filter-header" class="sticky top-5 z-[5] bg-[#15191d]/80 backdrop-blur-sm rounded-lg px-2 py-2">
         <div class="flex flex-wrap items-center justify-between gap-2">
           {# Mods Subtitle #}
           <h1 class="text-4xl m-2 font-bold">{{ _("Mods") }}</h1>

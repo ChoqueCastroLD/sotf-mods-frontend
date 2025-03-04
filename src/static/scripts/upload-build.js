@@ -144,6 +144,8 @@ async function uploadMod() {
 
     const formData = new FormData();
 
+    formData.append("name", mod.name);
+    formData.append("shortDescription", mod.shortDescription);
     formData.append("description", sanitizeText(mod.description));
     formData.append("category_id", mod.category_id);
     formData.append("buildFile", modFile.files[0]);
