@@ -1,23 +1,51 @@
 {% extends "layout.njk" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/static/css/mods.css">
-    <link rel="stylesheet" href="/static/css/profile.css">
+  <link rel="stylesheet" href="/static/css/mods.css">
+  <link rel="stylesheet" href="/static/css/profile.css">
 {% endblock %}
 
 {% block body %}
-    <div class="top-spacer"></div>
-    <div id="sotf-mods-p" data-p="{{ userProfile | dump }}"></div>
-    <div class="flex flex-col justify-center items-center m-6">
-        <div class="text-center lg:text-left">
-            <h1 class="text-5xl font-bold">{{ userProfile.name }}'s mods</h1>
-        </div>
+  <div class="top-spacer"></div>
+  <div id="sotf-mods-p" data-p="{{ userProfile | dump }}"></div>
+  <div class="flex flex-col justify-center items-center m-6">
+    <div class="text-center lg:text-left">
+      {# Check if user is logged in and is the owner of the profile #}
+      {% if user and user.slug == userProfile.slug %}
+        <label for="profile-image-upload" class="relative group cursor-pointer">
+          {% if userProfile.imageUrl %}
+            <img id="profile-image" src="{{ userProfile.imageUrl }}" alt="Avatar"
+                    class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg transition-transform transform group-hover:scale-110">
+          {% else %}
+            <div id="profile-image-placeholder"
+                    class="w-24 h-24 rounded-full bg-gray-200 border-4 border-gray-300 shadow-lg flex items-center justify-center text-gray-500 text-xl font-semibold transition-transform transform group-hover:scale-110">
+                    ?
+                </div>
+          {% endif %}
+          <input type="file" id="profile-image-upload" class="hidden" accept="image/*">
+        </label>
+      {% else %}
+        {# Read-only profile image for non-owners or guests #}
+        {% if userProfile.imageUrl %}
+          <img src="{{ userProfile.imageUrl }}" alt="Avatar"
+                class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg">
+        {% else %}
+          <div class="w-24 h-24 rounded-full bg-gray-200 border-4 border-gray-300 shadow-lg flex items-center justify-center text-gray-500 text-xl font-semibold">
+                ?
+            </div>
+        {% endif %}
+      {% endif %}
     </div>
-    <div id="mods-discover-container" class="flex flex-wrap justify-center">
-        <span class="loading loading-infinity loading-lg text-success center"></span>
+
+    <div class="text-center lg:text-left py-2">
+      <h1 class="text-4xl font-bold">{{ userProfile.name }}'s mods</h1>
     </div>
+  </div>
+  <div id="mods-discover-container" class="flex flex-wrap justify-center">
+    <span class="loading loading-infinity loading-lg text-success center"></span>
+  </div>
 {% endblock %}
 
 {% block scripts %}
-    <script type="module" src="/static/scripts/profile.js"></script>
+  <script type="module" src="/static/scripts/profile.js"></script>
 {% endblock %}

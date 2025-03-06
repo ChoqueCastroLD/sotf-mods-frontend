@@ -40,7 +40,7 @@
         </li>
       </ul>
     </div>
-    <div class="flex justify-center items-center">
+    <div class="flex justify-center items-center px-2 gap-2">
       <div class="dropdown dropdown-end">
         <label class="btn btn-ghost btn-circle uppercase" tabindex="0">
           {{ "中文" if lang == 'ch' else lang }}
@@ -63,14 +63,18 @@
       </div>
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar flex justify-center items-center">
-          {# <div class="w-10 rounded-full">
-            <img
-              alt="Tailwind CSS Navbar component"
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
-          </div> #}
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-            <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
-          </svg>
+            {% if user and user.imageUrl %}
+              <div class="w-10 rounded-full">
+                <img
+                  alt="{{ user.name }}"
+                  class="w-full h-full object-cover rounded-full"
+                  src="{{ user.imageUrl }}"/>
+              </div>
+            {% else %}
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+              </svg>
+            {% endif %}
         </div>
         <ul
           tabindex="0"
