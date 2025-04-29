@@ -319,7 +319,7 @@ const renderComment = (comment) => {
         <a href="${profileUrl}" class="text-sm font-bold hover:underline">${user.name}</a>
         <time class="text-xs opacity-50"> • ${formattedDate}</time>
       </div>
-      <div class="chat-bubble">${message}</div>
+      <div class="chat-bubble">${message.replace('\n', '<br />')}</div>
     </div>
   `;
 };

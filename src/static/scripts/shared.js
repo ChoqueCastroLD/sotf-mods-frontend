@@ -103,7 +103,7 @@ window.sanitizeText = (text) => {
     const allowedPattern = /[^\p{Script=Han}a-zA-Z0-9,.¡!¿?$%&()#+;/'"\n _-]/gu;
     let sanitizedInput = DOMPurify.sanitize(text).replace(allowedPattern, "");
     sanitizedInput = sanitizedInput.trim().replace(/<[^>]*>?/gm, '');
-    return sanitizedInput.replace(/\n/g, "<br>");
+    return sanitizedInput;
 };
 
 
