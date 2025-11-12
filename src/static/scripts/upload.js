@@ -146,6 +146,35 @@ function validateMod(mod) {
   return true;
 }
 
+async function getPresignedUrl(filename, contentType) {
+  const res = await fetch(`${PUBLIC_API_URL}/api/files/presigned-url`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ filename, contentType }),
+  });
+  const { status, data, message } = await res.json();
+  if (!status) {
+    throw new Error(message || "Failed to get upload URL");
+  }
+  return data;
+}
+
+async function uploadFileToR2(file, uploadUrl) {
+  const res = await fetch(uploadUrl, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "Content-Type": file.type || "application/octet-stream",
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to upload file: ${res.statusText}`);
+  }
+}
+
 async function uploadMod() {
   btnSubmitMod.classList.add("btn-disabled");
   btnSubmitMod.disabled = true;
@@ -154,25 +183,52 @@ async function uploadMod() {
 
     validateMod(mod);
 
-    const formData = new FormData();
+    // Get presigned URLs for all files
+    const modFilePresigned = await getPresignedUrl(
+      modFile.files[0].name,
+      modFile.files[0].type || "application/zip"
+    );
+    const thumbnailPresigned = await getPresignedUrl(
+      modThumbnail.files[0].name,
+      modThumbnail.files[0].type || "image/png"
+    );
 
-    formData.append("name", sanitizeText(mod.name));
-    formData.append("shortDescription", sanitizeText(mod.shortDescription));
-    formData.append("description", mod.description);
-    formData.append("isNSFW", mod.isNSFW);
-    formData.append("category_id", mod.category_id);
-    formData.append("modFile", modFile.files[0]);
-    formData.append("thumbnail", modThumbnail.files[0]);
-    for (const image of modImages.files) {
-      formData.append("images", image);
-    }
+    const imagePresignedUrls = await Promise.all(
+      [...modImages.files].map(async (image) => {
+        const presigned = await getPresignedUrl(
+          image.name,
+          image.type || "image/png"
+        );
+        return presigned;
+      })
+    );
 
+    // Upload all files directly to R2
+    await Promise.all([
+      uploadFileToR2(modFile.files[0], modFilePresigned.uploadUrl),
+      uploadFileToR2(modThumbnail.files[0], thumbnailPresigned.uploadUrl),
+      ...modImages.files.map((image, index) =>
+        uploadFileToR2(image, imagePresignedUrls[index].uploadUrl)
+      ),
+    ]);
+
+    // Now publish with file keys
     const res = await fetch(`${PUBLIC_API_URL}/api/mods/publish`, {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: formData,
+      body: JSON.stringify({
+        name: sanitizeText(mod.name),
+        shortDescription: sanitizeText(mod.shortDescription),
+        description: mod.description,
+        isNSFW: mod.isNSFW,
+        category_id: mod.category_id,
+        modFileKey: modFilePresigned.fileKey,
+        thumbnailKey: thumbnailPresigned.fileKey,
+        imageKeys: imagePresignedUrls.map((p) => p.fileKey),
+      }),
     });
     const { status, message } = await res.json();
     if (status) {

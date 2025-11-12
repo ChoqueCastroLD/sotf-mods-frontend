@@ -1,5 +1,6 @@
 import { Elysia } from 'elysia'
-
+// Ensure TypeBox is available for Elysia
+import '@sinclair/typebox'
 
 export const authMiddleware = new Elysia()
     .derive(async ({ cookie: { token } }) => {

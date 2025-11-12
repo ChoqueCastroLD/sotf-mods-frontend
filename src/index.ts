@@ -1,3 +1,5 @@
+// Ensure TypeBox is available for Elysia
+import '@sinclair/typebox'
 import { Elysia } from 'elysia'
 // import { staticPlugin } from '@elysiajs/static'
 

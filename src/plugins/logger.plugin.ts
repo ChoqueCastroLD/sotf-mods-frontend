@@ -55,7 +55,7 @@ export const loggerPlugin = new Elysia()
     );
     console.error(error);
   })
-  .onResponse(({ path, request, set }) => {
+  .onAfterHandle(({ path, request, set }) => {
     if (path.startsWith("/static")) return;
     console.log(
       `${
