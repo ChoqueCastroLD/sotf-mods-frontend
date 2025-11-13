@@ -2,6 +2,7 @@
 
 {% block scripts %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="/static/scripts/mod.js" type="module"></script>
 {% endblock %}
 
@@ -223,11 +224,41 @@
                 </div>
               {% endif %}
 
+              {# Mod Side #}
+              {% if mod.modSide %}
+                <div class="flex justify-between">
+                  <p class="text-sm">{{ _("Mod Side") }}</p>
+                  <p class="text-sm">
+                    {% if mod.modSide == "client" %}
+                      {{ _("Client Side") }}
+                    {% elif mod.modSide == "server" %}
+                      {{ _("Server Side") }}
+                    {% elif mod.modSide == "both" %}
+                      {{ _("Both") }}
+                    {% endif %}
+                  </p>
+                </div>
+              {% endif %}
+
               {# Has NSFW content? #}
               <div class="flex justify-between">
                 <p class="text-sm">Has NSFW content?</p>
                 <p class="text-sm">{{ _("Yes") if mod.isNSFW else _("No")}}</p>
               </div>
+
+              {# Multiplayer Compatible #}
+              <div class="flex justify-between">
+                <p class="text-sm">{{ _("Multiplayer Compatible") }}</p>
+                <p class="text-sm">{{ _("Yes") if mod.isMultiplayerCompatible else _("No")}}</p>
+              </div>
+
+              {# Requires All Players #}
+              {% if mod.isMultiplayerCompatible %}
+                <div class="flex justify-between">
+                  <p class="text-sm">{{ _("Requires All Players") }}</p>
+                  <p class="text-sm">{{ _("Yes") if mod.requiresAllPlayers else _("No") }}</p>
+                </div>
+              {% endif %}
 
               {# Source URL #}
               {% if mod.sourceUrl %}
@@ -327,6 +358,29 @@
 
   <div class="flex flex-wrap md:flex-nowrap justify-center p-2 rounded-md gap-4">
     <div class="flex w-full md:w-2/3 flex-col flex-grow justify-center items-start gap-2 ">
+      {# Download Statistics Chart #}
+      <div class="collapse bg-base-100 rounded-xl w-full">
+        <input type="checkbox" checked />
+        <div class="collapse-title font-semibold">{{ _("Download Statistics") }}</div>
+        <div class="collapse-content text-sm p-4 w-full">
+          <div class="flex flex-col gap-4">
+            {# Period Filter #}
+            <div class="flex gap-2 flex-wrap">
+              <button class="btn btn-sm btn-outline period-filter active" data-period="week">{{ _("Last 7 Days") }}</button>
+              <button class="btn btn-sm btn-outline period-filter" data-period="month">{{ _("Last Month") }}</button>
+              <button class="btn btn-sm btn-outline period-filter" data-period="all">{{ _("All Time") }}</button>
+            </div>
+            {# Chart Container #}
+            <div class="w-full" style="position: relative; height: 300px;">
+              <canvas id="downloadStatsChart" style="display: none;"></canvas>
+            </div>
+            <div id="downloadStatsLoading" class="flex justify-center items-center" style="height: 300px;">
+              <span class="loading loading-spinner loading-lg"></span>
+            </div>
+            <div id="downloadStatsError" class="hidden text-error text-center" style="height: 300px; display: flex; align-items: center; justify-content: center;"></div>
+          </div>
+        </div>
+      </div>
       {# Comments #}
       <div class="collapse bg-base-100 rounded-xl">
         <input type="checkbox" checked />
@@ -391,6 +445,27 @@
         <span class="label-text">{{ _("Has NSFW content") }}</span>
         <input id="mod-isNSFW" type="checkbox" class="toggle toggle-secondary ml-2" name="isNSFW" {{ "checked" if mod.isNSFW }}>
       </label>
+      <div class="form-control mt-4">
+        <label class="label">
+          <span class="label-text">{{ _("Mod Side") }}</span>
+        </label>
+        <select id="mod-side" class="select select-bordered">
+          <option value="">{{ _("Select mod side") }}</option>
+          <option value="client" {{ "selected" if mod.modSide == "client" }}>{{ _("Client Side") }}</option>
+          <option value="server" {{ "selected" if mod.modSide == "server" }}>{{ _("Server Side") }}</option>
+          <option value="both" {{ "selected" if mod.modSide == "both" }}>{{ _("Both") }}</option>
+        </select>
+      </div>
+      <label class="cursor-pointer label ml-2 mt-4">
+        <span class="label-text">{{ _("Multiplayer Compatible") }}</span>
+        <input id="mod-isMultiplayerCompatible" type="checkbox" class="toggle toggle-secondary ml-2" name="isMultiplayerCompatible" {{ "checked" if mod.isMultiplayerCompatible }}>
+      </label>
+      <div id="mod-requiresAllPlayers-container" class="{{ 'hidden' if not mod.isMultiplayerCompatible else '' }} mt-2">
+        <label class="cursor-pointer label ml-2">
+          <span class="label-text">{{ _("Requires All Players") }}</span>
+          <input id="mod-requiresAllPlayers" type="checkbox" class="toggle toggle-secondary ml-2" name="requiresAllPlayers" {{ "checked" if mod.requiresAllPlayers }}>
+        </label>
+      </div>
       <label class="cursor-pointer label ml-2">
         <span class="label-text">{{ _("Update images") }}</span>
         <input id="mod-update-images" type="checkbox" class="toggle toggle-secondary ml-2" name="updateImages">

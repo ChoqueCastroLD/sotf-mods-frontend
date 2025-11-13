@@ -16,6 +16,7 @@ loginForm.addEventListener('submit', async (event) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include', // Important: include cookies in request/response
             body: JSON.stringify(body)
         });
 
@@ -26,8 +27,9 @@ loginForm.addEventListener('submit', async (event) => {
         }
 
         loginForm.reset();
-        document.cookie = `token=${data.token}; Path=/`;
-        location.href = '/';
+        // The API already sets an HttpOnly cookie, so we don't need to set it client-side
+        // Just redirect - the cookie will be automatically sent with the next request
+        window.location.href = '/mods';
     } catch (error) {
         console.error(error);
         showError(error);

@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { cookie } from "@elysiajs/cookie";
 
 import { render } from "./middlewares/render.middleware";
 import { authMiddleware } from "./middlewares/auth.middleware";
@@ -12,17 +13,32 @@ const loggedOnly = async ({ user, set }: any) => {
 let cache: { [key: string]: any } = {};
 
 async function callAPI(url: string, options?: any) {
-  // const cacheKey = `${url}-${JSON.stringify(options)}`;
-  // if (cache[cacheKey] && options?.no_cache !== true) {
-  //   // return cache[cacheKey];
-  // }
-  const res = await fetch(`${Bun.env.PUBLIC_API_URL}${url}`, options);
-  const data = await res.json();
-  // cache[cacheKey] = data;
-  return data;
+  try {
+    // const cacheKey = `${url}-${JSON.stringify(options)}`;
+    // if (cache[cacheKey] && options?.no_cache !== true) {
+    //   // return cache[cacheKey];
+    // }
+    const apiUrl = Bun.env.PUBLIC_API_URL;
+    if (!apiUrl) {
+      console.error("PUBLIC_API_URL is not set");
+      return { status: false, data: null, message: "API URL not configured" };
+    }
+    const res = await fetch(`${apiUrl}${url}`, options);
+    if (!res.ok) {
+      console.error(`API call failed: ${url} - ${res.status} ${res.statusText}`);
+      return { status: false, data: null, message: `API error: ${res.statusText}` };
+    }
+    const data = await res.json();
+    // cache[cacheKey] = data;
+    return data;
+  } catch (error) {
+    console.error(`Error calling API ${url}:`, error);
+    return { status: false, data: null, message: error instanceof Error ? error.message : "Unknown error" };
+  }
 }
 
 export const router = new Elysia()
+  .use(cookie())
   .use(authMiddleware)
   // auth
   .get("/login", render("login"))
@@ -77,32 +93,39 @@ export const router = new Elysia()
   })
 
   .get("/mods", async (context) => {
-    let modsQuery = new URLSearchParams();
-    modsQuery.set("nsfw", context.query.nsfw === "true" ? "true" : "false");
-    modsQuery.set(
-      "approved",
-      context.query.showunapproved === "true" ? "false" : "true"
-    );
-    modsQuery.set("orderby", context.query.orderby || "newest");
-    if (context.query.category)
-      modsQuery.set("category", context.query.category);
-    if (context.query.search) modsQuery.set("search", context.query.search);
-    if (context.query.page) modsQuery.set("page", context.query.page);
-    modsQuery.set("limit", "16");
-    modsQuery.set("type", context.query.type || "Mod");
-    const [
-      { data: mods, meta },
-      { data: featured },
-      { data: stats },
-      { data: categories },
-    ] = await Promise.all([
-      callAPI(`/api/mods?${modsQuery.toString()}`),
-      callAPI(`/api/mods/featured`),
-      callAPI(`/api/stats`),
-      callAPI(`/api/categories?type=Mod`),
-    ]);
-    
-    return render("mods", { mods, meta, stats, categories, featured })(context);
+    try {
+      let modsQuery = new URLSearchParams();
+      modsQuery.set("nsfw", context.query.nsfw === "true" ? "true" : "false");
+      modsQuery.set(
+        "approved",
+        context.query.showunapproved === "true" ? "false" : "true"
+      );
+      modsQuery.set("orderby", context.query.orderby || "newest");
+      if (context.query.category)
+        modsQuery.set("category", context.query.category);
+      if (context.query.search) modsQuery.set("search", context.query.search);
+      if (context.query.page) modsQuery.set("page", context.query.page);
+      modsQuery.set("limit", "16");
+      modsQuery.set("type", context.query.type || "Mod");
+      const [
+        { data: mods, meta },
+        { data: featured },
+        { data: stats },
+        { data: categories },
+      ] = await Promise.all([
+        callAPI(`/api/mods?${modsQuery.toString()}`),
+        callAPI(`/api/mods/featured`),
+        callAPI(`/api/stats`),
+        callAPI(`/api/categories?type=Mod`),
+      ]);
+      
+      return render("mods", { mods: mods || [], meta: meta || {}, stats: stats || {}, categories: categories || [], featured: featured || [] })(context);
+    } catch (error) {
+      console.error("Error loading mods page:", error);
+      // Return a basic error page or redirect
+      context.set.status = 500;
+      return render("mods", { mods: [], meta: {}, stats: {}, categories: [], featured: [] })(context);
+    }
   })
   .get("/builds", async (context) => {
     let modsQuery = new URLSearchParams();

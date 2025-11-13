@@ -3,15 +3,48 @@ import { Elysia } from 'elysia'
 import '@sinclair/typebox'
 
 export const authMiddleware = new Elysia()
-    .derive(async ({ cookie: { token } }) => {
-        if (!token?.value) return {};
-        const { status, data: user } = await fetch(`${Bun.env.PUBLIC_API_URL}/api/auth/check`, {
-            headers: {
-                authorization: "Bearer " + token?.value
+    .derive({as: 'global'}, async (context) => {
+        try {
+            const { cookie, request } = context;
+            const token = cookie?.token;
+            
+            if (!token?.value) {
+                return {};
             }
-        }).then(res => res.json())
-        if (status && user) {
-            return { token: token?.value, user };
+            
+            const tokenValue = token.value as string;
+            
+            try {
+                const apiUrl = Bun.env.PUBLIC_API_URL;
+                const checkUrl = `${apiUrl}/api/auth/check`;
+                
+                const response = await fetch(checkUrl, {
+                    headers: {
+                        authorization: "Bearer " + tokenValue,
+                        cookie: `token=${tokenValue}`
+                    },
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    console.error(`[Frontend Auth] Auth check failed: ${response.status} ${response.statusText}`);
+                    return {};
+                }
+                
+                const result = await response.json();
+                const { status, data: user } = result;
+                
+                if (status && user) {
+                    return { token: tokenValue, user };
+                } else {
+                    console.error(`[Frontend Auth] Auth check returned no user`);
+                }
+            } catch (error) {
+                console.error(`[Frontend Auth] Auth check exception:`, error);
+            }
+            return {};
+        } catch (outerError) {
+            console.error(`[Frontend Auth] Outer exception in derive:`, outerError);
+            return {};
         }
-        return {};
     })

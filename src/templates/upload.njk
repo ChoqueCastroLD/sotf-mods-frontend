@@ -72,7 +72,28 @@
                   <span class="label-text">{{ _("upload.Has NSFW content") }}</span>
                   <input id="mod-isNSFW" name="isNSFW" type="checkbox" class="toggle toggle-secondary ml-2">
                 </label>
-                <div class="form-control w-full max-w-xs">
+                <div class="form-control w-full max-w-xs mt-4">
+                  <label class="label">
+                    <span class="label-text">{{ _("upload.Mod Side") }}</span>
+                  </label>
+                  <select id="mod-side" class="select select-bordered">
+                    <option value="">{{ _("upload.Select mod side") }}</option>
+                    <option value="client">{{ _("upload.Client Side") }}</option>
+                    <option value="server">{{ _("upload.Server Side") }}</option>
+                    <option value="both">{{ _("upload.Both") }}</option>
+                  </select>
+                </div>
+                <label class="cursor-pointer label ml-2 mt-4">
+                  <span class="label-text">{{ _("upload.Multiplayer Compatible") }}</span>
+                  <input id="mod-isMultiplayerCompatible" name="isMultiplayerCompatible" type="checkbox" class="toggle toggle-secondary ml-2">
+                </label>
+                <div id="mod-requiresAllPlayers-container" class="hidden mt-2">
+                  <label class="cursor-pointer label ml-2">
+                    <span class="label-text">{{ _("upload.Requires All Players") }}</span>
+                    <input id="mod-requiresAllPlayers" name="requiresAllPlayers" type="checkbox" class="toggle toggle-secondary ml-2">
+                  </label>
+                </div>
+                <div class="form-control w-full max-w-xs mt-4">
                   <label class="label">
                     <span class="label-text">{{ _("upload.Category") }}</span>
                   </label>

@@ -131,6 +131,23 @@ async function main() {
       );
     });
   renderDescriptionPreview(mod.description);
+  
+  // Show/hide requiresAllPlayers based on isMultiplayerCompatible
+  const isMultiplayerCompatible = document.getElementById("mod-isMultiplayerCompatible");
+  const requiresAllPlayersContainer = document.getElementById("mod-requiresAllPlayers-container");
+  if (isMultiplayerCompatible && requiresAllPlayersContainer) {
+    isMultiplayerCompatible.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        requiresAllPlayersContainer.classList.remove("hidden");
+      } else {
+        requiresAllPlayersContainer.classList.add("hidden");
+        const requiresAllPlayers = document.getElementById("mod-requiresAllPlayers");
+        if (requiresAllPlayers) {
+          requiresAllPlayers.checked = false;
+        }
+      }
+    });
+  }
   updateModBtn.addEventListener("click", async () => {
     updateModBtn.disabled = true;
     const formData = new FormData();
@@ -147,6 +164,10 @@ async function main() {
       document.getElementById("mod-description").value.trim()
     );
     formData.append("isNSFW", document.getElementById("mod-isNSFW").checked);
+    const modSideValue = document.getElementById("mod-side")?.value || null;
+    formData.append("modSide", modSideValue || "");
+    formData.append("isMultiplayerCompatible", document.getElementById("mod-isMultiplayerCompatible")?.checked || false);
+    formData.append("requiresAllPlayers", document.getElementById("mod-requiresAllPlayers")?.checked || false);
     if (modThumbnail && modThumbnail.files && modThumbnail.files[0]) {
       formData.append("thumbnail", modThumbnail.files[0]);
     }
@@ -326,3 +347,123 @@ const renderComment = (comment) => {
 
 getComments();
 // setInterval(getComments, 10000);
+
+// Download Statistics Chart
+let downloadStatsChart = null;
+let currentPeriod = 'week';
+
+async function loadDownloadStats(period = 'week') {
+  const loadingEl = document.getElementById('downloadStatsLoading');
+  const errorEl = document.getElementById('downloadStatsError');
+  const canvas = document.getElementById('downloadStatsChart');
+  
+  if (!canvas || !mod?.id && !mod?.mod_id) return;
+  
+  try {
+    // Show loading
+    loadingEl.classList.remove('hidden');
+    errorEl.classList.add('hidden');
+    canvas.style.display = 'none';
+    
+    const modIdentifier = mod.id || mod.mod_id;
+    const response = await fetch(
+      `${PUBLIC_API_URL}/api/mods/${modIdentifier}/download-stats?period=${period}`
+    );
+    
+    const { status, data, message } = await response.json();
+    
+    if (!status) {
+      throw new Error(message || 'Failed to load download statistics');
+    }
+    
+    // Hide loading
+    loadingEl.classList.add('hidden');
+    canvas.style.display = 'block';
+    
+    // Format dates for display
+    const labels = data.map(item => {
+      const date = new Date(item.date);
+      return date.toLocaleDateString('es-ES', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    });
+    const counts = data.map(item => item.count);
+    
+    // Destroy existing chart if it exists
+    if (downloadStatsChart) {
+      downloadStatsChart.destroy();
+    }
+    
+    // Create new chart
+    const ctx = canvas.getContext('2d');
+    downloadStatsChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: _('Downloads'),
+          data: counts,
+          borderColor: 'rgb(2, 205, 179)',
+          backgroundColor: 'rgba(2, 205, 179, 0.1)',
+          tension: 0.4,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error loading download stats:', error);
+    loadingEl.classList.add('hidden');
+    errorEl.classList.remove('hidden');
+    errorEl.textContent = _('Failed to load download statistics');
+    canvas.style.display = 'none';
+  }
+}
+
+// Period filter buttons
+document.addEventListener('DOMContentLoaded', () => {
+  const periodFilters = document.querySelectorAll('.period-filter');
+  
+  periodFilters.forEach(button => {
+    button.addEventListener('click', () => {
+      // Update active state
+      periodFilters.forEach(btn => {
+        btn.classList.remove('btn-active', 'active');
+      });
+      button.classList.add('btn-active', 'active');
+      
+      // Load new data
+      const period = button.dataset.period;
+      currentPeriod = period;
+      loadDownloadStats(period);
+    });
+  });
+  
+  // Load initial data
+  if (mod?.id || mod?.mod_id) {
+    loadDownloadStats(currentPeriod);
+  }
+});

@@ -7,9 +7,15 @@ const modName = document.querySelector("#build-name");
 const modShortDescription = document.querySelector("#build-shortDescription");
 const modDescription = document.querySelector("#build-description");
 const modCategory = document.querySelector("#build-category");
+const modIsMultiplayerCompatible = document.querySelector("#build-isMultiplayerCompatible");
+const modRequiresAllPlayers = document.querySelector("#build-requiresAllPlayers");
+const modRequiresAllPlayersContainer = document.querySelector("#build-requiresAllPlayers-container");
 const modFile = document.querySelector("#build-file");
 const modThumbnail = document.querySelector("#build-thumbnail");
 const modImages = document.querySelector("#build-images");
+
+// Store the build file key after initial upload
+let buildFileKey = null;
 
 function getModTemplate(mod) {
   if (!mod.shortDescription)
@@ -81,6 +87,9 @@ function getMod() {
         ? URL.createObjectURL(modThumbnail.files[0])
         : null,
     category_id: parseInt(modCategory.value) || null,
+    modSide: document.getElementById('build-side')?.value || null,
+    isMultiplayerCompatible: modIsMultiplayerCompatible?.checked || false,
+    requiresAllPlayers: modRequiresAllPlayers?.checked || false,
   };
 }
 
@@ -171,11 +180,18 @@ async function uploadMod() {
 
     validateMod(mod);
 
-    // Get presigned URLs for all files
-    const buildFilePresigned = await getPresignedUrl(
-      modFile.files[0].name,
-      modFile.files[0].type || "application/json"
-    );
+    // Check if build file was already uploaded (when file was selected)
+    if (!buildFileKey) {
+      // Get presigned URL for build file if not already uploaded
+      const buildFilePresigned = await getPresignedUrl(
+        modFile.files[0].name,
+        modFile.files[0].type || "application/json"
+      );
+      await uploadFileToR2(modFile.files[0], buildFilePresigned.uploadUrl);
+      buildFileKey = buildFilePresigned.fileKey;
+    }
+
+    // Get presigned URLs for thumbnail and images
     const thumbnailPresigned = await getPresignedUrl(
       modThumbnail.files[0].name,
       modThumbnail.files[0].type || "image/png"
@@ -191,9 +207,8 @@ async function uploadMod() {
       })
     );
 
-    // Upload all files directly to R2
+    // Upload thumbnail and images directly to R2
     await Promise.all([
-      uploadFileToR2(modFile.files[0], buildFilePresigned.uploadUrl),
       uploadFileToR2(modThumbnail.files[0], thumbnailPresigned.uploadUrl),
       ...modImages.files.map((image, index) =>
         uploadFileToR2(image, imagePresignedUrls[index].uploadUrl)
@@ -212,9 +227,12 @@ async function uploadMod() {
         shortDescription: mod.shortDescription,
         description: sanitizeText(mod.description),
         category_id: mod.category_id,
-        buildFileKey: buildFilePresigned.fileKey,
+        buildFileKey: buildFileKey,
         thumbnailKey: thumbnailPresigned.fileKey,
         imageKeys: imagePresignedUrls.map((p) => p.fileKey),
+        modSide: mod.modSide || null,
+        isMultiplayerCompatible: mod.isMultiplayerCompatible,
+        requiresAllPlayers: mod.requiresAllPlayers,
       }),
     });
     const { status, message } = await res.json();
@@ -244,31 +262,66 @@ async function main() {
   modDescription.addEventListener("input", renderDescriptionPreview);
   modCategory.addEventListener("change", renderModItem);
   modThumbnail.addEventListener("change", renderModItem);
-  modFile.addEventListener("change", () => {
-    const formData = new FormData();
-    formData.append("buildFile", modFile.files[0]);
-    fetch(PUBLIC_API_URL + "/api/builds/upload", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    })
-      .then((r) => r.json())
-      .then((r) => {
-        if (!r.status) {
-          throw r.message || r.error;
+  
+  // Show/hide requiresAllPlayers based on isMultiplayerCompatible
+  if (modIsMultiplayerCompatible) {
+    modIsMultiplayerCompatible.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        modRequiresAllPlayersContainer.classList.remove("hidden");
+      } else {
+        modRequiresAllPlayersContainer.classList.add("hidden");
+        if (modRequiresAllPlayers) {
+          modRequiresAllPlayers.checked = false;
         }
-        modName.value = r.data.name;
-        modShortDescription.value = r.data.shortDescription;
-        modBasicInformation.classList.remove("hidden");
-        btnSubmitMod.disabled = false;
-        renderModItem();
-      })
-      .catch((err) => {
-        console.error(err);
-        showError(err);
+      }
+      renderModItem();
+    });
+  }
+  modFile.addEventListener("change", async () => {
+    try {
+      if (!modFile.files[0]) {
+        buildFileKey = null;
+        return;
+      }
+      
+      // Get presigned URL for build file
+      const buildFilePresigned = await getPresignedUrl(
+        modFile.files[0].name,
+        modFile.files[0].type || "application/json"
+      );
+      
+      // Upload file to R2
+      await uploadFileToR2(modFile.files[0], buildFilePresigned.uploadUrl);
+      
+      // Store the file key for later use
+      buildFileKey = buildFilePresigned.fileKey;
+      
+      // Now call API to read build file
+      const response = await fetch(PUBLIC_API_URL + "/api/builds/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          buildFileKey: buildFilePresigned.fileKey,
+        }),
       });
+      
+      const r = await response.json();
+      if (!r.status) {
+        throw r.message || r.error;
+      }
+      modName.value = r.data.name;
+      modShortDescription.value = r.data.shortDescription;
+      modBasicInformation.classList.remove("hidden");
+      btnSubmitMod.disabled = false;
+      renderModItem();
+    } catch (err) {
+      console.error(err);
+      showError(err);
+      buildFileKey = null;
+    }
   });
 
   btnSubmitMod.addEventListener("click", (evt) => {
