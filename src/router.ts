@@ -40,6 +40,11 @@ async function callAPI(url: string, options?: any) {
 export const router = new Elysia()
   .use(cookie())
   .use(authMiddleware)
+  // Root redirect to /mods
+  .get("/", ({ set }) => {
+    set.redirect = "/mods";
+    return;
+  })
   // auth
   .get("/login", render("login"))
   .get("/register", render("register"))
@@ -88,10 +93,6 @@ export const router = new Elysia()
     { beforeHandle: loggedOnly }
   )
   // public
-  .get("/", async ({ set }) => {
-    set.redirect = "/mods";
-  })
-
   .get("/mods", async (context) => {
     try {
       let modsQuery = new URLSearchParams();
