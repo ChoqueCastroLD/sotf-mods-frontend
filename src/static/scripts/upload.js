@@ -215,23 +215,33 @@ modFile.addEventListener('change', async () => {
     return;
   }
   
+  const file = modFile.files[0];
+  
+  // Validate file extension first
+  if (!file.name.endsWith('.zip')) {
+    showToast(_("Mod file must be a .zip file!"), 'error');
+    modFile.value = ''; // Clear the input
+    modFileKey = null;
+    btnSubmitMod.disabled = true;
+    return;
+  }
+  
+  // Check file size limit based on user permissions
+  // Default to 200MB if user info is not loaded yet
+  const isTrusted = window.user?.isTrusted === true;
+  const fileSizeLimit = (isTrusted ? 500 : 200) * 1024 * 1024;
+  const fileSizeLimitMB = isTrusted ? 500 : 200;
+  
+  if (file.size > fileSizeLimit) {
+    showToast(_(`Mod file must be less than ${fileSizeLimitMB}MB!`), 'error');
+    modFile.value = ''; // Clear the input
+    modFileKey = null;
+    btnSubmitMod.disabled = true;
+    return;
+  }
+  
   try {
     showToast(_("Preparing mod file upload..."), 'info');
-    
-    const file = modFile.files[0];
-    if (!file.name.endsWith('.zip')) {
-      throw new Error(_("Mod file must be a .zip file!"));
-    }
-    
-    // Check file size limit based on user permissions
-    // Default to 200MB if user info is not loaded yet
-    const isTrusted = window.user?.isTrusted === true;
-    const fileSizeLimit = (isTrusted ? 500 : 200) * 1024 * 1024;
-    const fileSizeLimitMB = isTrusted ? 500 : 200;
-    
-    if (file.size > fileSizeLimit) {
-      throw new Error(_(`Mod file must be less than ${fileSizeLimitMB}MB!`));
-    }
     
     // Get presigned URL
     const modFilePresigned = await getPresignedUrl(
