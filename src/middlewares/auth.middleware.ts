@@ -3,12 +3,39 @@ import { Elysia } from 'elysia'
 import '@sinclair/typebox'
 
 export const authMiddleware = new Elysia()
-    .derive({as: 'global'}, async (context) => {
+    .derive({as: 'global'}, async ({ cookie }) => {
         try {
-            // Token is now stored in localStorage on the client
-            // For server-side rendering, we can't access localStorage
-            // The token will be read from localStorage in the client-side scripts
-            // User info will be fetched client-side after page load
+            // Read token from frontend cookie (same domain)
+            const token = cookie?.token?.value;
+            
+            if (!token) {
+                return { user: null, token: null };
+            }
+
+            // Call API to get user info using the token
+            const apiUrl = Bun.env.PUBLIC_API_URL;
+            if (!apiUrl) {
+                return { user: null, token: null };
+            }
+
+            try {
+                const response = await fetch(`${apiUrl}/api/auth/check`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status && result.data) {
+                        return { user: result.data, token };
+                    }
+                }
+            } catch (error) {
+                console.error(`[Frontend Auth] Failed to fetch user info:`, error);
+            }
+
             return { user: null, token: null };
         } catch (outerError) {
             console.error(`[Frontend Auth] Outer exception in derive:`, outerError);
