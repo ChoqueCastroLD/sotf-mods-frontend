@@ -27,9 +27,18 @@ loginForm.addEventListener('submit', async (event) => {
         }
 
         // Set token in cookie (frontend's own domain, works fine)
+        // Encode token to handle special characters
+        const encodedToken = encodeURIComponent(data.token);
         const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 2); // 2 days
         const isSecure = window.location.protocol === 'https:';
-        document.cookie = `token=${data.token}; path=/; expires=${expiresAt.toUTCString()}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
+        const cookieString = `token=${encodedToken}; path=/; expires=${expiresAt.toUTCString()}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
+        document.cookie = cookieString;
+        
+        // Verify cookie was set (for debugging)
+        const cookieSet = document.cookie.includes('token=');
+        if (!cookieSet) {
+            console.warn('[Login] Cookie may not have been set correctly');
+        }
         
         // Also store in localStorage as backup
         localStorage.setItem('token', data.token);
