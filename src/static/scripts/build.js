@@ -42,6 +42,7 @@ window.toggleFavorite = async function (elem, mod_id) {
       headers: {
         Authorization: "Bearer " + token,
       },
+      credentials: 'include',
     }
   );
   const { status, data } = await response.json();
@@ -123,6 +124,7 @@ async function main() {
         headers: {
           Authorization: "Bearer " + token,
         },
+        credentials: 'include',
         body: formData,
       }
     );
@@ -161,6 +163,7 @@ async function main() {
         headers: {
           Authorization: "Bearer " + token,
         },
+        credentials: 'include',
         body: formData,
       }
     );

@@ -15,6 +15,7 @@ registerForm.addEventListener('submit', async (event) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include', // Include cookies for CORS
             body: JSON.stringify(data)
         });
 

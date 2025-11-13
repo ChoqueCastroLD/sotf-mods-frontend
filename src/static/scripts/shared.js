@@ -191,6 +191,7 @@ async function getFollowingMods() {
         headers: {
             Authorization: "Bearer " + token,
         },
+        credentials: 'include',
         }
     );
     const { data } = await response.json();

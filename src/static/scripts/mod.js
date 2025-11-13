@@ -42,6 +42,7 @@ window.toggleFavorite = async function (elem, mod_id) {
       Authorization: "Bearer " + token,
       "Content-Type": "application/json",
     },
+    credentials: 'include',
     body: JSON.stringify({
       modId: mod_id,
       favorite: isFavorite,
@@ -75,6 +76,7 @@ window.approve = async function (elem) {
       headers: {
         Authorization: "Bearer " + token,
       },
+      credentials: 'include',
     }
   );
   const { status, message } = await response.json();
@@ -97,6 +99,7 @@ window.unapprove = async function (elem) {
       headers: {
         Authorization: "Bearer " + token,
       },
+      credentials: 'include',
     }
   );
   const { status, message } = await response.json();
@@ -183,6 +186,7 @@ async function main() {
         headers: {
           Authorization: "Bearer " + token,
         },
+        credentials: 'include',
         body: formData,
       }
     );
@@ -221,6 +225,7 @@ async function main() {
         headers: {
           Authorization: "Bearer " + token,
         },
+        credentials: 'include',
         body: formData,
       }
     );
@@ -278,6 +283,7 @@ commentsSendBtn.addEventListener("click", async () => {
       Authorization: "Bearer " + token,
       "Content-Type": "application/json",
     },
+    credentials: 'include',
     body: JSON.stringify({
       mod_id: mod.id,
       message: commentText,

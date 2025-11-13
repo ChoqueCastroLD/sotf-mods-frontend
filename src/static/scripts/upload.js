@@ -163,6 +163,7 @@ async function getPresignedUrl(filename, contentType) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    credentials: 'include',
     body: JSON.stringify({ filename, contentType }),
   });
   const { status, data, message } = await res.json();
@@ -235,6 +236,7 @@ async function uploadMod() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      credentials: 'include',
       body: JSON.stringify({
         name: sanitizeText(mod.name),
         shortDescription: sanitizeText(mod.shortDescription),
@@ -321,6 +323,7 @@ async function main() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({
           modFileKey: modFilePresigned.fileKey,
         }),
