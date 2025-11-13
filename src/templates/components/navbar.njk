@@ -98,7 +98,7 @@
               </a>
             </li>
             <li>
-              <a href="/logout">{{ _("_navbar.logout") }}</a>
+              <a href="/logout" onclick="event.preventDefault(); (async () => { function getToken() { const cookies = document.cookie.split(';'); for (let c of cookies) { const [name, val] = c.trim().split('='); if (name === 'token') return decodeURIComponent(val); } return localStorage.getItem('token'); } const token = getToken(); if (token) { try { await fetch(`${PUBLIC_API_URL}/api/auth/logout`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, credentials: 'include' }); } catch(e) {} document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'; localStorage.removeItem('token'); } window.location.href = '/login'; })();">{{ _("_navbar.logout") }}</a>
             </li>
           {% else %}
             <li class="menu-item">

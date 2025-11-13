@@ -26,9 +26,14 @@ loginForm.addEventListener('submit', async (event) => {
             throw message || _("Something went wrong");
         }
 
+        // Set token in cookie (frontend's own domain, works fine)
+        const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 2); // 2 days
+        document.cookie = `token=${data.token}; path=/; expires=${expiresAt.toUTCString()}; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`;
+        
+        // Also store in localStorage as backup
+        localStorage.setItem('token', data.token);
+        
         loginForm.reset();
-        // The API already sets an HttpOnly cookie, so we don't need to set it client-side
-        // Just redirect - the cookie will be automatically sent with the next request
         window.location.href = '/mods';
     } catch (error) {
         console.error(error);

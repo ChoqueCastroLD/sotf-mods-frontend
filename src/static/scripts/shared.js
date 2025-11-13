@@ -1,7 +1,45 @@
-window.user = document.querySelector('#sotf-mods-u') && JSON.parse(atob(document.querySelector('#sotf-mods-u').dataset.u));
-window.token = document.querySelector('#sotf-mods-t') && JSON.parse(atob(document.querySelector('#sotf-mods-t').dataset.t));
+// Helper function to get token from cookie or localStorage
+function getTokenFromCookie() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'token') {
+            return decodeURIComponent(value);
+        }
+    }
+    return null;
+}
+
+// Get token from cookie first, then localStorage, then DOM
+window.token = getTokenFromCookie() || localStorage.getItem('token') || (document.querySelector('#sotf-mods-t') && JSON.parse(atob(document.querySelector('#sotf-mods-t').dataset.t)));
 window.PUBLIC_API_URL = document.querySelector('#sotf-mods-a') && JSON.parse(atob(document.querySelector('#sotf-mods-a').dataset.a));
 window.translations = document.querySelector('#sotf-mods-l') && JSON.parse(document.querySelector('#sotf-mods-l').dataset.l);
+
+// Get user from DOM if available, otherwise fetch from API using token
+window.user = document.querySelector('#sotf-mods-u') && JSON.parse(atob(document.querySelector('#sotf-mods-u').dataset.u));
+
+// If we have a token but no user, fetch user info from API
+if (window.token && !window.user) {
+    (async () => {
+        try {
+            const response = await fetch(`${window.PUBLIC_API_URL}/api/auth/check`, {
+                headers: {
+                    'Authorization': `Bearer ${window.token}`,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const result = await response.json();
+                if (result.status && result.data) {
+                    window.user = result.data;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch user info:', error);
+        }
+    })();
+}
 
 window.timeAgo = (date, locale = navigator.language) => {
     const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
@@ -183,7 +221,20 @@ lazyLoadImages(document.querySelectorAll('img[data-lazy-src]'));
 
 observer.observe(document.body, observerOptions);
 
+// Helper function to get token from cookie, localStorage, or window.token
+function getToken() {
+    // Try cookie first (same domain, most reliable)
+    const cookieToken = getTokenFromCookie();
+    if (cookieToken) return cookieToken;
+    // Then localStorage
+    const localToken = localStorage.getItem('token');
+    if (localToken) return localToken;
+    // Finally window.token (from DOM)
+    return window.token;
+}
+
 async function getFollowingMods() {
+    const token = getToken();
     if (!token) return;
     const response = await fetch(
         `${PUBLIC_API_URL}/api/favorites`,

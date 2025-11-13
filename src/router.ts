@@ -48,8 +48,9 @@ export const router = new Elysia()
   // auth
   .get("/login", render("login"))
   .get("/register", render("register"))
-  .get("/logout", ({ cookie: { token }, set }) => {
-    token.remove();
+  .get("/logout", ({ set }) => {
+    // Logout is handled client-side - clear localStorage and call API
+    // The redirect will happen after client-side script runs
     set.redirect = "/login";
   })
   // user
@@ -162,15 +163,18 @@ export const router = new Elysia()
   .get("/mods/:userSlug/:mod_slug", async (context) => {
     const {
       params: { userSlug, mod_slug },
+      cookie,
     } = context;
     console.log({ userSlug, mod_slug });
+    // Get token from frontend cookie (same domain) and send in Authorization header
+    const token = cookie?.token?.value;
     const { status, data: mod } = await callAPI(
       `/api/mods/slug/${userSlug}/${mod_slug}`,
-      {
+      token ? {
         headers: {
-          Authorization: "Bearer " + context.cookie.token.value,
+          Authorization: "Bearer " + token,
         },
-      }
+      } : undefined
     );
     if (!status) {
       return (context.set.redirect = "/404");
@@ -182,16 +186,19 @@ export const router = new Elysia()
   .get("/builds/:userSlug/:build_slug", async (context) => {
     const {
       params: { userSlug, build_slug },
+      cookie,
     } = context;
 
     console.log({ userSlug, build_slug });
+    // Get token from frontend cookie (same domain) and send in Authorization header
+    const token = cookie?.token?.value;
     const { status, data: build } = await callAPI(
       `/api/mods/slug/${userSlug}/${build_slug}`,
-      {
+      token ? {
         headers: {
-          Authorization: "Bearer " + context.cookie.token.value,
+          Authorization: "Bearer " + token,
         },
-      }
+      } : undefined
     );
     if (!status) {
       return (context.set.redirect = "/404");
