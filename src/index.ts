@@ -10,7 +10,6 @@ import { staticPlugin } from "./plugins/static.plugin"
 
 const app = new Elysia()
     .use(loggerPlugin)
-    .get('/', ({ redirect }) => redirect('/mods'))
     .use(staticPlugin({ assets: 'src/static', prefix: '/static' }))
     .group('', app => app.use(router))
     .listen(Bun.env.PORT ?? 3000)

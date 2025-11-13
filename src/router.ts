@@ -41,18 +41,11 @@ export const router = new Elysia()
   .use(cookie())
   .use(authMiddleware)
   // Root redirect to /mods
-  .get("/", ({ set }) => {
-    set.redirect = "/mods";
-    return;
-  })
+  .get('/', ({ redirect }) => redirect('/mods'))
   // auth
   .get("/login", render("login"))
   .get("/register", render("register"))
-  .get("/logout", ({ set }) => {
-    // Logout is handled client-side - clear localStorage and call API
-    // The redirect will happen after client-side script runs
-    set.redirect = "/login";
-  })
+  .get("/logout", ({ redirect }) => redirect('/login'))
   // user
   .get("/profile/:userSlug", async (context) => {
     const {
@@ -62,7 +55,7 @@ export const router = new Elysia()
       `/api/users/${userSlug}`
     );
     if (!status) {
-      return (context.set.redirect = "/404");
+      return context.redirect('/404');
     }
     return render("profile", { userProfile })(context);
   })
@@ -73,7 +66,7 @@ export const router = new Elysia()
         `/api/categories?type=Mod`
       );
       if (!status) {
-        return (context.set.redirect = "/404");
+        return context.redirect('/404');
       }
       return render("upload", { categories })(context);
     },
@@ -87,7 +80,7 @@ export const router = new Elysia()
         `/api/categories?type=Build`
       );
       if (!status) {
-        return (context.set.redirect = "/404");
+        return context.redirect('/404');
       }
       return render("upload-build", { categories })(context);
     },
@@ -201,7 +194,7 @@ export const router = new Elysia()
       } : undefined
     );
     if (!status) {
-      return (context.set.redirect = "/404");
+      return context.redirect('/404');
     }
     console.log(build);
     return render("build", { mod: build })(context);
