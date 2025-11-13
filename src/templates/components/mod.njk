@@ -52,6 +52,9 @@
             {% endif %}
           </div>
           <span class="text-sm">{{ mod.user.name }}</span>
+          {% if mod.user.isTrusted %}
+            <span class="badge badge-primary badge-sm ml-1">Trusted</span>
+          {% endif %}
         </a>
         {# Categories #}
         <div class="flex flex-wrap justify-end gap-4">

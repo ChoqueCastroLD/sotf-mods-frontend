@@ -91,6 +91,9 @@
             {% endif %}
           </div>
           <span class="text-sm">{{ mod.user.name }}</span>
+          {% if mod.user.isTrusted %}
+            <span class="badge badge-primary badge-sm ml-1">Trusted</span>
+          {% endif %}
         </a>
 
         {# Categories #}
@@ -153,10 +156,47 @@
 
   {# Description Section #}
   <div class="flex flex-wrap md:flex-nowrap justify-center p-2 rounded-md gap-4">
-    <div class="flex w-full md:w-2/3 flex-col flex-grow justify-center items-start gap-2 ">
+    <div class="flex w-full md:w-2/3 flex-col flex-grow gap-2 ">
       {# Description #}
-      <div class="flex flex-col p-4 gap-2 bg-base-100 rounded-xl w-full h-full">
+      <div class="flex flex-col p-4 gap-2 bg-base-100 rounded-xl w-full">
         <pre id="modDescriptionTemplate" class="mod-description-template min-w-md"></pre>
+      </div>
+      {# Download Statistics Chart #}
+      <div class="collapse bg-base-100 rounded-xl w-full">
+        <input type="checkbox" checked />
+        <div class="collapse-title font-semibold">{{ _("Download Statistics") }}</div>
+        <div class="collapse-content text-sm p-4 w-full">
+          <div class="flex flex-col gap-4">
+            {# Period Filter #}
+            <div class="flex gap-2 flex-wrap">
+              <button class="btn btn-sm btn-outline period-filter active" data-period="week">{{ _("Last 7 Days") }}</button>
+              <button class="btn btn-sm btn-outline period-filter" data-period="month">{{ _("Last Month") }}</button>
+              <button class="btn btn-sm btn-outline period-filter" data-period="all">{{ _("All Time") }}</button>
+            </div>
+            {# Chart Container #}
+            <div class="w-full" style="position: relative; height: 300px;">
+              <canvas id="downloadStatsChart" style="display: none;"></canvas>
+            </div>
+            <div id="downloadStatsLoading" class="flex justify-center items-center" style="height: 300px;">
+              <span class="loading loading-spinner loading-lg"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {# Comments #}
+      <div class="collapse bg-base-100 rounded-xl w-full">
+        <input type="checkbox" checked />
+        <div class="collapse-title font-semibold">Comments</div>
+        <div class="collapse-content text-sm p-4">
+          <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2 items-end">
+              <textarea id="mod-comments-textarea" class="textarea textarea-bordered w-full" placeholder="Comment"></textarea>
+              <button id="mod-comments-send-btn" class="btn btn-soft">Send</button>
+            </div>
+            <div id="mod-comments-container">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="flex w-full md:w-1/3 flex-col justify-start items-start gap-4 p-4 bg-base-200 rounded-xl">
@@ -187,7 +227,7 @@
             <a class="btn btn-outline m-2" onclick="openModal('#modalReleaseVersion')">{{ _("release_version") }}</a>
           </div>
         {% endif %}
-        {% if user and user.canApprove %}
+        {% if user and user.isTrusted %}
           <div class="flex justify-center mt-4 flex-wrap">
             {% if mod.isApproved %}
               <button class="btn btn-outline m-2" onclick="unapprove(this)">{{ _("unapprove_mod") }}</button>
@@ -356,50 +396,6 @@
     </div>
   </div>
 
-  <div class="flex flex-wrap md:flex-nowrap justify-center p-2 rounded-md gap-4">
-    <div class="flex w-full md:w-2/3 flex-col flex-grow justify-center items-start gap-2 ">
-      {# Download Statistics Chart #}
-      <div class="collapse bg-base-100 rounded-xl w-full">
-        <input type="checkbox" checked />
-        <div class="collapse-title font-semibold">{{ _("Download Statistics") }}</div>
-        <div class="collapse-content text-sm p-4 w-full">
-          <div class="flex flex-col gap-4">
-            {# Period Filter #}
-            <div class="flex gap-2 flex-wrap">
-              <button class="btn btn-sm btn-outline period-filter active" data-period="week">{{ _("Last 7 Days") }}</button>
-              <button class="btn btn-sm btn-outline period-filter" data-period="month">{{ _("Last Month") }}</button>
-              <button class="btn btn-sm btn-outline period-filter" data-period="all">{{ _("All Time") }}</button>
-            </div>
-            {# Chart Container #}
-            <div class="w-full" style="position: relative; height: 300px;">
-              <canvas id="downloadStatsChart" style="display: none;"></canvas>
-            </div>
-            <div id="downloadStatsLoading" class="flex justify-center items-center" style="height: 300px;">
-              <span class="loading loading-spinner loading-lg"></span>
-            </div>
-            <div id="downloadStatsError" class="hidden text-error text-center" style="height: 300px; display: flex; align-items: center; justify-content: center;"></div>
-          </div>
-        </div>
-      </div>
-      {# Comments #}
-      <div class="collapse bg-base-100 rounded-xl">
-        <input type="checkbox" checked />
-        <div class="collapse-title font-semibold">Comments</div>
-        <div class="collapse-content text-sm p-4">
-          <div class="flex flex-col gap-2">
-            <div class="flex flex-col gap-2 items-end">
-              <textarea id="mod-comments-textarea" class="textarea textarea-bordered w-full" placeholder="Comment"></textarea>
-              <button id="mod-comments-send-btn" class="btn btn-soft">Send</button>
-            </div>
-            <div id="mod-comments-container">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flex w-full md:w-1/3 flex-col justify-start items-start gap-4 p-4 bg-base-200 rounded-xl">
-    </div>
-  </div>
 
   <dialog id="modalEdit" class="modal">
     <form class="modal-box" method="dialog">

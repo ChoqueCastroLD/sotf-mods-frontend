@@ -336,6 +336,7 @@ const renderComment = (comment) => {
     : `<svg class="w-10 h-10 text-[#02cdb3]" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
         <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
       </svg>`;
+  const trustedBadge = user.isTrusted ? `<span class="badge badge-primary badge-sm ml-1">Trusted</span>` : '';
 
   return `
     <div class="chat chat-start">
@@ -344,6 +345,7 @@ const renderComment = (comment) => {
       </div>
       <div class="chat-header">
         <a href="${profileUrl}" class="text-sm font-bold hover:underline">${user.name}</a>
+        ${trustedBadge}
         <time class="text-xs opacity-50"> • ${formattedDate}</time>
       </div>
       <div class="chat-bubble">${message.replace('\n', '<br />')}</div>
@@ -360,26 +362,37 @@ let currentPeriod = 'week';
 
 async function loadDownloadStats(period = 'week') {
   const loadingEl = document.getElementById('downloadStatsLoading');
-  const errorEl = document.getElementById('downloadStatsError');
   const canvas = document.getElementById('downloadStatsChart');
   
-  if (!canvas || !mod?.id && !mod?.mod_id) return;
+  if (!canvas || (!mod?.id && !mod?.mod_id)) return;
   
   try {
+    // Destroy existing chart first
+    if (downloadStatsChart) {
+      downloadStatsChart.destroy();
+      downloadStatsChart = null;
+    }
+    
     // Show loading
     loadingEl.classList.remove('hidden');
-    errorEl.classList.add('hidden');
     canvas.style.display = 'none';
     
     const modIdentifier = mod.id || mod.mod_id;
-    const response = await fetch(
-      `${PUBLIC_API_URL}/api/mods/${modIdentifier}/download-stats?period=${period}`
-    );
+    // Add timestamp to prevent caching
+    const timestamp = new Date().getTime();
+    const url = `${PUBLIC_API_URL}/api/mods/${modIdentifier}/download-stats?period=${period}&_t=${timestamp}`;
+    console.log(`[Frontend] Loading download stats - period: ${period}, URL: ${url}`);
+    const response = await fetch(url);
     
     const { status, data, message } = await response.json();
     
     if (!status) {
       throw new Error(message || 'Failed to load download statistics');
+    }
+    
+    console.log(`[Frontend] Received ${data.length} data points for period ${period}`);
+    if (data.length > 0) {
+      console.log(`[Frontend] Date range: ${data[0].date} to ${data[data.length - 1].date}`);
     }
     
     // Hide loading
@@ -395,11 +408,6 @@ async function loadDownloadStats(period = 'week') {
       });
     });
     const counts = data.map(item => item.count);
-    
-    // Destroy existing chart if it exists
-    if (downloadStatsChart) {
-      downloadStatsChart.destroy();
-    }
     
     // Create new chart
     const ctx = canvas.getContext('2d');
@@ -443,8 +451,6 @@ async function loadDownloadStats(period = 'week') {
   } catch (error) {
     console.error('Error loading download stats:', error);
     loadingEl.classList.add('hidden');
-    errorEl.classList.remove('hidden');
-    errorEl.textContent = _('Failed to load download statistics');
     canvas.style.display = 'none';
   }
 }

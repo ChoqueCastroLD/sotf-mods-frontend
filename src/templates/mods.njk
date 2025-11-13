@@ -34,7 +34,15 @@
         <h1 class="text-xl">{{ _("Mods of the week") }}</h1>
         <div class="flex flex-wrap justify-center items-center gap-2">
           {% for mod in featured %}
-            <div class="card group w-full max-w-md shadow-xl rounded-lg bg-base-200 cursor-pointer" onclick="location.href='/mods/{{ mod.user.slug }}/{{ mod.slug }}'">
+            {% if loop.index == 1 %}
+              <div class="featured-mod card group w-full max-w-md shadow-xl rounded-lg bg-base-200 cursor-pointer border-l-4 border-yellow-500 {% if loop.index > 6 %}hidden{% endif %}" onclick="location.href='/mods/{{ mod.user.slug }}/{{ mod.slug }}'">
+            {% elif loop.index == 2 %}
+              <div class="featured-mod card group w-full max-w-md shadow-xl rounded-lg bg-base-200 cursor-pointer border-l-4 border-gray-400 {% if loop.index > 6 %}hidden{% endif %}" onclick="location.href='/mods/{{ mod.user.slug }}/{{ mod.slug }}'">
+            {% elif loop.index == 3 %}
+              <div class="featured-mod card group w-full max-w-md shadow-xl rounded-lg bg-base-200 cursor-pointer border-l-4 border-orange-600 {% if loop.index > 6 %}hidden{% endif %}" onclick="location.href='/mods/{{ mod.user.slug }}/{{ mod.slug }}'">
+            {% else %}
+              <div class="featured-mod card group w-full max-w-md shadow-xl rounded-lg bg-base-200 cursor-pointer {% if loop.index > 6 %}hidden{% endif %}" onclick="location.href='/mods/{{ mod.user.slug }}/{{ mod.slug }}'">
+            {% endif %}
               <div class="card-body p-4">
                 <div class="flex flex-wrap gap-2">
                   {# Position Number #}
@@ -81,6 +89,9 @@
                           {% endif %}
                         </div>
                         <span class="text-sm">{{ mod.user.name }}</span>
+                        {% if mod.user.isTrusted %}
+                          <span class="badge badge-primary badge-sm ml-1">Trusted</span>
+                        {% endif %}
                       </a>
                     </div>
                   </div>
@@ -90,6 +101,9 @@
 
           {% endfor %}
         </div>
+        {% if featured|length > 6 %}
+          <button id="show-more-featured" class="btn btn-outline btn-primary mt-4">{{ _("Show more") }}</button>
+        {% endif %}
       </div>
     </div>
     <div class="w-full lg:w-2/3 p-2">
@@ -223,4 +237,18 @@
 
   {% block scripts %}
     <script type="module" src="/static/scripts/mods.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const showMoreBtn = document.getElementById('show-more-featured');
+        if (showMoreBtn) {
+          showMoreBtn.addEventListener('click', () => {
+            const hiddenMods = document.querySelectorAll('.featured-mod.hidden');
+            hiddenMods.forEach(mod => {
+              mod.classList.remove('hidden');
+            });
+            showMoreBtn.remove();
+          });
+        }
+      });
+    </script>
   {% endblock %}

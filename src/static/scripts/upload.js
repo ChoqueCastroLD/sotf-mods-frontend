@@ -222,8 +222,15 @@ modFile.addEventListener('change', async () => {
     if (!file.name.endsWith('.zip')) {
       throw new Error(_("Mod file must be a .zip file!"));
     }
-    if (file.size > 200 * 1024 * 1024) {
-      throw new Error(_("Mod file must be less than 200MB!"));
+    
+    // Check file size limit based on user permissions
+    // Default to 200MB if user info is not loaded yet
+    const isTrusted = window.user?.isTrusted === true;
+    const fileSizeLimit = (isTrusted ? 500 : 200) * 1024 * 1024;
+    const fileSizeLimitMB = isTrusted ? 500 : 200;
+    
+    if (file.size > fileSizeLimit) {
+      throw new Error(_(`Mod file must be less than ${fileSizeLimitMB}MB!`));
     }
     
     // Get presigned URL
@@ -282,6 +289,18 @@ function validateMod() {
   const errors = [];
   
   if (!modFile.files[0]) errors.push(_("Mod file is required!"));
+  
+  // Check file size limit based on user permissions
+  // Default to 200MB if user info is not loaded yet
+  if (modFile.files[0]) {
+    const isTrusted = window.user?.isTrusted === true;
+    const fileSizeLimit = (isTrusted ? 500 : 200) * 1024 * 1024;
+    const fileSizeLimitMB = isTrusted ? 500 : 200;
+    if (modFile.files[0].size > fileSizeLimit) {
+      errors.push(_(`Mod file must be less than ${fileSizeLimitMB}MB!`));
+    }
+  }
+  
   if (!modName.value.trim()) errors.push(_("Mod name is required!"));
   if (modName.value.trim().length < 3) errors.push(_("Mod name must be at least 3 characters!"));
   if (modName.value.trim().length > 64) errors.push(_("Mod name must be less than 64 characters!"));

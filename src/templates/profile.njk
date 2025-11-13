@@ -38,7 +38,12 @@
     </div>
 
     <div class="text-center lg:text-left py-2">
-      <h1 class="text-4xl font-bold">{{ userProfile.name }}'s mods</h1>
+      <div class="flex items-center gap-2 justify-center lg:justify-start">
+        <h1 class="text-4xl font-bold">{{ userProfile.name }}'s mods</h1>
+        {% if userProfile.isTrusted %}
+          <span class="badge badge-primary badge-lg">Trusted</span>
+        {% endif %}
+      </div>
     </div>
   </div>
   <div id="mods-discover-container" class="flex flex-wrap justify-center">
