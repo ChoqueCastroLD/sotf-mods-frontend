@@ -1,4 +1,92 @@
-.mod-card figure {
-    /* width: 316px !important;
-    max-width: 280px; */
+/* Upload page styles */
+.top-spacer {
+  height: 2rem;
+}
+
+#toast-container {
+  pointer-events: none;
+}
+
+#toast-container > * {
+  pointer-events: auto;
+}
+
+/* Progress bars */
+.progress {
+  height: 0.75rem;
+}
+
+/* Description tabs */
+.tabs-boxed .tab {
+  transition: all 0.2s;
+}
+
+.tabs-boxed .tab-active {
+  background-color: hsl(var(--p));
+  color: hsl(var(--pc));
+}
+
+/* Description preview */
+#mod-description-preview {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+#mod-description-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Form cards spacing */
+.card {
+  margin-bottom: 1.5rem;
+}
+
+/* File input styling */
+.file-input {
+  transition: all 0.2s;
+}
+
+.file-input:hover {
+  border-color: hsl(var(--p));
+}
+
+/* Submit button loading state */
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  #toast-container {
+    right: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+  }
+}
+
+/* Animation for progress bars */
+@keyframes progress-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.progress[value] {
+  animation: progress-pulse 2s ease-in-out infinite;
+}
+
+/* Character count styling */
+.label-text-alt {
+  font-size: 0.75rem;
+  opacity: 0.7;
 }

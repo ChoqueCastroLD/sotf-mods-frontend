@@ -1,167 +1,149 @@
-const modListDemo = document.querySelector("#mod-list-demo");
+// Helper to get token (fallback if not in shared.js)
+function getToken() {
+  if (typeof window.getToken === 'function') {
+    return window.getToken();
+  }
+  // Fallback implementation
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    const [name, value] = cookie.trim().split('=');
+    if (name === 'token') {
+      return decodeURIComponent(value);
+    }
+  }
+  return localStorage.getItem('token') || window.token;
+}
 
-const modBasicInformation = document.querySelector("#mod-basic-information");
-
-const btnSubmitMod = document.querySelector("#btn-submit-mod");
+// DOM Elements
+const modUploadForm = document.querySelector("#mod-upload-form");
+const modFile = document.querySelector("#mod-file");
 const modName = document.querySelector("#mod-name");
 const modShortDescription = document.querySelector("#mod-shortDescription");
 const modDescription = document.querySelector("#mod-description");
 const modCategory = document.querySelector("#mod-category");
-const modVersion = document.querySelector("#mod-version");
 const modIsNSFW = document.querySelector("#mod-isNSFW");
 const modSide = document.querySelector("#mod-side");
 const modIsMultiplayerCompatible = document.querySelector("#mod-isMultiplayerCompatible");
 const modRequiresAllPlayers = document.querySelector("#mod-requiresAllPlayers");
 const modRequiresAllPlayersContainer = document.querySelector("#mod-requiresAllPlayers-container");
-const modFile = document.querySelector("#mod-file");
 const modThumbnail = document.querySelector("#mod-thumbnail");
 const modImages = document.querySelector("#mod-images");
+const btnSubmitMod = document.querySelector("#btn-submit-mod");
+const btnSubmitText = document.querySelector("#btn-submit-text");
+const btnSubmitLoading = document.querySelector("#btn-submit-loading");
+const btnCancelMod = document.querySelector("#btn-cancel-mod");
 
-// Store the mod file key after initial upload
+// Progress elements
+const modFileProgress = document.querySelector("#mod-file-progress");
+const modFileProgressBar = document.querySelector("#mod-file-progress-bar");
+const modFileProgressText = document.querySelector("#mod-file-progress-text");
+const modThumbnailProgress = document.querySelector("#mod-thumbnail-progress");
+const modThumbnailProgressBar = document.querySelector("#mod-thumbnail-progress-bar");
+const modThumbnailProgressText = document.querySelector("#mod-thumbnail-progress-text");
+const modImagesProgress = document.querySelector("#mod-images-progress");
+const modImagesProgressBar = document.querySelector("#mod-images-progress-bar");
+const modImagesProgressText = document.querySelector("#mod-images-progress-text");
+
+// Description tabs
+const descriptionEditorTab = document.querySelector("#description-editor-tab");
+const descriptionPreviewTab = document.querySelector("#description-preview-tab");
+const descriptionEditorContainer = document.querySelector("#description-editor-container");
+const descriptionPreviewContainer = document.querySelector("#description-preview-container");
+const modDescriptionPreview = document.querySelector("#mod-description-preview");
+
+// State
 let modFileKey = null;
+let isUploading = false;
 
-function getModTemplate(mod) {
-  if (!mod.shortDescription)
-    mod.shortDescription = _("This is a description of the mod.");
-  return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${
-    mod.imageUrl || "https://files.sotf-mods.com/download/thumbnail.png"
-  }" class="${mod.isNSFW && !user ? "blur-md hover:blur-none" : ""}" alt="${
-    mod.name || _("Mod Name")
-  }"/></figure>
-    <div class="card-body">
-        <div class="mod-card-badges">
-            <a href="#!">
-                <div class="badge badge-ghost">${
-                  parseInt(modCategory.value)
-                    ? modCategory.selectedOptions[0]?.innerText
-                    : _("Category")
-                }</div>
-            </a>
-            ${
-              mod.isNSFW
-                ? `<div class="badge badge-secondary badge-outline">NSFW</div>`
-                : ""
-            }
-        </div>
-        <h2 class="card-title w-full">${
-          mod.name || "Mod Name"
-        }<span class="card-title-version">${
-    (mod.latestVersion && mod.latestVersion.version) || "1.0.0"
-  }</span></h2>
-        <p class="text-left">by <a class="hover-underline-animation" href="#!">${
-          user.name
-        }</a></p>
-        <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
-        <div class="card-actions justify-end">
-            <a class="btn btn-outline btn-accent btn-sm" href="#!">${_(
-              "See More"
-            )}</a>
-        </div>
-        <div class="card-actions justify-end">
-            <span class="stat-desc text-accent">↗︎ 99 ${_("downloads")}</span>
-            <span class="stat-desc ml-2">⏱ ${_("just released")}</span>
-        </div>
-    </div>`;
+// Helper: Format file size
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
 
-async function renderModItem() {
-  const mod = getMod();
-  modListDemo.innerHTML = "";
-  const modElement = document.createElement("div");
-  modElement.classList.add(
-    "card",
-    "card-compact",
-    "w-96",
-    "bg-base-100",
-    "shadow-xl",
-    "mod-card-horizontal"
-  );
-  modElement.innerHTML = getModTemplate(mod);
-  modListDemo.appendChild(modElement);
+// Helper: Show toast notification
+function showToast(message, type = 'info') {
+  const toastContainer = document.getElementById('toast-container') || createToastContainer();
+  const toast = document.createElement('div');
+  toast.className = `alert alert-${type} mb-2 animate__animated animate__slideInRight`;
+  toast.innerHTML = `
+    <div class="flex items-center gap-2">
+      ${type === 'success' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
+      ${type === 'error' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>' : ''}
+      ${type === 'info' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' : ''}
+      <span>${message}</span>
+    </div>
+  `;
+  toastContainer.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.classList.add('animate__slideOutRight');
+    setTimeout(() => toast.remove(), 300);
+  }, type === 'error' ? 5000 : 3000);
 }
 
-function getMod() {
-  return {
-    name: modName.value.trim(),
-    shortDescription: modShortDescription.value.trim(),
-    description: modDescription.value.trim(),
-    imageUrl:
-      modThumbnail?.files?.length > 0
-        ? URL.createObjectURL(modThumbnail.files[0])
-        : null,
-    isNSFW: modIsNSFW.checked,
-    category_id: parseInt(modCategory.value) || null,
-    version: modVersion.value.trim(),
-    modSide: document.getElementById('mod-side')?.value || null,
-    isMultiplayerCompatible: modIsMultiplayerCompatible?.checked || false,
-    requiresAllPlayers: modRequiresAllPlayers?.checked || false,
-  };
+function createToastContainer() {
+  const container = document.createElement('div');
+  container.id = 'toast-container';
+  container.className = 'fixed top-4 right-4 z-50 w-96 max-w-full';
+  document.body.appendChild(container);
+  return container;
 }
 
-function isVersionValid(version) {
-  const regex =
-    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
-  return regex.test(version);
+// Update character count
+function updateCharacterCount() {
+  const count = modDescription.value.length;
+  document.querySelector("#mod-description-character-count").textContent = count;
 }
 
-function validateMod(mod) {
-  if (!modFile.files[0]) throw _("Mod file is required!");
-  if (!modFile.files[0].name.endsWith(".zip"))
-    throw _("Mod file must be a .zip file!");
-  if (modFile.files[0].size > 200 * 1024 * 1024)
-    throw _("Mod file must be less than 200MB!");
-  if (!mod.name) throw _("Mod name is required!");
-  if (mod.name.length < 3)
-    throw _("Mod name must be at least 3 characters long!");
-  if (mod.name.length > 64)
-    throw _("Mod name must be less than 64 characters!");
-  if (!mod.shortDescription) throw _("Mod short description is required!");
-  if (mod.shortDescription.length < 3)
-    throw _("Mod short description must be at least 3 characters long!");
-  if (mod.shortDescription.length > 200)
-    throw _("Mod short description must be less than 200 characters!");
-  if (!mod.description) throw _("Mod description is required!");
-  if (mod.description.length < 3)
-    throw _("Mod description must be at least 3 characters long!");
-  if (mod.description.length > 2000)
-    throw _("Mod description must be less than 2000 characters!");
-  if (!mod.category_id) throw _("Mod category is required!");
-  if (isNaN(mod.category_id)) throw _("Mod category is not valid!");
-  if (!mod.version) throw _("Mod version is required!");
-  if (!isVersionValid(mod.version))
-    throw _("Mod version is not valid! (must follow format x.x.x)");
-  if (!modThumbnail.files[0]) throw _("Mod thumbnail is required!");
-  if (
-    ![".zip", ".png", ".jpg", ".jpeg", ".webp", ".gif"].includes(
-      modThumbnail.files[0].name.substring(
-        modThumbnail.files[0].name.lastIndexOf(".")
-      )
-    )
-  )
-    throw _("Mod thumbnail must be a .png, .jpg, .jpeg, .webp or .gif file!");
-  if (modThumbnail.files[0].size > 8 * 1024 * 1024)
-    throw _("Mod thumbnail must be less than 8MB!");
-  if ([...modImages.files].length > 5)
-    throw _("Build images must be less than 5 files!");
-  for (const file of [...modImages.files]) {
-    if (
-      ![".png", ".jpg", ".jpeg", ".webp", ".gif"].includes(
-        file.name.substring(file.name.lastIndexOf("."))
-      )
-    )
-      throw _("Build images must be a .png, .jpg, .jpeg, .webp or .gif file!");
-    if (file.size > 8 * 1024 * 1024)
-      throw _("Build images must be less than 8MB!");
+// Description tab switching
+descriptionEditorTab.addEventListener('click', () => {
+  descriptionEditorTab.classList.add('tab-active');
+  descriptionPreviewTab.classList.remove('tab-active');
+  descriptionEditorContainer.classList.remove('hidden');
+  descriptionPreviewContainer.classList.add('hidden');
+});
+
+descriptionPreviewTab.addEventListener('click', () => {
+  descriptionPreviewTab.classList.add('tab-active');
+  descriptionEditorTab.classList.remove('tab-active');
+  descriptionEditorContainer.classList.add('hidden');
+  descriptionPreviewContainer.classList.remove('hidden');
+  renderDescriptionPreview();
+});
+
+function renderDescriptionPreview() {
+  const description = modDescription.value.trim();
+  modDescriptionPreview.innerHTML = markdownToHTML(description || _("No description provided."));
+}
+
+modDescription.addEventListener('input', () => {
+  updateCharacterCount();
+  if (descriptionPreviewTab.classList.contains('tab-active')) {
+    renderDescriptionPreview();
   }
-  return true;
-}
+});
 
+// Show/hide requiresAllPlayers
+modIsMultiplayerCompatible.addEventListener('change', (e) => {
+  if (e.target.checked) {
+    modRequiresAllPlayersContainer.classList.remove('hidden');
+  } else {
+    modRequiresAllPlayersContainer.classList.add('hidden');
+    modRequiresAllPlayers.checked = false;
+  }
+});
+
+// Get presigned URL
 async function getPresignedUrl(filename, contentType) {
   const res = await fetch(`${PUBLIC_API_URL}/api/files/presigned-url`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
     credentials: 'include',
     body: JSON.stringify({ filename, contentType }),
@@ -173,68 +155,258 @@ async function getPresignedUrl(filename, contentType) {
   return data;
 }
 
-async function uploadFileToR2(file, uploadUrl) {
-  const res = await fetch(uploadUrl, {
-    method: "PUT",
-    body: file,
-    headers: {
-      "Content-Type": file.type || "application/octet-stream",
-    },
+// Upload file to R2 with progress tracking
+function uploadFileToR2WithProgress(file, uploadUrl, progressElement, progressBar, progressText) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    
+    // Show progress
+    if (progressElement) {
+      progressElement.classList.remove('hidden');
+    }
+    
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        const percentComplete = (e.loaded / e.total) * 100;
+        if (progressBar) {
+          progressBar.value = percentComplete;
+        }
+        if (progressText) {
+          progressText.textContent = `${Math.round(percentComplete)}% (${formatFileSize(e.loaded)} / ${formatFileSize(e.total)})`;
+        }
+      }
+    });
+    
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        if (progressBar) progressBar.value = 100;
+        if (progressText) progressText.textContent = '100%';
+        setTimeout(() => {
+          if (progressElement) progressElement.classList.add('hidden');
+        }, 500);
+        resolve();
+      } else {
+        if (progressElement) progressElement.classList.add('hidden');
+        reject(new Error(`Upload failed: ${xhr.statusText}`));
+      }
+    });
+    
+    xhr.addEventListener('error', () => {
+      if (progressElement) progressElement.classList.add('hidden');
+      reject(new Error('Upload failed: Network error'));
+    });
+    
+    xhr.addEventListener('abort', () => {
+      if (progressElement) progressElement.classList.add('hidden');
+      reject(new Error('Upload aborted'));
+    });
+    
+    xhr.open('PUT', uploadUrl);
+    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    xhr.send(file);
   });
-  if (!res.ok) {
-    throw new Error(`Failed to upload file: ${res.statusText}`);
-  }
 }
 
-async function uploadMod() {
-  btnSubmitMod.classList.add("btn-disabled");
-  btnSubmitMod.disabled = true;
+// Handle mod file upload
+modFile.addEventListener('change', async () => {
+  if (!modFile.files[0]) {
+    modFileKey = null;
+    btnSubmitMod.disabled = true;
+    return;
+  }
+  
   try {
-    const mod = getMod();
-
-    validateMod(mod);
-
-    // Check if mod file was already uploaded (when file was selected)
-    if (!modFileKey) {
-      // Get presigned URL for mod file if not already uploaded
-      const modFilePresigned = await getPresignedUrl(
-        modFile.files[0].name,
-        modFile.files[0].type || "application/zip"
-      );
-      await uploadFileToR2(modFile.files[0], modFilePresigned.uploadUrl);
-      modFileKey = modFilePresigned.fileKey;
+    showToast(_("Preparing mod file upload..."), 'info');
+    
+    const file = modFile.files[0];
+    if (!file.name.endsWith('.zip')) {
+      throw new Error(_("Mod file must be a .zip file!"));
     }
+    if (file.size > 200 * 1024 * 1024) {
+      throw new Error(_("Mod file must be less than 200MB!"));
+    }
+    
+    // Get presigned URL
+    const modFilePresigned = await getPresignedUrl(
+      file.name,
+      file.type || "application/zip"
+    );
+    
+    // Upload with progress
+    await uploadFileToR2WithProgress(
+      file,
+      modFilePresigned.uploadUrl,
+      modFileProgress,
+      modFileProgressBar,
+      modFileProgressText
+    );
+    
+    modFileKey = modFilePresigned.fileKey;
+    showToast(_("Mod file uploaded successfully!"), 'success');
+    
+    // Read manifest
+    const response = await fetch(`${PUBLIC_API_URL}/api/mods/upload`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      credentials: 'include',
+      body: JSON.stringify({ modFileKey: modFilePresigned.fileKey }),
+    });
+    
+    const r = await response.json();
+    if (!r.status) {
+      throw new Error(r.message || r.error || _("Failed to read mod manifest"));
+    }
+    
+    // Auto-fill form
+    if (r.data.name && !modName.value) modName.value = r.data.name;
+    const modVersionInput = document.querySelector('#mod-version');
+    if (r.data.version && modVersionInput) modVersionInput.setAttribute('value', r.data.version);
+    if (r.data.description && !modShortDescription.value) modShortDescription.value = r.data.description;
+    
+    showToast(_("Mod information loaded from manifest!"), 'success');
+    updateCharacterCount();
+  } catch (err) {
+    console.error(err);
+    showToast(err.message || _("Failed to upload mod file"), 'error');
+    modFileKey = null;
+    modFile.value = '';
+    btnSubmitMod.disabled = true;
+  }
+});
 
-    // Get presigned URLs for thumbnail and images
+// Validation
+function validateMod() {
+  const errors = [];
+  
+  if (!modFile.files[0]) errors.push(_("Mod file is required!"));
+  if (!modName.value.trim()) errors.push(_("Mod name is required!"));
+  if (modName.value.trim().length < 3) errors.push(_("Mod name must be at least 3 characters!"));
+  if (modName.value.trim().length > 64) errors.push(_("Mod name must be less than 64 characters!"));
+  if (!modShortDescription.value.trim()) errors.push(_("Short description is required!"));
+  if (modShortDescription.value.trim().length < 3) errors.push(_("Short description must be at least 3 characters!"));
+  if (modShortDescription.value.trim().length > 200) errors.push(_("Short description must be less than 200 characters!"));
+  if (!modDescription.value.trim()) errors.push(_("Description is required!"));
+  if (modDescription.value.trim().length < 3) errors.push(_("Description must be at least 3 characters!"));
+  if (modDescription.value.trim().length > 2000) errors.push(_("Description must be less than 2000 characters!"));
+  if (!modCategory.value) errors.push(_("Category is required!"));
+  if (!modThumbnail.files[0]) errors.push(_("Thumbnail is required!"));
+  
+  if (modThumbnail.files[0]) {
+    const thumbExt = modThumbnail.files[0].name.substring(modThumbnail.files[0].name.lastIndexOf('.'));
+    if (!['.png', '.jpg', '.jpeg', '.webp', '.gif'].includes(thumbExt.toLowerCase())) {
+      errors.push(_("Thumbnail must be an image file!"));
+    }
+    if (modThumbnail.files[0].size > 8 * 1024 * 1024) {
+      errors.push(_("Thumbnail must be less than 8MB!"));
+    }
+  }
+  
+  if (modImages.files.length > 5) {
+    errors.push(_("Maximum 5 images allowed!"));
+  }
+  
+  for (const file of [...modImages.files]) {
+    const ext = file.name.substring(file.name.lastIndexOf('.'));
+    if (!['.png', '.jpg', '.jpeg', '.webp', '.gif'].includes(ext.toLowerCase())) {
+      errors.push(_("All images must be image files!"));
+      break;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      errors.push(_("Each image must be less than 8MB!"));
+      break;
+    }
+  }
+  
+  return errors;
+}
+
+// Main upload function
+async function uploadMod() {
+  if (isUploading) return;
+  
+  const errors = validateMod();
+  if (errors.length > 0) {
+    errors.forEach(err => showToast(err, 'error'));
+    return;
+  }
+  
+  isUploading = true;
+  btnSubmitMod.disabled = true;
+  btnSubmitText.textContent = _("Uploading...");
+  btnSubmitLoading.classList.remove('hidden');
+  
+  try {
+    const mod = {
+      name: modName.value.trim(),
+      shortDescription: modShortDescription.value.trim(),
+      description: modDescription.value.trim(),
+      isNSFW: modIsNSFW.checked,
+      category_id: parseInt(modCategory.value),
+      modSide: modSide.value || null,
+      isMultiplayerCompatible: modIsMultiplayerCompatible.checked,
+      requiresAllPlayers: modRequiresAllPlayers.checked,
+    };
+    
+    showToast(_("Starting upload process..."), 'info');
+    
+    // Upload thumbnail
+    showToast(_("Uploading thumbnail..."), 'info');
     const thumbnailPresigned = await getPresignedUrl(
       modThumbnail.files[0].name,
       modThumbnail.files[0].type || "image/png"
     );
-
-    const imagePresignedUrls = await Promise.all(
-      [...modImages.files].map(async (image) => {
+    await uploadFileToR2WithProgress(
+      modThumbnail.files[0],
+      thumbnailPresigned.uploadUrl,
+      modThumbnailProgress,
+      modThumbnailProgressBar,
+      modThumbnailProgressText
+    );
+    
+    // Upload images
+    const imageFiles = [...modImages.files];
+    const imagePresignedUrls = [];
+    
+    if (imageFiles.length > 0) {
+      showToast(_("Preparing image uploads..."), 'info');
+      for (const image of imageFiles) {
         const presigned = await getPresignedUrl(
           image.name,
           image.type || "image/png"
         );
-        return presigned;
-      })
-    );
-
-    // Upload thumbnail and images directly to R2
-    await Promise.all([
-      uploadFileToR2(modThumbnail.files[0], thumbnailPresigned.uploadUrl),
-      ...modImages.files.map((image, index) =>
-        uploadFileToR2(image, imagePresignedUrls[index].uploadUrl)
-      ),
-    ]);
-
-    // Now publish with file keys
+        imagePresignedUrls.push(presigned);
+      }
+      
+      showToast(_("Uploading images..."), 'info');
+      modImagesProgress.classList.remove('hidden');
+      
+      for (let i = 0; i < imageFiles.length; i++) {
+        modImagesProgressText.textContent = `${i + 1} / ${imageFiles.length}`;
+        modImagesProgressBar.value = (i / imageFiles.length) * 100;
+        await uploadFileToR2WithProgress(
+          imageFiles[i],
+          imagePresignedUrls[i].uploadUrl,
+          null,
+          null,
+          null
+        );
+      }
+      
+      modImagesProgressBar.value = 100;
+      modImagesProgressText.textContent = `${imageFiles.length} / ${imageFiles.length}`;
+      setTimeout(() => modImagesProgress.classList.add('hidden'), 500);
+    }
+    
+    // Publish mod
+    showToast(_("Publishing mod..."), 'info');
     const res = await fetch(`${PUBLIC_API_URL}/api/mods/publish`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getToken()}`,
       },
       credentials: 'include',
       body: JSON.stringify({
@@ -246,110 +418,63 @@ async function uploadMod() {
         modFileKey: modFileKey,
         thumbnailKey: thumbnailPresigned.fileKey,
         imageKeys: imagePresignedUrls.map((p) => p.fileKey),
-        modSide: mod.modSide || null,
+        modSide: mod.modSide,
         isMultiplayerCompatible: mod.isMultiplayerCompatible,
         requiresAllPlayers: mod.requiresAllPlayers,
       }),
     });
+    
     const { status, message } = await res.json();
-    if (status) {
+    if (!status) {
+      throw new Error(message || _("Failed to publish mod"));
+    }
+    
+    showToast(_("Mod uploaded successfully! Redirecting..."), 'success');
+    setTimeout(() => {
       window.location.href = `/profile/${user.slug}?mod-uploaded=true`;
-      return;
-    }
-    throw message || _("Something went wrong");
+    }, 1500);
+    
   } catch (error) {
-    console.log(error);
-    showError(error);
-  } finally {
-    btnSubmitMod.classList.remove("btn-disabled");
+    console.error(error);
+    showToast(error.message || _("Upload failed. Please try again."), 'error');
+    isUploading = false;
     btnSubmitMod.disabled = false;
+    btnSubmitText.textContent = _("upload.Submit");
+    btnSubmitLoading.classList.add('hidden');
   }
 }
 
-function renderDescriptionPreview() {
-  const description = document.getElementById("mod-description").value.trim();
-  const descriptionPreview = document.getElementById("mod-description-preview");
-  descriptionPreview.innerHTML = markdownToHTML(description);
-  document.querySelector("#mod-description-character-count").innerHTML =
-    document.querySelector("#mod-description")?.value.length || "0";
-}
+// Form submission
+modUploadForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  await uploadMod();
+});
 
-async function main() {
-  await renderModItem();
-  modName.addEventListener("input", renderModItem);
-  modShortDescription.addEventListener("input", renderModItem);
-  modDescription.addEventListener("input", renderDescriptionPreview);
-  modCategory.addEventListener("change", renderModItem);
-  modIsNSFW.addEventListener("change", renderModItem);
-  modThumbnail.addEventListener("change", renderModItem);
+// Cancel button
+btnCancelMod.addEventListener('click', () => {
+  if (confirm(_("Are you sure you want to cancel? All unsaved changes will be lost."))) {
+    window.location.href = '/mods';
+  }
+});
+
+// Enable submit when mod file is uploaded
+function checkFormValidity() {
+  const hasModFile = modFileKey !== null;
+  const hasName = modName.value.trim().length >= 3;
+  const hasShortDesc = modShortDescription.value.trim().length >= 3;
+  const hasDesc = modDescription.value.trim().length >= 3;
+  const hasCategory = modCategory.value !== '';
+  const hasThumbnail = modThumbnail.files.length > 0;
   
-  // Show/hide requiresAllPlayers based on isMultiplayerCompatible
-  if (modIsMultiplayerCompatible) {
-    modIsMultiplayerCompatible.addEventListener("change", (e) => {
-      if (e.target.checked) {
-        modRequiresAllPlayersContainer.classList.remove("hidden");
-      } else {
-        modRequiresAllPlayersContainer.classList.add("hidden");
-        if (modRequiresAllPlayers) {
-          modRequiresAllPlayers.checked = false;
-        }
-      }
-      renderModItem();
-    });
-  }
-  modFile.addEventListener("change", async () => {
-    try {
-      if (!modFile.files[0]) {
-        modFileKey = null;
-        return;
-      }
-      
-      // Get presigned URL for mod file
-      const modFilePresigned = await getPresignedUrl(
-        modFile.files[0].name,
-        modFile.files[0].type || "application/zip"
-      );
-      
-      // Upload file to R2
-      await uploadFileToR2(modFile.files[0], modFilePresigned.uploadUrl);
-      
-      // Store the file key for later use
-      modFileKey = modFilePresigned.fileKey;
-      
-      // Now call API to read manifest
-      const response = await fetch(PUBLIC_API_URL + "/api/mods/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          modFileKey: modFilePresigned.fileKey,
-        }),
-      });
-      
-      const r = await response.json();
-      if (!r.status) {
-        throw r.message || r.error;
-      }
-      modName.value = r.data.name;
-      modVersion.value = r.data.version;
-      modShortDescription.value = r.data.description;
-      modBasicInformation.classList.remove("hidden");
-      btnSubmitMod.disabled = false;
-      renderModItem();
-    } catch (err) {
-      console.error(err);
-      showError(err);
-      modFileKey = null;
-    }
-  });
-
-  btnSubmitMod.addEventListener("click", (evt) => {
-    evt.preventDefault();
-    uploadMod();
-  });
+  btnSubmitMod.disabled = !(hasModFile && hasName && hasShortDesc && hasDesc && hasCategory && hasThumbnail && !isUploading);
 }
 
-main();
+modName.addEventListener('input', checkFormValidity);
+modShortDescription.addEventListener('input', checkFormValidity);
+modDescription.addEventListener('input', checkFormValidity);
+modCategory.addEventListener('change', checkFormValidity);
+modThumbnail.addEventListener('change', checkFormValidity);
+
+// Initialize
+updateCharacterCount();
+checkFormValidity();

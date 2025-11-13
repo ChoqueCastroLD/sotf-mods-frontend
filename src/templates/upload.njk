@@ -3,139 +3,174 @@
 {% block head %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <link rel="stylesheet" href="/static/css/description.css">
-  <link rel="stylesheet" href="/static/css/mods.css">
   <link rel="stylesheet" href="/static/css/upload.css">
 {% endblock %}
 
 {% block body %}
   <div class="top-spacer"></div>
-  <div class="hero min-h-screen">
-    <div class="hero-content flex-col lg:flex-row-reverse">
-      <div class="text-center lg:text-left">
-        <h1 class="text-5xl font-bold">{{ _("upload.Upload a mod") }}</h1>
-        <p class="py-6">
-          {{ _("upload.Fill out the fields to see how your mod is going to look") }}
-        </p>
-        <div id="mod-list-demo" style="min-width: 472px;"></div>
-        <div class="md:m-4">
-          <label class="label">
-            <span class="label-text">{{ _("upload.Mod description preview") }}</span>
-          </label>
-          <div id="mod-description-preview" class="mod-description-template"></div>
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <h1 class="text-4xl font-bold mb-6">{{ _("upload.Upload a mod") }}</h1>
+    
+    <form id="mod-upload-form" class="space-y-6">
+      <!-- Mod File Upload -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">{{ _("upload.Mod upload") }} (.zip)</h2>
+          <input id="mod-file" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".zip" required>
+          <input id="mod-version" type="hidden" name="version" value="1.0.0">
+          <div id="mod-file-progress" class="hidden mt-2">
+            <div class="flex justify-between text-sm mb-1">
+              <span>{{ _("upload.Uploading mod file...") }}</span>
+              <span id="mod-file-progress-text">0%</span>
+            </div>
+            <progress id="mod-file-progress-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+          </div>
         </div>
       </div>
-      <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+
+      <!-- Basic Information -->
+      <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
-          <p class="collapse-title text-xl font-medium">{{ _("upload.Mod upload") }} (.zip)</p>
-          <input id="mod-file" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs mb-6" accept=".zip">
-          <input id="mod-version" type="hidden" name="version" value="1.0.0">
+          <h2 class="card-title">{{ _("upload.Basic information") }}</h2>
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ _("upload.Name") }}</span>
+            </label>
+            <input id="mod-name" type="text" class="input input-bordered" name="name" placeholder="{{ _("upload.Enter the name of the mod") }}" minlength="3" maxlength="64" required>
+          </div>
 
-          <div id="mod-basic-information" class="join join-vertical w-full hidden">
-            <div class="collapse collapse-arrow join-item border border-base-300">
-              <input type="radio" name="my-accordion-4" checked="checked">
-              <div class="collapse-title text-xl font-medium">
-                {{ _("upload.Basic information") }}
-              </div>
-              <div class="collapse-content">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">{{ _("upload.Name") }}</span>
-                  </label>
-                  <input id="mod-name" type="text" class="input input-bordered" name="name" placeholder="{{ _("upload.Enter the name of the mod") }}" minlength="3" maxlength="64">
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">{{ _("upload.Short description") }}</span>
-                    <span class="label-text-alt">({{ _("upload.max") }}: 200 {{ _("upload.characters") }})</span>
-                  </label>
-                  <input id="mod-shortDescription" type="text" class="input input-bordered" name="name" placeholder="{{ _("upload.Enter the short description of the mod") }}" minlength="3" maxlength="200">
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">{{ _("upload.Description") }}</span>
-                    <span class="label-text-alt">
-                      ( <span id="mod-description-character-count">0</span> / 2000 {{ _("upload.characters") }} )
-                    </span>
-                  </label>
-                  <textarea id="mod-description" class="textarea textarea-bordered h-24" name="description" placeholder="{{ _("upload.Enter the description of the mod...") }}" minlength="3" maxlength="2000"></textarea>
-                </div>
-              </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ _("upload.Short description") }}</span>
+              <span class="label-text-alt">({{ _("upload.max") }}: 200 {{ _("upload.characters") }})</span>
+            </label>
+            <input id="mod-shortDescription" type="text" class="input input-bordered" name="shortDescription" placeholder="{{ _("upload.Enter the short description of the mod") }}" minlength="3" maxlength="200" required>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ _("upload.Description") }}</span>
+              <span class="label-text-alt">
+                ( <span id="mod-description-character-count">0</span> / 2000 {{ _("upload.characters") }} )
+              </span>
+            </label>
+            
+            <!-- Description Tabs -->
+            <div class="tabs tabs-boxed mb-2">
+              <a class="tab tab-active" id="description-editor-tab">{{ _("upload.Editor") }}</a>
+              <a class="tab" id="description-preview-tab">{{ _("upload.Preview") }}</a>
             </div>
-
-            <div class="collapse collapse-arrow join-item border border-base-300">
-              <input type="radio" name="my-accordion-4">
-              <div class="collapse-title text-xl font-medium">
-                {{ _("upload.Category") }}
-              </div>
-              <div class="collapse-content">
-                <label class="cursor-pointer label ml-2">
-                  <span class="label-text">{{ _("upload.Has NSFW content") }}</span>
-                  <input id="mod-isNSFW" name="isNSFW" type="checkbox" class="toggle toggle-secondary ml-2">
-                </label>
-                <div class="form-control w-full max-w-xs mt-4">
-                  <label class="label">
-                    <span class="label-text">{{ _("upload.Mod Side") }}</span>
-                  </label>
-                  <select id="mod-side" class="select select-bordered">
-                    <option value="">{{ _("upload.Select mod side") }}</option>
-                    <option value="client">{{ _("upload.Client Side") }}</option>
-                    <option value="server">{{ _("upload.Server Side") }}</option>
-                    <option value="both">{{ _("upload.Both") }}</option>
-                  </select>
-                </div>
-                <label class="cursor-pointer label ml-2 mt-4">
-                  <span class="label-text">{{ _("upload.Multiplayer Compatible") }}</span>
-                  <input id="mod-isMultiplayerCompatible" name="isMultiplayerCompatible" type="checkbox" class="toggle toggle-secondary ml-2">
-                </label>
-                <div id="mod-requiresAllPlayers-container" class="hidden mt-2">
-                  <label class="cursor-pointer label ml-2">
-                    <span class="label-text">{{ _("upload.Requires All Players") }}</span>
-                    <input id="mod-requiresAllPlayers" name="requiresAllPlayers" type="checkbox" class="toggle toggle-secondary ml-2">
-                  </label>
-                </div>
-                <div class="form-control w-full max-w-xs mt-4">
-                  <label class="label">
-                    <span class="label-text">{{ _("upload.Category") }}</span>
-                  </label>
-                  <select id="mod-category" class="select select-bordered">
-                    <option disabled selected>{{ _("upload.Pick one category") }}</option>
-                    {% for category in categories %}
-                      <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-              </div>
+            
+            <div id="description-editor-container">
+              <textarea id="mod-description" class="textarea textarea-bordered h-48" name="description" placeholder="{{ _("upload.Enter the description of the mod...") }}" minlength="3" maxlength="2000" required></textarea>
             </div>
+            
+            <div id="description-preview-container" class="hidden">
+              <div id="mod-description-preview" class="mod-description-template p-4 border border-base-300 rounded-lg min-h-[12rem] bg-base-200"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <div class="collapse collapse-arrow join-item border border-base-300">
-              <input type="radio" name="my-accordion-4">
-              <div class="collapse-title text-xl font-medium">
-                {{ _("upload.Images") }}
+      <!-- Category & Settings -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">{{ _("upload.Category") }}</h2>
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ _("upload.Category") }}</span>
+            </label>
+            <select id="mod-category" class="select select-bordered" required>
+              <option disabled selected value="">{{ _("upload.Pick one category") }}</option>
+              {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-control mt-4">
+            <label class="cursor-pointer label">
+              <span class="label-text">{{ _("upload.Has NSFW content") }}</span>
+              <input id="mod-isNSFW" name="isNSFW" type="checkbox" class="toggle toggle-secondary">
+            </label>
+          </div>
+
+          <div class="form-control mt-4">
+            <label class="label">
+              <span class="label-text">{{ _("upload.Mod Side") }}</span>
+            </label>
+            <select id="mod-side" class="select select-bordered">
+              <option value="">{{ _("upload.Select mod side") }}</option>
+              <option value="client">{{ _("upload.Client Side") }}</option>
+              <option value="server">{{ _("upload.Server Side") }}</option>
+              <option value="both">{{ _("upload.Both") }}</option>
+            </select>
+          </div>
+
+          <div class="form-control mt-4">
+            <label class="cursor-pointer label">
+              <span class="label-text">{{ _("upload.Multiplayer Compatible") }}</span>
+              <input id="mod-isMultiplayerCompatible" name="isMultiplayerCompatible" type="checkbox" class="toggle toggle-secondary">
+            </label>
+          </div>
+
+          <div id="mod-requiresAllPlayers-container" class="form-control mt-4 hidden">
+            <label class="cursor-pointer label">
+              <span class="label-text">{{ _("upload.Requires All Players") }}</span>
+              <input id="mod-requiresAllPlayers" name="requiresAllPlayers" type="checkbox" class="toggle toggle-secondary">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Images -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">{{ _("upload.Images") }}</h2>
+          <p class="text-sm text-base-content/70 mb-4">{{ _("upload.Images must be in .png, .jpeg, .jpg, .webp or .gif format") }}</p>
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ _("upload.Thumbnail") }} *</span>
+            </label>
+            <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.webp,.gif" required>
+            <div id="mod-thumbnail-progress" class="hidden mt-2">
+              <div class="flex justify-between text-sm mb-1">
+                <span>{{ _("upload.Uploading thumbnail...") }}</span>
+                <span id="mod-thumbnail-progress-text">0%</span>
               </div>
-              <div class="collapse-content">
-                <p>{{ _("upload.Images must be in .png, .jpeg, .jpg, .webp or .gif format") }}</p>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">{{ _("upload.Thumbnail") }}</span>
-                  </label>
-                  <input id="mod-thumbnail" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.jpg,.webp,.gif" required>
-                </div>
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">{{ _("Images") }}</span>
-                  </label>
-                  <input id="mod-images" type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.jpg,.webp,.gif" multiple>
-                </div>
-              </div>
+              <progress id="mod-thumbnail-progress-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
             </div>
           </div>
 
-          <button id="btn-submit-mod" class="btn btn-outline btn-accent" disabled>{{ _("upload.Submit") }}</button>
+          <div class="form-control mt-4">
+            <label class="label">
+              <span class="label-text">{{ _("Images") }} ({{ _("upload.Optional") }})</span>
+            </label>
+            <input id="mod-images" type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.jpg,.webp,.gif" multiple>
+            <div id="mod-images-progress" class="hidden mt-2">
+              <div class="flex justify-between text-sm mb-1">
+                <span>{{ _("upload.Uploading images...") }}</span>
+                <span id="mod-images-progress-text">0 / 0</span>
+              </div>
+              <progress id="mod-images-progress-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-end gap-4">
+        <button type="button" id="btn-cancel-mod" class="btn btn-ghost">{{ _("Cancel") }}</button>
+        <button type="submit" id="btn-submit-mod" class="btn btn-primary" disabled>
+          <span id="btn-submit-text">{{ _("upload.Submit") }}</span>
+          <span id="btn-submit-loading" class="hidden loading loading-spinner loading-sm"></span>
+        </button>
+      </div>
+    </form>
   </div>
-  <div id="mod-page-demo"></div>
 {% endblock %}
 
 {% block scripts %}
