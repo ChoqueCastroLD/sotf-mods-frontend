@@ -68,5 +68,39 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js" integrity="sha512-KqUc2WMPF/gxte9xVjVE4TIt1LMUTidO3BrcItFg0Ro24I7pGNzgcXdnWdezNY+8T0/JEmdC79MuwYn+8UdOqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script type="module" src="/static/scripts/shared.js"></script>
         {% block scripts %}{% endblock %}
+        
+        {# Snow effect initialization - only in December #}
+        <script>
+          (function() {
+            // Check if it's December (month 11, 0-indexed)
+            if (new Date().getMonth() !== 11) {
+              return; // Exit early if not December
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js';
+            script.onload = function() {
+              if (typeof Snowflakes !== 'undefined') {
+                window.Snowflakes = Snowflakes; // Make it globally available
+                window.snow = new Snowflakes({
+                  color: "#e8f4f7"  // Color de los copos de nieve
+                });
+                
+                // Mostrar nieve por defecto si no está desactivada en localStorage
+                const snowActive = localStorage.getItem('snowActive') !== 'false';
+                if (snowActive) {
+                  window.snow.show();
+                } else {
+                  window.snow.hide();
+                }
+              }
+            };
+            script.onerror = function() {
+              console.error('Failed to load magic-snowflakes library');
+            };
+            document.head.appendChild(script);
+          })();
+        </script>
+        <script src="/static/scripts/snow.js"></script>
     </body>
 </html>
