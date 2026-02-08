@@ -4,6 +4,9 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('registered')) {
     showSuccess(_("Success! You have successfully registered. Please login."));
 }
+if (urlParams.has('reset')) {
+    showSuccess(_("Password reset successfully! Please login with your new password."));
+}
 
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();

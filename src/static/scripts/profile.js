@@ -2,8 +2,35 @@ const userProfile = JSON.parse(document.querySelector('#sotf-mods-p').dataset.p)
 
 const modsDiscoverContainer = document.querySelector('#mods-discover-container');
 
-let forceVerticalMod = false;
+function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+}
 
+// --- Stats ---
+async function loadStats() {
+    try {
+        const response = await fetch(`${PUBLIC_API_URL}/api/users/${userProfile.slug}/stats`);
+        const { status, data } = await response.json();
+        if (!status || !data) return;
+
+        document.getElementById('stat-downloads-day').textContent = formatNumber(data.downloadsLastDay);
+        document.getElementById('stat-downloads-7d').textContent = formatNumber(data.downloadsLast7Days);
+        document.getElementById('stat-downloads-30d').textContent = formatNumber(data.downloadsLast30Days);
+        document.getElementById('stat-downloads-total').textContent = formatNumber(data.totalDownloads);
+        document.getElementById('stat-mods').textContent = data.modsCount;
+        document.getElementById('stat-favorites').textContent = formatNumber(data.totalFavorites);
+        document.getElementById('stat-reviews').textContent = data.totalReviews;
+        document.getElementById('stat-rating').textContent = data.averageRating > 0
+            ? data.averageRating.toFixed(1) + ' / 5'
+            : '-';
+    } catch (error) {
+        console.error('Failed to load stats:', error);
+    }
+}
+
+// --- Mods ---
 async function getMods(approved) {
     let url = `${PUBLIC_API_URL}/api/mods?userSlug=${userProfile.slug}&limit=100&approved=${approved}`;
     const response = await fetch(url);
@@ -15,7 +42,7 @@ async function getMods(approved) {
 }
 
 function getModTemplate(mod) {
-    return `<figure class="skeleton w-100 h-[216px]"><img data-lazy-src="${mod.imageUrl}" class="${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name}"/></figure>
+    return `<figure class="skeleton h-[216px] overflow-hidden"><img data-lazy-src="${mod.imageUrl}" class="w-full h-full object-cover ${mod.isNSFW && !user ? 'blur-md hover:blur-none' : ''}" alt="${mod.name}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="/mods?category=${mod.category_slug}">
@@ -30,58 +57,42 @@ function getModTemplate(mod) {
             <a class="btn btn-outline btn-accent btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">${_("See More")}</a>
         </div>
         <div class="card-actions justify-end">
-            <span class="stat-desc text-accent">↗︎ ${mod.downloads} ${_("downloads")}</span>
-            <span class="stat-desc ml-2">⏱ ${timeAgo(mod.lastReleasedAt)}</span>
+            <span class="stat-desc text-accent">${mod.downloads} ${_("downloads")}</span>
+            <span class="stat-desc ml-2">${timeAgo(mod.lastReleasedAt)}</span>
         </div>
     </div>`;
 }
 
-async function renderMods(mods, meta) {
+async function renderMods(mods) {
     modsDiscoverContainer.innerHTML = '';
     for (const mod of mods) {
         const modElement = document.createElement('div');
-        modElement.classList.add('card', 'shadow-xl', 'sm:mb-2', 'mb-4');
-        modElement.classList.add('card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
+        modElement.classList.add('card', 'shadow-xl', 'card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
         modElement.innerHTML = getModTemplate(mod);
         modsDiscoverContainer.appendChild(modElement);
     }
-    if (mods.length == 0) {
-        modsDiscoverContainer.innerHTML = `<h1 class="text-center">${_("No mods found")}</h1>`;
+    if (mods.length === 0) {
+        modsDiscoverContainer.innerHTML = `<h1 class="text-center text-base-content/50">${_("No mods found")}</h1>`;
     }
 }
 
 async function loadMods() {
-    modsDiscoverContainer.innerHTML = '<span class="loading loading-infinity loading-lg text-success center"></span>';
+    modsDiscoverContainer.innerHTML = '<span class="loading loading-infinity loading-lg text-success"></span>';
     try {
-        const { mods, meta } = await getMods(false);
+        const { mods } = await getMods(false);
         mods.push(...await getMods(true).then(({ mods }) => mods));
-        renderMods(mods, meta);
+        renderMods(mods);
     } catch (error) {
         console.error(error);
         modsDiscoverContainer.innerHTML = `<h1 class="text-center">${_("Something went wrong :(")}</h1>`;
     }
 }
 
+// --- Init ---
+loadStats();
+loadMods();
 
-async function main() {
-    await loadMods();
-    function checkWindowSize() {
-        let startForceVerticalMod = forceVerticalMod;
-        if (window.innerWidth < 600) {
-            forceVerticalMod = true;
-        } else if (forceVerticalMod && window.innerWidth >= 600) {
-            forceVerticalMod = false;
-        }
-        if (startForceVerticalMod != forceVerticalMod) {
-            loadMods();
-        }
-    }
-    addEventListenerDebounce('resize', window, 'resize', checkWindowSize);
-    checkWindowSize();
-}
-
-main();
-
+// --- Avatar Upload ---
 document.addEventListener("DOMContentLoaded", () => {
     const imageUploadInput = document.getElementById("profile-image-upload");
     const profileImage = document.getElementById("profile-image") || document.getElementById("profile-image-placeholder");

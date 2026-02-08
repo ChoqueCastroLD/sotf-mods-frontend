@@ -270,6 +270,71 @@ document.addEventListener("DOMContentLoaded", () => {
 const commentsContainer = document.getElementById("mod-comments-container");
 const commentsTextarea = document.getElementById("mod-comments-textarea");
 const commentsSendBtn = document.getElementById("mod-comments-send-btn");
+const replyIndicator = document.getElementById("reply-indicator");
+const replyIndicatorText = document.getElementById("reply-indicator-text");
+const replyCancelBtn = document.getElementById("reply-cancel-btn");
+const commentImageInput = document.getElementById("comment-image-input");
+const commentImagePreview = document.getElementById("comment-image-preview");
+const commentImagePreviewImg = document.getElementById("comment-image-preview-img");
+const commentImageRemoveBtn = document.getElementById("comment-image-remove-btn");
+const commentImageModal = document.getElementById("comment-image-modal");
+const commentImageModalImg = document.getElementById("comment-image-modal-img");
+
+let currentReplyId = null;
+
+function setReply(commentId, userName) {
+  currentReplyId = commentId;
+  replyIndicator.classList.remove("hidden");
+  replyIndicator.classList.add("flex");
+  replyIndicatorText.textContent = `Replying to @${userName}`;
+  commentsTextarea.value = `@${userName} `;
+  commentsTextarea.focus();
+}
+
+function cancelReply() {
+  currentReplyId = null;
+  replyIndicator.classList.add("hidden");
+  replyIndicator.classList.remove("flex");
+  replyIndicatorText.textContent = "";
+  commentsTextarea.value = "";
+  clearCommentImage();
+}
+
+function clearCommentImage() {
+  commentImageInput.value = "";
+  commentImagePreview.classList.add("hidden");
+  commentImagePreviewImg.src = "";
+}
+
+replyCancelBtn.addEventListener("click", cancelReply);
+
+commentImageInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"].includes(file.type)) {
+    showError(_("Invalid file type. Please upload a valid image."));
+    commentImageInput.value = "";
+    return;
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    showError(_("File size exceeds 8MB."));
+    commentImageInput.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    commentImagePreviewImg.src = ev.target.result;
+    commentImagePreview.classList.remove("hidden");
+  };
+  reader.readAsDataURL(file);
+});
+
+commentImageRemoveBtn.addEventListener("click", clearCommentImage);
+
+window.openCommentImage = function (url) {
+  commentImageModalImg.src = url;
+  commentImageModal.showModal();
+};
 
 commentsSendBtn.addEventListener("click", async () => {
   const commentText = sanitizeText(commentsTextarea.value.trim());
@@ -277,26 +342,45 @@ commentsSendBtn.addEventListener("click", async () => {
     showError(_("Please fill the comment"));
     return;
   }
-  const response = await fetch(`${PUBLIC_API_URL}/api/comments`, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-    credentials: 'include',
-    body: JSON.stringify({
-      mod_id: mod.id,
-      message: commentText,
-    }),
-  });
-  const { status, message } = await response.json();
-  if (status) {
-    commentsTextarea.value = "";
-    getComments();
-  } else {
-    showError(
-      message || _("There has been a problem with your comment operation:")
-    );
+  commentsSendBtn.disabled = true;
+  const originalText = commentsSendBtn.textContent;
+  commentsSendBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Sending...';
+  commentsTextarea.disabled = true;
+  try {
+    const formData = new FormData();
+    formData.append("mod_id", mod.id);
+    formData.append("message", commentText);
+    if (currentReplyId) {
+      formData.append("reply_id", currentReplyId);
+    }
+    const imageFile = commentImageInput.files[0];
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+    const response = await fetch(`${PUBLIC_API_URL}/api/comments`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+      credentials: 'include',
+      body: formData,
+    });
+    const { status, message } = await response.json();
+    if (status) {
+      cancelReply();
+      getComments();
+    } else {
+      showError(
+        message || _("There has been a problem with your comment operation:")
+      );
+    }
+  } catch (error) {
+    console.error("Error sending comment:", error);
+    showError(_("Something went wrong"));
+  } finally {
+    commentsSendBtn.disabled = false;
+    commentsSendBtn.textContent = originalText;
+    commentsTextarea.disabled = false;
   }
 });
 
@@ -327,8 +411,45 @@ const getComments = async () => {
   }
 };
 
+function formatMessageWithMentions(msg) {
+  return msg
+    .replace(/\n/g, '<br />')
+    .replace(/@(\w+)/g, '<span style="font-weight:bold;color:oklch(var(--a));">@$1</span>');
+}
+
+function renderCommentImage(imageUrl) {
+  if (!imageUrl) return '';
+  return `<div class="mt-2"><img src="${imageUrl}" alt="Comment image" class="rounded-lg cursor-pointer object-contain" style="max-height:100px;max-width:200px;" onclick="openCommentImage('${imageUrl}')" /></div>`;
+}
+
+const renderReply = (reply) => {
+  const { message, imageUrl, createdAt, user } = reply;
+  const formattedDate = new Date(createdAt).toLocaleString();
+  const profileUrl = `/profile/${user.slug}`;
+  const avatarImg = user.imageUrl
+    ? `<img class="w-8 rounded-full" src="${user.imageUrl}" alt="${user.name}'s avatar" />`
+    : `<svg class="w-8 h-8 text-[#02cdb3]" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+        <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+      </svg>`;
+  const trustedBadge = user.isTrusted ? `<span class="badge badge-primary badge-xs ml-1">Trusted</span>` : '';
+
+  return `
+    <div class="chat chat-start ml-12">
+      <div class="chat-image avatar">
+        <div class="w-8 rounded-full">${avatarImg}</div>
+      </div>
+      <div class="chat-header">
+        <a href="${profileUrl}" class="text-xs font-bold hover:underline">${user.name}</a>
+        ${trustedBadge}
+        <time class="text-xs opacity-50"> • ${formattedDate}</time>
+      </div>
+      <div class="chat-bubble chat-bubble-secondary text-sm">${formatMessageWithMentions(message)}${renderCommentImage(imageUrl)}</div>
+    </div>
+  `;
+};
+
 const renderComment = (comment) => {
-  const { message, createdAt, user } = comment;
+  const { id, message, imageUrl, createdAt, user, replies } = comment;
   const formattedDate = new Date(createdAt).toLocaleString();
   const profileUrl = `/profile/${user.slug}`;
   const avatarImg = user.imageUrl
@@ -337,6 +458,12 @@ const renderComment = (comment) => {
         <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
       </svg>`;
   const trustedBadge = user.isTrusted ? `<span class="badge badge-primary badge-sm ml-1">Trusted</span>` : '';
+
+  const repliesHtml = (replies && replies.length > 0) ? replies.map(renderReply).join("") : "";
+
+  const replyButton = token
+    ? `<button class="btn btn-ghost btn-xs mt-1" onclick="setReply(${id}, '${user.name.replace(/'/g, "\\'")}')">Reply</button>`
+    : '';
 
   return `
     <div class="chat chat-start">
@@ -348,10 +475,14 @@ const renderComment = (comment) => {
         ${trustedBadge}
         <time class="text-xs opacity-50"> • ${formattedDate}</time>
       </div>
-      <div class="chat-bubble">${message.replace('\n', '<br />')}</div>
+      <div class="chat-bubble">${formatMessageWithMentions(message)}${renderCommentImage(imageUrl)}</div>
+      <div class="chat-footer">${replyButton}</div>
     </div>
+    ${repliesHtml}
   `;
 };
+
+window.setReply = setReply;
 
 getComments();
 // setInterval(getComments, 10000);

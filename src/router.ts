@@ -45,6 +45,8 @@ export const router = new Elysia()
   // auth
   .get("/login", render("login"))
   .get("/register", render("register"))
+  .get("/forgot-password", render("forgot-password"))
+  .get("/reset-password", render("reset-password"))
   .get("/logout", ({ redirect }) => redirect('/login'))
   // user
   .get("/profile/:userSlug", async (context) => {

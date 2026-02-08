@@ -6,48 +6,112 @@
 {% endblock %}
 
 {% block body %}
-  <div class="top-spacer"></div>
-  <div id="sotf-mods-p" data-p="{{ userProfile | dump }}"></div>
-  <div class="flex flex-col justify-center items-center m-6">
-    <div class="text-center lg:text-left">
-      {# Check if user is logged in and is the owner of the profile #}
+  <div id="sotf-mods-p" data-p="{{ userProfile | dump }}" class="hidden"></div>
+
+  {# Profile Header #}
+  <div class="flex flex-col items-center pt-12 pb-6 px-4">
+    {# Avatar #}
+    <div class="mb-4">
       {% if user and user.slug == userProfile.slug %}
-        <label for="profile-image-upload" class="relative group cursor-pointer">
+        <label for="profile-image-upload" class="relative group cursor-pointer block">
           {% if userProfile.imageUrl %}
             <img id="profile-image" src="{{ userProfile.imageUrl }}" alt="Avatar"
-                    class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg transition-transform transform group-hover:scale-110">
+                 class="w-28 h-28 rounded-full border-4 border-primary/30 shadow-lg object-cover transition-transform transform group-hover:scale-105">
           {% else %}
             <div id="profile-image-placeholder"
-                    class="w-24 h-24 rounded-full bg-gray-200 border-4 border-gray-300 shadow-lg flex items-center justify-center text-gray-500 text-xl font-semibold transition-transform transform group-hover:scale-110">
-                    ?
-                </div>
+                 class="w-28 h-28 rounded-full bg-base-200 border-4 border-primary/30 shadow-lg flex items-center justify-center text-4xl font-bold text-primary transition-transform transform group-hover:scale-105">
+              {{ userProfile.name[0] | upper }}
+            </div>
           {% endif %}
+          <div class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
           <input type="file" id="profile-image-upload" class="hidden" accept="image/*">
         </label>
       {% else %}
-        {# Read-only profile image for non-owners or guests #}
         {% if userProfile.imageUrl %}
           <img src="{{ userProfile.imageUrl }}" alt="Avatar"
-                class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg">
+               class="w-28 h-28 rounded-full border-4 border-primary/30 shadow-lg object-cover">
         {% else %}
-          <div class="w-24 h-24 rounded-full bg-gray-200 border-4 border-gray-300 shadow-lg flex items-center justify-center text-gray-500 text-xl font-semibold">
-                ?
-            </div>
+          <div class="w-28 h-28 rounded-full bg-base-200 border-4 border-primary/30 shadow-lg flex items-center justify-center text-4xl font-bold text-primary">
+            {{ userProfile.name[0] | upper }}
+          </div>
         {% endif %}
       {% endif %}
     </div>
 
-    <div class="text-center lg:text-left py-2">
-      <div class="flex items-center gap-2 justify-center lg:justify-start">
-        <h1 class="text-4xl font-bold">{{ userProfile.name }}'s mods</h1>
-        {% if userProfile.isTrusted %}
-          <span class="badge badge-primary badge-lg">Trusted</span>
-        {% endif %}
+    {# Name & Badge #}
+    <div class="flex items-center gap-2 mb-1">
+      <h1 class="text-3xl font-bold">{{ userProfile.name }}</h1>
+      {% if userProfile.isTrusted %}
+        <span class="badge badge-primary">Trusted</span>
+      {% endif %}
+    </div>
+
+    {# Member Since #}
+    {% if userProfile.createdAt %}
+      <p class="text-sm text-base-content/50">
+        {{ _("profile.member_since") }} <span data-time-ago="{{ userProfile.createdAt }}">{{ userProfile.createdAt }}</span>
+      </p>
+    {% endif %}
+  </div>
+
+  {# Stats Section #}
+  <div id="stats-section" class="px-4 pb-6">
+    <div class="max-w-4xl mx-auto">
+      {# Download Stats Row #}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.downloads_today") }}</div>
+          <div id="stat-downloads-day" class="stat-value text-accent text-2xl">-</div>
+        </div>
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.downloads_7d") }}</div>
+          <div id="stat-downloads-7d" class="stat-value text-accent text-2xl">-</div>
+        </div>
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.downloads_30d") }}</div>
+          <div id="stat-downloads-30d" class="stat-value text-accent text-2xl">-</div>
+        </div>
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.downloads_total") }}</div>
+          <div id="stat-downloads-total" class="stat-value text-accent text-2xl">-</div>
+        </div>
+      </div>
+
+      {# Other Stats Row #}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.mods_published") }}</div>
+          <div id="stat-mods" class="stat-value text-secondary text-2xl">-</div>
+        </div>
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.favorites") }}</div>
+          <div id="stat-favorites" class="stat-value text-warning text-2xl">-</div>
+        </div>
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.reviews") }}</div>
+          <div id="stat-reviews" class="stat-value text-info text-2xl">-</div>
+        </div>
+        <div class="stat bg-base-200 rounded-xl p-4 text-center">
+          <div class="stat-title text-xs">{{ _("profile.avg_rating") }}</div>
+          <div id="stat-rating" class="stat-value text-warning text-2xl">-</div>
+        </div>
       </div>
     </div>
   </div>
-  <div id="mods-discover-container" class="flex flex-wrap justify-center">
-    <span class="loading loading-infinity loading-lg text-success center"></span>
+
+  {# Mods Section #}
+  <div class="px-4 pb-8">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-xl font-bold mb-4">{{ _("profile.mods_by") }} {{ userProfile.name }}</h2>
+    </div>
+    <div id="mods-discover-container" class="flex flex-wrap justify-center gap-4">
+      <span class="loading loading-infinity loading-lg text-success"></span>
+    </div>
   </div>
 {% endblock %}
 
