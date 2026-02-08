@@ -138,7 +138,7 @@ window.showSuccess = message => {
 
 window.sanitizeText = (text) => {
     if (!text) return "";
-    const allowedPattern = /[^\p{Script=Han}a-zA-Z0-9,.¡!¿?$%&()#+;/'"\n _-]/gu;
+    const allowedPattern = /[^\p{Script=Han}a-zA-Z0-9,.¡!¿?$%&()#+;/'"\n @_-]/gu;
     let sanitizedInput = DOMPurify.sanitize(text).replace(allowedPattern, "");
     sanitizedInput = sanitizedInput.trim().replace(/<[^>]*>?/gm, '');
     return sanitizedInput;
